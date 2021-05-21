@@ -9,6 +9,8 @@ namespace Fanex.NAP.SPU.VR.JobService
         int Environment { get; }
 
         int PunterChunkSize { get; }
+
+        string SPName { get; }
     }
     public class AppSettings : IAppSettings
     {
@@ -18,6 +20,8 @@ namespace Fanex.NAP.SPU.VR.JobService
 
         private readonly int punterChunkSize;
 
+        private readonly string spName;
+
         public AppSettings(IConfiguration configuration)
         {
             this.configuration = configuration;
@@ -25,6 +29,8 @@ namespace Fanex.NAP.SPU.VR.JobService
             environment = GetValue<string>(nameof(Environment));
 
             punterChunkSize = GetValue<int>(nameof(PunterChunkSize));
+
+            spName = GetValue<string>(nameof(SPName));
         }
 
         public int Environment
@@ -43,8 +49,9 @@ namespace Fanex.NAP.SPU.VR.JobService
             }
         }
 
+        public string SPName => spName;
 
-        public int PunterChunkSize { get; }
+        public int PunterChunkSize => punterChunkSize;
 
         public T GetValue<T>(string key)
         {

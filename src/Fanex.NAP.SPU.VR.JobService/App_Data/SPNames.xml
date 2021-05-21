@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-
-<Functions>
-	<Function Name="JobSerice">
-		<Setting Key="FS_FraudCase_BSNG_PreCondition" SpName="FS_FraudCase_BSNG_PreCondition" DbName="MySQL.DCS_DataCenter.ctsService"/>
-		<Setting Key="FS_FraudCase_BSNG_Rule" SpName="FS_FraudCase_BSNG_Rule" DbName="MySQL.CTS_DataCenter.ctsServiceAdmin"/>
-				
-	</Function>
-</Functions>
