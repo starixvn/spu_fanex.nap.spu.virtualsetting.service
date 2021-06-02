@@ -8,6 +8,8 @@ namespace Fanex.NAP.SPU.VR.JobService
     {
         int Environment { get; }
 
+        string EnvironmentString { get; }
+
         int PunterChunkSize { get; }
 
         string SPName { get; }
@@ -46,6 +48,14 @@ namespace Fanex.NAP.SPU.VR.JobService
                     default:
                         return 3;
                 }
+            }
+        }
+
+        public string EnvironmentString
+        {
+            get
+            {
+                return environment;
             }
         }
 

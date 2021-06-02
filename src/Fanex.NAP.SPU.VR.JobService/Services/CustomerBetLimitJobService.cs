@@ -1,4 +1,5 @@
-﻿using Fanex.NAP.SPU.VR.Features.BetLimit;
+﻿using Fanex.NAP.SPU.Notification.Services;
+using Fanex.NAP.SPU.VR.Features.BetLimit;
 using Sentry;
 using System;
 using System.Linq;
@@ -16,7 +17,8 @@ namespace Fanex.NAP.SPU.VR.JobService.Services
         private readonly ISentryClient sentryClient;
         private readonly IAppSettings appSettings;
         private readonly IBetLimitServices betLimitService;
-
+        private string notifiedMessage = string.Empty;
+        
         public CustomerBetLimitJobService(ISentryClient sentryClient, IAppSettings appSettings, IBetLimitServices betLimitService)
         {
             this.sentryClient = sentryClient;           
@@ -44,7 +46,14 @@ namespace Fanex.NAP.SPU.VR.JobService.Services
 
         private void NotifyMessage()
         {
-            //sent letstalk
+            if(!string.IsNullOrWhiteSpace(notifiedMessage))
+            {
+                var telegramService = new NotificationService();
+                telegramService
+                   .Config("0A40aOc7CtpzjbBSJu8KNWQRoXyjRvf9", "-1001400862084")
+                   .Message(new MessageModel("VR - Auto Update Bet Limit", DateTime.Now, appSettings.EnvironmentString, notifiedMessage))
+                   .SendWithoutDelay(isInfo: true);
+            }            
         }
 
         private void StartTime()
@@ -64,6 +73,13 @@ namespace Fanex.NAP.SPU.VR.JobService.Services
 
                 betLimitService.RemoveBetLimit(removeBetLimitCustomers, appSettings.PunterChunkSize);
                 betLimitService.UpdateBetLimit(updateBetLimitCustomer, appSettings.PunterChunkSize);
+
+                this.notifiedMessage = $"Auto update Bet Limit job run COMPLETED." +
+                    $"\n\r - Affected customers: {betLimitService.PuntersUpdated}" +
+                    $"\n\r - Raw customers: {betLimitService.RawCustomer}"+
+                    $"\n\r - Passed customers: {betLimitService.UpdateCustomers}" +
+                    $"\n\r - NOT Passed customers: {betLimitService.RemovedCustomers}";
+
             }
         }
     }

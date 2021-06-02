@@ -13,23 +13,56 @@ namespace Fanex.NAP.SPU.VR.Features.BetLimit
         void RemoveBetLimit(IEnumerable<int> customerList, int punterChunkSize);
 
         void UpdateBetLimit(IEnumerable<int> customerList, int punterChunkSize);
+
+        public int PuntersUpdated { get; }
+
+        public int RemovedCustomers { get; }
+
+        public int UpdateCustomers { get; }
+
+        public int RawCustomer { get; }
+
     }
     public class BetLimitServices : IBetLimitServices
     {
         private readonly IBetLimitDataAccess betLimitDataAccess;
 
+        private int puntersUpdated;
+
+        private int removedCustomers;
+
+        private int updatedCustomers;
+
+        private int rawCustomers;
+
         public BetLimitServices(IBetLimitDataAccess betLimitDataAccess)
         {
             this.betLimitDataAccess = betLimitDataAccess;
+
+            this.puntersUpdated = 0;
         }
+
+        public int PuntersUpdated => puntersUpdated;
+
+        public int RemovedCustomers => removedCustomers;
+
+        public int UpdateCustomers => updatedCustomers;
+
+        public int RawCustomer => rawCustomers;
 
         public IEnumerable<int> GetBetLimitCustomers()
         {
-            return betLimitDataAccess.GetCustomersBetLimit();
+            var betLimitCustomers = betLimitDataAccess.GetCustomersBetLimit();
+
+            this.rawCustomers = betLimitCustomers.Count();
+
+            return betLimitCustomers;
         }
 
         public void RemoveBetLimit(IEnumerable<int> customerList, int punterChunkSize)
         {
+            this.removedCustomers = customerList.Count();
+
             var customerChunks = Utilities.ChunkList(customerList, punterChunkSize).ToList();
 
             foreach (var customers in customerChunks)
@@ -43,6 +76,8 @@ namespace Fanex.NAP.SPU.VR.Features.BetLimit
 
         public void UpdateBetLimit(IEnumerable<int> customerList, int punterChunkSize)
         {
+            this.updatedCustomers = customerList.Count();
+
             var customerChunks = Utilities.ChunkList(customerList, punterChunkSize).ToList();
 
             foreach(var customers in customerChunks)
@@ -50,6 +85,8 @@ namespace Fanex.NAP.SPU.VR.Features.BetLimit
                 if (customers != null && customers.Any())
                 {
                     betLimitDataAccess.UpdateBetLimit(string.Join(",", customers));
+
+                    puntersUpdated += customers.Count();
                 }                    
             }
         }
