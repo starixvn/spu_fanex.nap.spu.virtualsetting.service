@@ -1,10 +1,9 @@
 ﻿namespace Fanex.NAP.SPU.VR.JobService.Services
 {
+    using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.SpecialLicensee;
     using Sentry;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    using System; 
     using System.Threading.Tasks;
 
     public interface ISpecialLicenseeJobService
@@ -30,9 +29,12 @@
         {
             try
             {
-                UpdateVRForBasketball();
-                //UpdateVRForSpecialSportsbook();
-                //NotifyMessage();
+                IOthersportsService othersportsService = new OthersportsService(this.specialLicenseeService);
+
+                othersportsService.AutoAdjustVirtualSettings(this.appSettings.PunterChunkSize);
+                othersportsService.AutoAdjustVRForSpecialSportsbook(this.appSettings.PunterChunkSize);
+
+                NotifyMessage();
             }
             catch (Exception ex)
             {
@@ -44,21 +46,17 @@
             return Task.FromResult(true);
         }
 
-        private void UpdateVRForBasketball()
+        private void NotifyMessage()
         {
-            IOthersportsService othersportsService = new OthersportsService();
-
-            othersportsService.AutoAdjustVirtualSettings();
+            if (!string.IsNullOrWhiteSpace(notifiedMessage))
+            {
+                var telegramService = new NotificationService();
+                telegramService
+                   .Config("0A40aOc7CtpzjbBSJu8KNWQRoXyjRvf9", "-1001400862084")
+                   .Message(new MessageModel("VR - Auto Update Special Licensee", DateTime.Now, appSettings.EnvironmentString, notifiedMessage))
+                   .SendWithoutDelay(isInfo: true);
+            }
         }
 
-        private void AdjustVRPassedCustomers(IEnumerable<int> customerList, int sportType)
-        {
-
-        }
-
-        private void UpdateStatusUnpassedCustomers(IEnumerable<int> customerList, int sportType)
-        {
-
-        }
     }
 }
