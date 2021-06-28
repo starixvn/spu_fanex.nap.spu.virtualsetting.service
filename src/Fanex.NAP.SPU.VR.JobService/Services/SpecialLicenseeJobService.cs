@@ -31,8 +31,8 @@
             {
                 IOthersportsService othersportsService = new OthersportsService(this.specialLicenseeService);
 
-                othersportsService.AutoAdjustVirtualSettings(this.appSettings.PunterChunkSize);
-                othersportsService.AutoAdjustVRForSpecialSportsbook(this.appSettings.PunterChunkSize);
+                othersportsService.AutoAdjustVirtualSettings(this.appSettings.PunterChunkSize)
+                                  .AutoAdjustVRForSpecialSportsbook(this.appSettings.PunterChunkSize);
 
                 NotifyMessage();
             }

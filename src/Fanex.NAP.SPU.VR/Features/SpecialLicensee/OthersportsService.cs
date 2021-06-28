@@ -10,39 +10,21 @@
 
     public interface IOthersportsService
     {
-        void AutoAdjustVirtualSettings(int punterChunkSize);
+        IOthersportsService AutoAdjustVirtualSettings(int punterChunkSize);
 
-        void AutoAdjustVRForSpecialSportsbook(int punterChunkSize);
+        IOthersportsService AutoAdjustVRForSpecialSportsbook(int punterChunkSize);
     }
 
     public class OthersportsService : IOthersportsService
     {
         private readonly ISpecialLicenseeService specialLicenseeService;
-
-        private int puntersUpdated;
-
-        private int removedCustomers;
-
-        private int updatedCustomers;
-
-        private int rawCustomers;
-
-        public int PuntersUpdated => puntersUpdated;
-
-        public int RemovedCustomers => removedCustomers;
-
-        public int UpdateCustomers => updatedCustomers;
-
-        public int RawCustomer => rawCustomers;
-
+       
         public OthersportsService(ISpecialLicenseeService specialLicenseeService)
         {
             this.specialLicenseeService = specialLicenseeService;
-
-            this.puntersUpdated = 0;
         }
 
-        public void AutoAdjustVirtualSettings(int punterChunkSize)
+        public IOthersportsService AutoAdjustVirtualSettings(int punterChunkSize)
         {
             var customerList = specialLicenseeService.GetSpecialSportBookVRAdjustmentCustomers(99).ToList();
 
@@ -53,9 +35,11 @@
             AdjustVRPassedCustomers(passedPerfCheckCustomers, 99, punterChunkSize);
 
             UpdateStatusUnpassedCustomers(unpassedPerfCheckCustomers, 99, punterChunkSize);
+
+            return this;
         }
 
-        public void AutoAdjustVRForSpecialSportsbook(int punterChunkSize)
+        public IOthersportsService AutoAdjustVRForSpecialSportsbook(int punterChunkSize)
         {
             var customerList = specialLicenseeService.GetSpecialSportBookVRAdjustmentCustomers(100).ToList();
             var customerListString = string.Join(",", customerList);
@@ -65,7 +49,10 @@
             var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = specialLicenseeService.VerifyVRAdjustmentCustomers(customerListString);
 
             AdjustVRPassedCustomers(passedPerfCheckCustomers, 100, punterChunkSize);
+            
             UpdateStatusUnpassedCustomers(unpassedPerfCheckCustomers, 100, punterChunkSize);
+
+            return this;
         }
 
         private void AdjustVRPassedCustomers(IEnumerable<int> customerList, int sportType, int punterChunkSize)
@@ -81,8 +68,7 @@
 
             for (int i = 0; i < customerChunks.Count(); i++)
             {                
-                specialLicenseeService.UpdateVRFollowUpline(string.Join(",", customerChunks[i]), sportType);
-                puntersUpdated += customerChunks[i].Count();
+                specialLicenseeService.UpdateVRFollowUpline(string.Join(",", customerChunks[i]), sportType);                
             }
         }
 
