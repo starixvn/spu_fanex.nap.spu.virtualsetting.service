@@ -1,24 +1,26 @@
-﻿using Fanex.NAP.SPU.VR.JobService.Services;
-using Microsoft.AspNetCore.Mvc;
-using Sentry;
-using System;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.SPU.DCS.JobService.Controllers
+﻿namespace Fanex.NAP.SPU.DCS.JobService.Controllers
 {
+    using Fanex.NAP.SPU.VR.JobService.Services;
+    using Microsoft.AspNetCore.Mvc;
+    using Sentry;
+    using System;
+    using System.Threading.Tasks;
+
     [ApiController]
     [Route("api/job")]
     public class JobController : ControllerBase
     {
         private readonly ISentryClient sentryClient;
-        private readonly ICustomerBetLimitJobService customerBetLimitJobService;       
+        private readonly ICustomerBetLimitJobService customerBetLimitJobService;
+        private readonly ISpecialLicenseeJobService specialLicenseeJobService;
 
         public JobController(ISentryClient sentryClient,
-            ICustomerBetLimitJobService customerBetLimitJobService)
+            ICustomerBetLimitJobService customerBetLimitJobService,
+            ISpecialLicenseeJobService specialLicenseeJobService)
         {
             this.sentryClient = sentryClient;
             this.customerBetLimitJobService = customerBetLimitJobService;
-            
+            this.specialLicenseeJobService = specialLicenseeJobService;
         }
 
         [HttpPost("betlimit")]
@@ -46,8 +48,7 @@ namespace Fanex.NAP.SPU.DCS.JobService.Controllers
         {
             sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
 
-            return await Task.FromResult(true);
-
+            return await this.specialLicenseeJobService.Execute();
         }
 
         [HttpPost("agent")]

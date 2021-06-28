@@ -1,12 +1,12 @@
-﻿using Fanex.NAP.SPU.Notification.Services;
-using Fanex.NAP.SPU.VR.Features.BetLimit;
-using Sentry;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.SPU.VR.JobService.Services
+﻿namespace Fanex.NAP.SPU.VR.JobService.Services
 {
+    using Fanex.NAP.SPU.Notification.Services;
+    using Fanex.NAP.SPU.VR.Features.BetLimit;
+    using Sentry;
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     public interface ICustomerBetLimitJobService
     {        
         Task<bool> Execute();
