@@ -23,6 +23,7 @@
     <PackageReference Include="Fanex.Data.MySql" Version="4.2.2" />
     <PackageReference Include="Fanex.Data.Repository" Version="4.2.2" />
     <PackageReference Include="Fanex.Data.SqlServer" Version="4.2.2" />
+    <PackageReference Include="Fanex.MailStation" Version="2.1.0" />
     <PackageReference Include="Fanex.NAP.SPU.AspNetCore.Notification" Version="1.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.6" NoWarn="NU1605" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.6" NoWarn="NU1605" />
@@ -44,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="MailTemplate\Agent\" />
     <Folder Include="MailTemplate\SpecialLicensee\" />
   </ItemGroup>
 

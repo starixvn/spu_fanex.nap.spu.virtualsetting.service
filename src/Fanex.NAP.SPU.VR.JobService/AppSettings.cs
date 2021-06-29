@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.ComponentModel;
-
-namespace Fanex.NAP.SPU.VR.JobService
+﻿namespace Fanex.NAP.SPU.VR.JobService
 {
+    using Microsoft.Extensions.Configuration;
+    using System;
+    using System.ComponentModel;
+
     public interface IAppSettings
     {
         int Environment { get; }
@@ -13,6 +13,8 @@ namespace Fanex.NAP.SPU.VR.JobService
         int PunterChunkSize { get; }
 
         string SPName { get; }
+
+        int MailingListIdAgentAjust { get; }
     }
     public class AppSettings : IAppSettings
     {
@@ -24,6 +26,8 @@ namespace Fanex.NAP.SPU.VR.JobService
 
         private readonly string spName;
 
+        private readonly int mailingListIdAgentAjust;
+
         public AppSettings(IConfiguration configuration)
         {
             this.configuration = configuration;
@@ -33,6 +37,8 @@ namespace Fanex.NAP.SPU.VR.JobService
             punterChunkSize = GetValue<int>(nameof(PunterChunkSize));
 
             spName = GetValue<string>(nameof(SPName));
+
+            mailingListIdAgentAjust = GetValue<int>(nameof(MailingListIdAgentAjust));
         }
 
         public int Environment
@@ -62,6 +68,8 @@ namespace Fanex.NAP.SPU.VR.JobService
         public string SPName => spName;
 
         public int PunterChunkSize => punterChunkSize;
+
+        public int MailingListIdAgentAjust => mailingListIdAgentAjust;
 
         public T GetValue<T>(string key)
         {

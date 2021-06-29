@@ -13,14 +13,17 @@
         private readonly ISentryClient sentryClient;
         private readonly ICustomerBetLimitJobService customerBetLimitJobService;
         private readonly ISpecialLicenseeJobService specialLicenseeJobService;
+        private readonly IAgentJobService agentJobService;
 
         public JobController(ISentryClient sentryClient,
             ICustomerBetLimitJobService customerBetLimitJobService,
-            ISpecialLicenseeJobService specialLicenseeJobService)
+            ISpecialLicenseeJobService specialLicenseeJobService,
+            IAgentJobService agentJobService)
         {
             this.sentryClient = sentryClient;
             this.customerBetLimitJobService = customerBetLimitJobService;
             this.specialLicenseeJobService = specialLicenseeJobService;
+            this.agentJobService = agentJobService;
         }
 
         [HttpPost("betlimit")]
@@ -56,8 +59,7 @@
         {
             sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
 
-            return await Task.FromResult(true);
-
+            return await this.agentJobService.Execute();
         }
 
         [HttpPost("adjustvrsetting")]
