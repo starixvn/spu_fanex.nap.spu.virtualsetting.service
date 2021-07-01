@@ -46,6 +46,8 @@
 
   <ItemGroup>
     <Folder Include="MailTemplate\Agent\" />
+    <Folder Include="MailTemplate\MemberBigStake\" />
+    <Folder Include="MailTemplate\Adjust3M\" />
     <Folder Include="MailTemplate\SpecialLicensee\" />
   </ItemGroup>
 

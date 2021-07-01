@@ -1,6 +1,8 @@
 ﻿namespace Fanex.NAP.SPU.VR.JobService.Services
 {
     using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
     using Fanex.MailDelivery.Client;
     using Fanex.MailDelivery.Core.Models;
     using Fanex.NAP.SPU.CTS.Shares;
@@ -25,17 +27,13 @@
         private readonly ISentryClient sentryClient;
         private readonly IAppSettings appSettings;
         private readonly IAgentService agentService;           
-        private string notifiedMessage = string.Empty;
-        private IEnumerable<VRAgentUpdatedToZeroModel> updatedToZeroList;
-        private IEnumerable<VRAgentUpdatedToFollowSuperModel> updatedToFollowSupperList;
+        private string notifiedMessage = string.Empty;       
 
         public AgentJobService(ISentryClient sentryClient, IAppSettings appSettings, IAgentService agentService)
         {
             this.sentryClient = sentryClient;
             this.appSettings = appSettings;
-            this.agentService = agentService;
-            this.updatedToZeroList = new List<VRAgentUpdatedToZeroModel>();
-            this.updatedToFollowSupperList = new List<VRAgentUpdatedToFollowSuperModel>();
+            this.agentService = agentService;           
         }
 
         public Task<bool> Execute()
@@ -48,11 +46,9 @@
 
                 agentService.UpdateFlagAbnormalAgent(1);
 
-                UpdateUnflagAbnormalAgent(updateUnflagAbnormalAgents, 1);
+                UpdateUnflagAbnormalAgent(updateUnflagAbnormalAgents, 1);                
 
-                (this.updatedToZeroList, this.updatedToFollowSupperList) = agentService.GetVRAgentUpdated();
-
-                SendMailExternal(this.appSettings.MailingListIdAgentAjust);
+                SendMail(this.appSettings.MailingListIdAgentAjust);
 
                 NotifyMessage();
             }
@@ -88,7 +84,7 @@
             }
         }
 
-        private void SendMailExternal(int mailingListId)
+        private void SendMail(int mailingListId)
         {
             var subject = "List of new agents got VR updated by Agent profiling job";
             var body = GenerateMailBody();
@@ -123,6 +119,8 @@
 
             try
             {
+                var (updatedToZeroList, updatedToFollowSupperList) = agentService.GetVRAgentUpdated();
+
                 var isExistAgent = (updatedToZeroList != null && updatedToZeroList.Any())
                                 || (updatedToFollowSupperList != null && updatedToFollowSupperList.Any());
 
@@ -134,26 +132,32 @@
 
                 var html = string.Empty;
 
-                html += GenerateTableUpdateToZero();
-                html += GenerateTableUpdateToFollowSupper();
+                html += GenerateTableUpdateToZero(updatedToZeroList);
+                html += GenerateTableUpdateToFollowSupper(updatedToFollowSupperList);
 
                 body = string.Format(body, html);
+
+                this.notifiedMessage = $"Auto update member big stake job run COMPLETED." +
+                   $"\n\r - Member updated to zero: {updatedToZeroList.Count()}" +
+                   $"\n\r - Member updated to follow supper: {updatedToFollowSupperList.Count()}";
             }
             catch (Exception ex)
             {
-                var message = $"VR - Auto Agent Adjustment service - GenerateMailBody exception: { ex.Message }";
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();           
 
-                LogService.Error(message, ex);
+                LogService.Error($"VR - Auto Agent Adjustment service - GenerateMailBody exception: message:  {logMessage}");
             }
 
             return body;
         }
 
-        private string GenerateTableUpdateToZero()
+        private string GenerateTableUpdateToZero(IEnumerable<VRAgentUpdatedToZeroModel> updatedToZeroList)
         {
             var table = "<br />Table: agents whose VR got updated to 0 <br /><br />";
 
-            if (this.updatedToZeroList != null && this.updatedToZeroList.Any())
+            if (updatedToZeroList != null && updatedToZeroList.Any())
             {
                 table += "<table style='" + CssStyleTable(300) + "'>";
                 table += "<tr>";
@@ -163,7 +167,7 @@
                 table += "</tr>";
                 var index = 1;
 
-                foreach (var item in this.updatedToZeroList)
+                foreach (var item in updatedToZeroList)
                 {
                     table += "<tr>";
                     table += "<td style='" + CssStyleTd() + "'>" + index + "</td>";
@@ -180,11 +184,11 @@
             return table;
         }
 
-        private string GenerateTableUpdateToFollowSupper()
+        private string GenerateTableUpdateToFollowSupper(IEnumerable<VRAgentUpdatedToFollowSuperModel> updatedToFollowSupperList)
         {
             var table = "<br />Table: agents whose VR got updated to follow Super <br /><br />";
 
-            if (this.updatedToFollowSupperList != null && this.updatedToFollowSupperList.Any())
+            if (updatedToFollowSupperList != null && updatedToFollowSupperList.Any())
             {
                 table += "<table style='" + CssStyleTable(400) + "'>";
                 table += "<tr>";
@@ -195,7 +199,7 @@
                 table += "</tr>";
                 var index = 1;
 
-                foreach (var item in this.updatedToFollowSupperList)
+                foreach (var item in updatedToFollowSupperList)
                 {
                     table += "<tr>";
                     table += "<td style='" + CssStyleTd() + "'>" + index + "</td>";

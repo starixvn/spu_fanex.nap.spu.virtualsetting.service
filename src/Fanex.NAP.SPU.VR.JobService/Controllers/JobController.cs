@@ -14,16 +14,22 @@
         private readonly ICustomerBetLimitJobService customerBetLimitJobService;
         private readonly ISpecialLicenseeJobService specialLicenseeJobService;
         private readonly IAgentJobService agentJobService;
+        private readonly IMemberBigStakeJobService memberBigStakeJobService;
+        private readonly IAdjust3MJobService adjust3MJobService;
 
         public JobController(ISentryClient sentryClient,
             ICustomerBetLimitJobService customerBetLimitJobService,
             ISpecialLicenseeJobService specialLicenseeJobService,
-            IAgentJobService agentJobService)
+            IAgentJobService agentJobService,
+            IMemberBigStakeJobService memberBigStakeJobService,
+            IAdjust3MJobService adjust3MJobService)
         {
             this.sentryClient = sentryClient;
             this.customerBetLimitJobService = customerBetLimitJobService;
             this.specialLicenseeJobService = specialLicenseeJobService;
             this.agentJobService = agentJobService;
+            this.memberBigStakeJobService = memberBigStakeJobService;
+            this.adjust3MJobService = adjust3MJobService;
         }
 
         [HttpPost("betlimit")]
@@ -40,10 +46,7 @@
         {
             sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
 
-            //return await this.customerBetLimitJobService.Execute();
-
-            return await Task.FromResult(true);
-
+            return await this.memberBigStakeJobService.Execute();
         }
 
         [HttpPost("spaciallicensee")]
@@ -67,7 +70,7 @@
         {
             sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
 
-            return await Task.FromResult(true);
+            return await this.adjust3MJobService.Execute();
 
         }
 

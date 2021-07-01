@@ -16,10 +16,10 @@
     {
         private readonly ISentryClient sentryClient;
         private readonly IAppSettings appSettings;
-        private readonly IBetLimitServices betLimitService;
+        private readonly IBetLimitService betLimitService;
         private string notifiedMessage = string.Empty;
         
-        public CustomerBetLimitJobService(ISentryClient sentryClient, IAppSettings appSettings, IBetLimitServices betLimitService)
+        public CustomerBetLimitJobService(ISentryClient sentryClient, IAppSettings appSettings, IBetLimitService betLimitService)
         {
             this.sentryClient = sentryClient;           
             this.appSettings = appSettings;

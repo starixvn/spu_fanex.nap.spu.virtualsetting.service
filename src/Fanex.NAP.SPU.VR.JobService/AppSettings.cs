@@ -15,6 +15,29 @@
         string SPName { get; }
 
         int MailingListIdAgentAjust { get; }
+
+        int RetryTime { get; }
+
+        int Adjust3MPunterChunkSize { get; }
+
+        int Adjust3MNewVirtualMultiplierForSuperProPunter { get; }
+
+        int Adjust3MNewVirtualMultiplierForWinning { get; }
+
+        int Adjust3MVirtualRateThresholdForWinning { get; }
+
+        string Adjust3MSiteIds { get; }
+
+        string Adjust3MSuperIds { get; }
+
+        string Adjust3MIP { get; }
+
+        int Adjust3MDummyUser { get; }
+
+        int Adjust3MMailingListId { get; }
+
+        int MailingListIdToSPU { get; }
+
     }
     public class AppSettings : IAppSettings
     {
@@ -28,6 +51,28 @@
 
         private readonly int mailingListIdAgentAjust;
 
+        private readonly int retryTime;
+
+        private readonly int adjust3MPunterChunkSize;
+
+        private readonly int adjust3MNewVirtualMultiplierForSuperProPunter;
+
+        private readonly int adjust3MNewVirtualMultiplierForWinning;
+
+        private readonly int adjust3MVirtualRateThresholdForWinning;
+
+        private readonly string adjust3MSiteIds;
+
+        private readonly string adjust3MSuperIds;
+
+        private readonly string adjust3MIP;
+
+        private readonly int adjust3MDummyUser;
+
+        private readonly int adjust3MMailingListId;
+
+        private readonly int mailingListIdToSPU;
+
         public AppSettings(IConfiguration configuration)
         {
             this.configuration = configuration;
@@ -39,6 +84,28 @@
             spName = GetValue<string>(nameof(SPName));
 
             mailingListIdAgentAjust = GetValue<int>(nameof(MailingListIdAgentAjust));
+
+            retryTime = GetValue<int>(nameof(RetryTime));
+
+            adjust3MPunterChunkSize = GetValue<int>(nameof(Adjust3MPunterChunkSize));
+
+            adjust3MNewVirtualMultiplierForSuperProPunter = GetValue<int>(nameof(Adjust3MNewVirtualMultiplierForSuperProPunter));
+
+            adjust3MNewVirtualMultiplierForWinning = GetValue<int>(nameof(Adjust3MNewVirtualMultiplierForWinning));
+
+            adjust3MVirtualRateThresholdForWinning = GetValue<int>(nameof(Adjust3MVirtualRateThresholdForWinning));
+
+            adjust3MSiteIds = GetValue<string>(nameof(Adjust3MSiteIds));
+
+            adjust3MSuperIds = GetValue<string>(nameof(Adjust3MSuperIds));
+
+            adjust3MIP = GetValue<string>(nameof(Adjust3MIP));
+
+            adjust3MDummyUser = GetValue<int>(nameof(Adjust3MDummyUser));
+
+            adjust3MMailingListId = GetValue<int>(nameof(Adjust3MMailingListId));
+
+            mailingListIdToSPU = GetValue<int>(nameof(MailingListIdToSPU));
         }
 
         public int Environment
@@ -70,6 +137,28 @@
         public int PunterChunkSize => punterChunkSize;
 
         public int MailingListIdAgentAjust => mailingListIdAgentAjust;
+
+        public int RetryTime => retryTime;
+
+        public int Adjust3MPunterChunkSize => adjust3MPunterChunkSize;
+
+        public int Adjust3MNewVirtualMultiplierForSuperProPunter => adjust3MNewVirtualMultiplierForSuperProPunter;
+
+        public int Adjust3MNewVirtualMultiplierForWinning => adjust3MNewVirtualMultiplierForWinning;
+
+        public int Adjust3MVirtualRateThresholdForWinning => adjust3MVirtualRateThresholdForWinning;
+
+        public string Adjust3MSiteIds => adjust3MSiteIds;
+
+        public string Adjust3MSuperIds => adjust3MSuperIds;
+
+        public string Adjust3MIP => adjust3MIP;
+
+        public int Adjust3MDummyUser => adjust3MDummyUser;
+
+        public int Adjust3MMailingListId => adjust3MMailingListId;
+
+        public int MailingListIdToSPU => mailingListIdToSPU;
 
         public T GetValue<T>(string key)
         {

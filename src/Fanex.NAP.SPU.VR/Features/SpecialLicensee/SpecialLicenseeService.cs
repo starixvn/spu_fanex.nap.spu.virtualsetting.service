@@ -1,46 +1,106 @@
 ﻿namespace Fanex.NAP.SPU.VR.Features.SpecialLicensee
 {
+    using Fanex.Logging;
+    using Fanex.NAP.SPU.CTS.Shares;    
     using System.Collections.Generic;
+    using System.Linq;
 
     public interface ISpecialLicenseeService
     {
-        IEnumerable<int> GetSpecialSportBookVRAdjustmentCustomers(int sportType);
+        int PunterBasketballUpdated { get; }
 
-        (IEnumerable<int>, IEnumerable<int>) VerifyVRAdjustmentCustomers(string customerList);
+        int PunterSportsbookUpdated { get; }
 
-        void UpdateVRFollowUpline(string customerList, int sportType);
+        ISpecialLicenseeService AutoAdjustForBasketball(int punterChunkSize);
 
-        void UpdateVRAutoAdjustmentStatus(string customerList, int sportType);
+        ISpecialLicenseeService AutoAdjustForSpecialSportsbook(int punterChunkSize);
+        
     }
 
     public class SpecialLicenseeService : ISpecialLicenseeService
     {
         private readonly ISpecialLicenseeDataAccess specialLicenseeDataAccess;
+        private int punterBasketballUpdated;
+        private int punterSportsbookUpdated;
+
+        public int PunterBasketballUpdated => punterBasketballUpdated;
+
+        public int PunterSportsbookUpdated => punterSportsbookUpdated;
 
         public SpecialLicenseeService(ISpecialLicenseeDataAccess specialLicenseeDataAccess)
         {
             this.specialLicenseeDataAccess = specialLicenseeDataAccess;
         }
 
-        public IEnumerable<int> GetSpecialSportBookVRAdjustmentCustomers(int sportType)
+        public ISpecialLicenseeService AutoAdjustForBasketball(int punterChunkSize)
         {
-            return specialLicenseeDataAccess.GetSpecialSportBookVRAdjustmentCustomers(sportType);
+            var customerList = this.specialLicenseeDataAccess.GetSpecialSportBookVRAdjustmentCustomers(99).ToList();
+
+            var customerListString = string.Join(",", customerList);
+
+            var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString);
+
+            AdjustVRPassedCustomers(passedPerfCheckCustomers, 99, punterChunkSize);
+
+            this.punterBasketballUpdated = passedPerfCheckCustomers.Count();
+
+            UpdateStatusUnpassedCustomers(unpassedPerfCheckCustomers, 99, punterChunkSize);            
+
+            return this;
         }
 
-        public (IEnumerable<int>, IEnumerable<int>) VerifyVRAdjustmentCustomers(string customerList)
+        public ISpecialLicenseeService AutoAdjustForSpecialSportsbook(int punterChunkSize)
         {
-            return specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerList);
+            var customerList = this.specialLicenseeDataAccess.GetSpecialSportBookVRAdjustmentCustomers(100).ToList();
+
+            var customerListString = string.Join(",", customerList);
+
+            LogService.Info("VR Setting - Special Licensee - Special SportBook - Raw Customer list: " + customerListString);
+
+            var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString);
+
+            AdjustVRPassedCustomers(passedPerfCheckCustomers, 100, punterChunkSize);
+
+            this.punterSportsbookUpdated = passedPerfCheckCustomers.Count();
+
+            UpdateStatusUnpassedCustomers(unpassedPerfCheckCustomers, 100, punterChunkSize);
+
+            return this;
         }
 
-        public void UpdateVRFollowUpline(string customerList, int sportType)
+        private void AdjustVRPassedCustomers(IEnumerable<int> customerList, int sportType, int punterChunkSize)
         {
-            specialLicenseeDataAccess.UpdateVRFollowUpline(customerList, sportType);
+            var customerListString = string.Join(",", customerList);
+
+            if (sportType == 99)
+                LogService.Info("VR Setting - Special Licensee - OtherSports - Customers have passed Performance Check: " + customerListString);
+            else
+                LogService.Info("VR Setting - Special Licensee - Special SportBook - Customers have passed Performance Check: " + customerListString);
+
+            var customerChunks = Utilities.ChunkList(customerList, punterChunkSize).ToList();
+
+            for (int i = 0; i < customerChunks.Count(); i++)
+            {
+                this.specialLicenseeDataAccess.UpdateVRFollowUpline(string.Join(",", customerChunks[i]), sportType);
+            }
         }
 
-        public void UpdateVRAutoAdjustmentStatus(string customerList, int sportType)
+        private void UpdateStatusUnpassedCustomers(IEnumerable<int> customerList, int sportType, int punterChunkSize)
         {
-            specialLicenseeDataAccess.UpdateVRAutoAdjustmentStatus(customerList, sportType);
-        }
+            var customerListString = string.Join(",", customerList);
 
+            if (sportType == 99)
+                LogService.Info("VR Setting - Special Licensee - OtherSports - Customers have NOT passed Performance Check: " + customerListString);
+            else
+                LogService.Info("VR Setting - Special Licensee - Special SportBook - Customers have NOT passed Performance Check: " + customerListString);
+
+            var customerChunks = Utilities.ChunkList(customerList, punterChunkSize).ToList();
+
+            for (int i = 0; i < customerChunks.Count(); i++)
+            {
+                this.specialLicenseeDataAccess.UpdateVRAutoAdjustmentStatus(string.Join(",", customerChunks[i]), sportType);
+            }
+        }
+       
     }
 }

@@ -25,7 +25,12 @@
 
     public class AgentDataAccess : IAgentDataAccess
     {
-        private readonly IDynamicRepository _repository;
+        private readonly IDynamicRepository repository;
+
+        public AgentDataAccess()
+        {
+            this.repository = new DynamicRepository();
+        }
 
         public void InsertNewAgentAdjust()
         {
@@ -41,7 +46,7 @@
         {
             var criteria = new VerifySportsAgentPerformanceCriteria();
 
-            return _repository.Fetch<int>(criteria);
+            return this.repository.Fetch<int>(criteria);
         }
 
         public void UpdateFlagAbnormalAgent(int type)
@@ -75,7 +80,7 @@
         {
             var criteria = new GetVRAgentUpdatedCriteria();
 
-            return _repository.FetchMultiple<VRAgentUpdatedToZeroModel, VRAgentUpdatedToFollowSuperModel>(criteria);
+            return this.repository.FetchMultiple<VRAgentUpdatedToZeroModel, VRAgentUpdatedToFollowSuperModel>(criteria);
         }
     }
 }
