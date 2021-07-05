@@ -36,15 +36,18 @@
         {
             var customerList = this.specialLicenseeDataAccess.GetSpecialSportBookVRAdjustmentCustomers(99).ToList();
 
-            var customerListString = string.Join(",", customerList);
+            if (customerList.Any())
+            {
+                var customerListString = string.Join(",", customerList);
 
-            var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString);
+                var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString);
 
-            AdjustVRPassedCustomers(passedPerfCheckCustomers, 99, punterChunkSize);
+                AdjustVRPassedCustomers(passedPerfCheckCustomers, 99, punterChunkSize);
 
-            this.punterBasketballUpdated = passedPerfCheckCustomers.Count();
+                this.punterBasketballUpdated = passedPerfCheckCustomers.Count();
 
-            UpdateStatusUnpassedCustomers(unpassedPerfCheckCustomers, 99, punterChunkSize);            
+                UpdateStatusUnpassedCustomers(unpassedPerfCheckCustomers, 99, punterChunkSize);
+            }
 
             return this;
         }
@@ -53,17 +56,21 @@
         {
             var customerList = this.specialLicenseeDataAccess.GetSpecialSportBookVRAdjustmentCustomers(100).ToList();
 
-            var customerListString = string.Join(",", customerList);
+            if (customerList.Any())
+            {
+                var customerListString = string.Join(",", customerList);
 
-            LogService.Info("VR Setting - Special Licensee - Special SportBook - Raw Customer list: " + customerListString);
+                LogService.Info("VR Setting - Special Licensee - Special SportBook - Raw Customer list: " + customerListString);
 
-            var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString);
+                var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString);
 
-            AdjustVRPassedCustomers(passedPerfCheckCustomers, 100, punterChunkSize);
+                AdjustVRPassedCustomers(passedPerfCheckCustomers, 100, punterChunkSize);
 
-            this.punterSportsbookUpdated = passedPerfCheckCustomers.Count();
+                this.punterSportsbookUpdated = passedPerfCheckCustomers.Count();
 
-            UpdateStatusUnpassedCustomers(unpassedPerfCheckCustomers, 100, punterChunkSize);
+                UpdateStatusUnpassedCustomers(unpassedPerfCheckCustomers, 100, punterChunkSize);
+
+            }
 
             return this;
         }

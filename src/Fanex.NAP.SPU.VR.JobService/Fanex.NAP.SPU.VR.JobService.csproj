@@ -51,4 +51,31 @@
     <Folder Include="MailTemplate\SpecialLicensee\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="MailTemplate\Adjust3M\MailInformTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="MailTemplate\Agent\MailInformNoAgentAffectTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="MailTemplate\Agent\MailInformTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="MailTemplate\MemberBigStake\MailInformBigCreditMemberAndBigLossTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="MailTemplate\MemberBigStake\MailInformBigCreditMemberTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="MailTemplate\MemberBigStake\MailInformBigLossTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="MailTemplate\MemberBigStake\MailInformNoMemberAffectTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="MailTemplate\SpecialLicensee\MailInformTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

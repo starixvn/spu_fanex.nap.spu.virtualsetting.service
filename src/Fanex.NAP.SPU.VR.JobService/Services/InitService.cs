@@ -40,7 +40,7 @@
         {
             services.AddSingleton<IAgentDataAccess, AgentDataAccess>();
             services.AddSingleton<IAgentService, AgentService>();
-            services.AddSingleton<ICustomerBetLimitJobService, CustomerBetLimitJobService>();
+            services.AddSingleton<IAgentJobService, AgentJobService>();
         }
 
         private static void RegisterMemberBigStakeService(this IServiceCollection services)

@@ -1,4 +1,4 @@
-﻿namespace Fanex.NAP.SPU.DCS.JobService.Controllers
+﻿namespace Fanex.NAP.SPU.VR.JobService.Controllers
 {
     using Fanex.NAP.SPU.VR.JobService.Services;
     using Microsoft.AspNetCore.Mvc;
