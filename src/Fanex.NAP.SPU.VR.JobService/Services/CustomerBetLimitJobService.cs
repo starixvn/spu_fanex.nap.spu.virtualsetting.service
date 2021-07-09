@@ -1,5 +1,8 @@
 ﻿namespace Fanex.NAP.SPU.VR.JobService.Services
 {
+    using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
     using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.BetLimit;
     using Sentry;
@@ -36,6 +39,12 @@
             }
             catch (System.Exception ex)
             {
+                var logMessage = new LogMessage(ex.Message)
+                  .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                  .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"VR - CustomerBetLimitJobService exception: message:  {logMessage}");
+
                 sentryClient.CaptureException(ex);
 
                 return Task.FromResult(false);
