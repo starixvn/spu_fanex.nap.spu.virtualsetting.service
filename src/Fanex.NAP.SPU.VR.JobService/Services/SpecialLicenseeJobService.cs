@@ -1,5 +1,8 @@
 ﻿namespace Fanex.NAP.SPU.VR.JobService.Services
 {
+    using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
     using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.SpecialLicensee;
     using Sentry;
@@ -37,6 +40,12 @@
             catch (Exception ex)
             {
                 sentryClient.CaptureException(ex);
+
+                var logMessage = new LogMessage(ex.Message)
+                 .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"VR - Special Licensee job Execute exception: message:  {logMessage}");
 
                 return Task.FromResult(false);
             }

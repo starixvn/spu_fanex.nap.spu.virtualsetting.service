@@ -43,7 +43,7 @@
                   .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                   .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"VR - CustomerBetLimitJobService exception: message:  {logMessage}");
+                LogService.Error($"VR - Bet Limit job Execute exception: message:  {logMessage}");
 
                 sentryClient.CaptureException(ex);
 

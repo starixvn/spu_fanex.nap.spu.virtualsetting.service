@@ -24,10 +24,10 @@
 
     public class MemberBigStakeJobService : IMemberBigStakeJobService
     {
-        private const string MailInformNoMemberAffectTemplate = @"MailTemplate\MemberBigStake\MailInformNoMemberAffectTemplate.cshtml";
-        private const string MailInformBigCreditMemberTemplate = @"MailTemplate\MemberBigStake\MailInformBigCreditMemberTemplate.cshtml";
-        private const string MailInformBigLossTemplate = @"MailTemplate\MemberBigStake\MailInformBigLossTemplate.cshtml";
-        private const string MailInformBigCreditMemberAndBigLossTemplate = @"MailTemplate\MemberBigStake\MailInformBigCreditMemberAndBigLossTemplate.cshtml";
+        private const string MailInformNoMemberAffectTemplate = @"MailTemplate/MemberBigStake/MailInformNoMemberAffectTemplate.cshtml";
+        private const string MailInformBigCreditMemberTemplate = @"MailTemplate/MemberBigStake/MailInformBigCreditMemberTemplate.cshtml";
+        private const string MailInformBigLossTemplate = @"MailTemplate/MemberBigStake/MailInformBigLossTemplate.cshtml";
+        private const string MailInformBigCreditMemberAndBigLossTemplate = @"MailTemplate/MemberBigStake/MailInformBigCreditMemberAndBigLossTemplate.cshtml";
         private const string FormatDecimalToString_Place = "#,##0.00";
         private readonly ISentryClient sentryClient;
         private readonly IAppSettings appSettings;
@@ -60,6 +60,12 @@
             catch (Exception ex)
             {
                 sentryClient.CaptureException(ex);
+
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"VR - Member Big Stake job Execute exeption message:  {logMessage}");
 
                 return Task.FromResult(false);
             }
@@ -189,59 +195,46 @@
 
         private string GenerateMailBody()
         {
-            var body = string.Empty;
+            var creditMemberBigStake = this.memberBigStakeServices.GetBigCreditMemberForAutomail();
+            var mailTemplatePath = AppDomain.CurrentDomain.BaseDirectory;
+            var table1 = string.Empty;
+            var table2 = string.Empty;
 
-            try
+            if (!creditMemberBigStake.BigCreditMemberList.Any() && !creditMemberBigStake.BigCreditMemberWithBigLossList.Any())
             {
-                var creditMemberBigStake = this.memberBigStakeServices.GetBigCreditMemberForAutomail();
-                var mailTemplatePath = AppDomain.CurrentDomain.BaseDirectory;
-                var table1 = string.Empty;
-                var table2 = string.Empty;
-
-                if (!creditMemberBigStake.BigCreditMemberList.Any() && !creditMemberBigStake.BigCreditMemberWithBigLossList.Any())
-                {
-                    mailTemplatePath += MailInformNoMemberAffectTemplate;
-                }
-                else if (creditMemberBigStake.BigCreditMemberList.Any() && !creditMemberBigStake.BigCreditMemberWithBigLossList.Any())
-                {
-                    mailTemplatePath += MailInformBigCreditMemberTemplate;
-
-                    table1 = GenerateTable(creditMemberBigStake.BigCreditMemberList);
-                }
-                else if (!creditMemberBigStake.BigCreditMemberList.Any() && creditMemberBigStake.BigCreditMemberWithBigLossList.Any())
-                {
-                    mailTemplatePath += MailInformBigLossTemplate;
-                    table1 = GenerateTable(creditMemberBigStake.BigCreditMemberWithBigLossList);
-                }
-                else
-                {
-                    mailTemplatePath += MailInformBigCreditMemberAndBigLossTemplate;
-
-                    table1 = GenerateTable(creditMemberBigStake.BigCreditMemberList);
-
-                    table2 = GenerateTable(creditMemberBigStake.BigCreditMemberWithBigLossList);
-                }
-
-                body = Utilities.ReadTextFile(mailTemplatePath);
-
-                body = string.Format(body, table1, table2);
-
-                var json = JsonConvert.SerializeObject(creditMemberBigStake);
-
-                LogService.Info($"VR - List member(s) Big Stake for send mail: {json}");
-
-                this.notifiedMessage = $"Auto update member big stake job run COMPLETED." +
-                   $"\n\r - Big credit members: {creditMemberBigStake.BigCreditMemberList.Count()}" +
-                   $"\n\r - Big credit member with big loss: {creditMemberBigStake.BigCreditMemberWithBigLossList.Count()}";                
+                mailTemplatePath += MailInformNoMemberAffectTemplate;
             }
-            catch (Exception ex)
+            else if (creditMemberBigStake.BigCreditMemberList.Any() && !creditMemberBigStake.BigCreditMemberWithBigLossList.Any())
             {
-                var logMessage = new LogMessage(ex.Message)
-                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+                mailTemplatePath += MailInformBigCreditMemberTemplate;
 
-                LogService.Error($"VR - GenerateMailBody exception: message:  {logMessage}");
+                table1 = GenerateTable(creditMemberBigStake.BigCreditMemberList);
             }
+            else if (!creditMemberBigStake.BigCreditMemberList.Any() && creditMemberBigStake.BigCreditMemberWithBigLossList.Any())
+            {
+                mailTemplatePath += MailInformBigLossTemplate;
+                table1 = GenerateTable(creditMemberBigStake.BigCreditMemberWithBigLossList);
+            }
+            else
+            {
+                mailTemplatePath += MailInformBigCreditMemberAndBigLossTemplate;
+
+                table1 = GenerateTable(creditMemberBigStake.BigCreditMemberList);
+
+                table2 = GenerateTable(creditMemberBigStake.BigCreditMemberWithBigLossList);
+            }
+
+            var body = Utilities.ReadTextFile(mailTemplatePath);
+
+            body = string.Format(body, table1, table2);
+
+            var json = JsonConvert.SerializeObject(creditMemberBigStake);
+
+            LogService.Info($"VR - List member(s) Big Stake for send mail: {json}");
+
+            this.notifiedMessage = $"Auto update member big stake job run COMPLETED." +
+               $"\n\r - Big credit members: {creditMemberBigStake.BigCreditMemberList.Count()}" +
+               $"\n\r - Big credit member with big loss: {creditMemberBigStake.BigCreditMemberWithBigLossList.Count()}";
 
             return body;
         }

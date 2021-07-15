@@ -22,8 +22,8 @@
 
     public class AgentJobService : IAgentJobService
     {
-        private const string VSMailInformNoAgentAffectTemplate = @"MailTemplate\Agent\MailInformNoAgentAffectTemplate.cshtml";
-        private const string VSMailInformTemplate = @"MailTemplate\Agent\MailInformTemplate.cshtml";
+        private const string VSMailInformNoAgentAffectTemplate = @"MailTemplate/Agent/MailInformNoAgentAffectTemplate.cshtml";
+        private const string VSMailInformTemplate = @"MailTemplate/Agent/MailInformTemplate.cshtml";
         private readonly ISentryClient sentryClient;
         private readonly IAppSettings appSettings;
         private readonly IAgentService agentService;           
@@ -55,6 +55,12 @@
             catch (System.Exception ex)
             {
                 sentryClient.CaptureException(ex);
+
+                var logMessage = new LogMessage(ex.Message)
+                   .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                   .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"VR - Agent job Execute exception message:  {logMessage}");
 
                 return Task.FromResult(false);
             }

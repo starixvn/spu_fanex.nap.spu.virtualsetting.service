@@ -1,6 +1,8 @@
 ﻿namespace Fanex.NAP.SPU.VR.JobService.Services
 {
     using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
     using Fanex.MailDelivery.Client;
     using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.Notification.Services;
@@ -17,7 +19,7 @@
 
     public class Adjust3MJobService : IAdjust3MJobService
     {
-        private const string VSMailInformTemplate = @"MailTemplate\Adjust3M\MailInformTemplate.cshtml";
+        private const string VSMailInformTemplate = @"MailTemplate/Adjust3M/MailInformTemplate.cshtml";
         private readonly ISentryClient sentryClient;
         private readonly IAppSettings appSettings;
         private readonly IAdjust3MService adjust3MService;
@@ -60,6 +62,12 @@
             catch (Exception ex)
             {
                 sentryClient.CaptureException(ex);
+
+                var logMessage = new LogMessage(ex.Message)
+                   .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                   .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"VR - Ajust 3M job Execute exception message:  {logMessage}");
 
                 return Task.FromResult(false);
             }
