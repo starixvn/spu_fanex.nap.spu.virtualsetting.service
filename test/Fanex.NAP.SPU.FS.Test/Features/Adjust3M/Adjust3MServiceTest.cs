@@ -20,16 +20,16 @@
 
         [Theory]
         [MemberData(nameof(Adjust3MExpectedData.ExpectedGetWinningPunterSoccerList), MemberType = typeof(Adjust3MExpectedData))]
-        public void GetWinningPunterSoccerList_WhenSuccess(string siteIds, string superIds, double virtualRateThreshold)
+        public void GetWinningPunterSoccerList_WhenSuccess(double virtualRateThreshold)
         {
-            service.GetWinningPunterSoccerList(siteIds, superIds, virtualRateThreshold);
+            service.GetWinningPunterSoccerList(virtualRateThreshold);
         }
 
         [Theory]
         [MemberData(nameof(Adjust3MExpectedData.ExpectedGetWinningPunterList), MemberType = typeof(Adjust3MExpectedData))]
-        public void GetWinningPunterList_WhenSuccess(string siteIds, string superIds, double virtualRateThreshold)
+        public void GetWinningPunterList_WhenSuccess(double virtualRateThreshold)
         {
-            service.GetWinningPunterList(siteIds, superIds, virtualRateThreshold);
+            service.GetWinningPunterList(virtualRateThreshold);
         }
 
         [Theory]
@@ -41,16 +41,16 @@
 
         [Theory]
         [MemberData(nameof(Adjust3MExpectedData.ExpectedAdjustVirtualSettingForSuperProPunter), MemberType = typeof(Adjust3MExpectedData))]
-        public void AdjustVirtualSettingForSuperProPunter_WhenSuccess(int dummyUser, string ip, int punterChunkSize, double virtualMultiplier)
+        public void AdjustVirtualSettingForSuperProPunter_WhenSuccess(int punterChunkSize, double virtualMultiplier)
         {
-            service.AdjustVirtualSettingForSuperProPunter(dummyUser, ip, punterChunkSize, virtualMultiplier);
+            service.AdjustVirtualSettingForSuperProPunter(punterChunkSize, virtualMultiplier);
         }
 
         [Theory]
         [MemberData(nameof(Adjust3MExpectedData.ExpectedAdjustVirtualSettingForNormal), MemberType = typeof(Adjust3MExpectedData))]
-        public void AdjustVirtualSettingForNormal_WhenSuccess(int dummyUser, string ip, int punterChunkSize, double virtualMultiplier)
+        public void AdjustVirtualSettingForNormal_WhenSuccess(int punterChunkSize, double virtualMultiplier)
         {
-            service.AdjustVirtualSettingForNormal(dummyUser, ip, punterChunkSize, virtualMultiplier);
+            service.AdjustVirtualSettingForNormal(punterChunkSize, virtualMultiplier);
         }
 
     }

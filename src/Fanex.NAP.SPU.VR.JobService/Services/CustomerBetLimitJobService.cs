@@ -88,7 +88,11 @@
                     $"\n\r - Raw customers: {betLimitService.RawCustomer}"+
                     $"\n\r - Passed customers: {betLimitService.UpdateCustomers}" +
                     $"\n\r - NOT Passed customers: {betLimitService.RemovedCustomers}";
-
+            }
+            else
+            {
+                this.notifiedMessage = $"Auto update Bet Limit job run COMPLETED." +                    
+                    $"\n\r - Raw customers: 0";                
             }
         }
     }

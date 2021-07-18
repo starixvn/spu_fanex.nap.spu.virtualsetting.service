@@ -1,6 +1,8 @@
 ﻿namespace Fanex.NAP.SPU.VR.Features.Adjust3M
 {
     using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
     using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Entities;
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Model;
@@ -11,19 +13,19 @@
 
     public interface IAdjust3MService
     {
-        IAdjust3MService ResetPunter(bool isSoccer);
+        IAdjust3MService ResetPunter(bool isSoccer, VirtualSettingModel model);
 
         int CountPunterAffected();
 
-        IAdjust3MService GetWinningPunterSoccerList(string siteIds, string superIds, double virtualRateThreshold);
+        IAdjust3MService GetWinningPunterSoccerList(double virtualRateThreshold);
 
-        IAdjust3MService GetWinningPunterList(string siteIds, string superIds, double virtualRateThreshold);
+        IAdjust3MService GetWinningPunterList(double virtualRateThreshold);
 
         IAdjust3MService FilterPunterBaseOnCurrentVirtualRate(short sportType, bool compareVROtherSports);
 
-        IAdjust3MService AdjustVirtualSettingForSuperProPunter(int dummyUser, string ip, int punterChunkSize, double virtualMultiplier);
+        IAdjust3MService AdjustVirtualSettingForSuperProPunter(int punterChunkSize, double virtualMultiplier);
 
-        IAdjust3MService AdjustVirtualSettingForNormal(int dummyUser, string ip, int punterChunkSize, double virtualMultiplier);
+        IAdjust3MService AdjustVirtualSettingForNormal(int punterChunkSize, double virtualMultiplier);
         
     }
 
@@ -42,9 +44,9 @@
             this.adjust3MDataAccess = adjust3MDataAccess;
         }
 
-        public IAdjust3MService ResetPunter(bool isSoccer)
+        public IAdjust3MService ResetPunter(bool isSoccer, VirtualSettingModel model)
         {
-            this.model = new VirtualSettingModel();
+            this.model = model;
             this.punters = Enumerable.Empty<PunterEntity>();
             this.puntersDict = new Dictionary<int, PunterEntity>();
             this.proPuntersUpdated = Enumerable.Empty<PunterEntity>();
@@ -72,16 +74,16 @@
             return 0;
         }        
 
-        public IAdjust3MService GetWinningPunterSoccerList(string siteIds, string superIds, double virtualRateThreshold)
+        public IAdjust3MService GetWinningPunterSoccerList(double virtualRateThreshold)
         {
-            this.punters = this.adjust3MDataAccess.GetWinningPunterSoccerList(siteIds, superIds, virtualRateThreshold);
+            this.punters = this.adjust3MDataAccess.GetWinningPunterSoccerList(this.model.SiteIds, this.model.SuperIds, virtualRateThreshold);
 
             return this;
         }
 
-        public IAdjust3MService GetWinningPunterList(string siteIds, string superIds, double virtualRateThreshold)
+        public IAdjust3MService GetWinningPunterList(double virtualRateThreshold)
         {
-            this.punters = this.adjust3MDataAccess.GetWinningPunterList(siteIds, superIds, virtualRateThreshold);
+            this.punters = this.adjust3MDataAccess.GetWinningPunterList(this.model.SiteIds, this.model.SuperIds, virtualRateThreshold);
 
             return this;
         }
@@ -122,7 +124,7 @@
             return this;
         }
 
-        public IAdjust3MService AdjustVirtualSettingForSuperProPunter(int dummyUser, string ip, int punterChunkSize, double virtualMultiplier)
+        public IAdjust3MService AdjustVirtualSettingForSuperProPunter(int punterChunkSize, double virtualMultiplier)
         {
             if (this.puntersDict == null || !this.puntersDict.Any())
             {
@@ -137,16 +139,8 @@
             }
 
             this.model.FailedUpdatePunterList.Clear();
-
-            var updateModel = new UpdateVirtualSettingModel
-            {
-                Punters = proPunters,
-                DummyUser = dummyUser,
-                IP = ip,
-                PunterChunkSize = punterChunkSize
-            };
-
-            this.proPuntersUpdated = UpdateVirtualSetting(updateModel, virtualMultiplier);
+        
+            this.proPuntersUpdated = UpdateVirtualSetting(proPunters, punterChunkSize, virtualMultiplier);
 
             this.proPuntersUpdated = this.proPuntersUpdated.Except(this.model.FailedUpdatePunterList, this.model.PunterEqualityComparer);
 
@@ -155,7 +149,7 @@
             return this;
         }
 
-        public IAdjust3MService AdjustVirtualSettingForNormal(int dummyUser, string ip, int punterChunkSize, double virtualMultiplier)
+        public IAdjust3MService AdjustVirtualSettingForNormal(int punterChunkSize, double virtualMultiplier)
         {
             if (this.puntersDict == null || !this.puntersDict.Any())
             {
@@ -171,16 +165,7 @@
 
             this.model.FailedUpdatePunterList.Clear();
 
-            var updateModel = new UpdateVirtualSettingModel
-            {
-                Punters = normalPunters,
-                DummyUser = dummyUser,
-                IP = ip,
-                PunterChunkSize = punterChunkSize,
-                AdjustDate = DateTime.Now
-            };
-
-            this.normalPuntersUpdated = UpdateVirtualSetting(updateModel, virtualMultiplier);
+            this.normalPuntersUpdated = UpdateVirtualSetting(normalPunters, punterChunkSize, virtualMultiplier);
 
             this.normalPuntersUpdated = this.normalPuntersUpdated.Except(this.model.FailedUpdatePunterList, this.model.PunterEqualityComparer);
 
@@ -189,12 +174,9 @@
             return this;
         }
 
-        public IEnumerable<PunterEntity> UpdateVirtualSetting(UpdateVirtualSettingModel updateModel, double newVirtualRate)
-        {
-            var userId = updateModel.DummyUser;
-            var ip = updateModel.IP;
-            var chunkSize = updateModel.PunterChunkSize;
-            var chunkPunters = updateModel.Punters.ChunkList(chunkSize);
+        public IEnumerable<PunterEntity> UpdateVirtualSetting(IEnumerable<PunterEntity> punters, int chunkSize, double newVirtualRate)
+        {            
+            var chunkPunters = punters.ChunkList(chunkSize);
 
             foreach (var selectedPunters in chunkPunters)
             {
@@ -202,30 +184,32 @@
                 {
                     DetectBAAccounts(newVirtualRate, selectedPunters);
                    
-                    var updateResult = UpdatePunterVirtualSetting(selectedPunters, newVirtualRate, userId, ip);
+                    var updateResult = UpdatePunterVirtualSetting(selectedPunters, newVirtualRate, this.model.DummyUser, this.model.Ip);
 
                     if (!string.IsNullOrEmpty(updateResult.ErrorMessage))
                     {
                         this.model.FailedUpdatePunterList.AddRange(selectedPunters);
 
                         var jsonData = JsonConvert.SerializeObject(selectedPunters);
+
+                        LogService.Error($"VR - Ajust 3M job - UpdatePunterVirtualSetting failed newVirtualRate {newVirtualRate} selected Punters(s) {jsonData}");
                     }
                     else
                     {
                         var serviceName = this.isSoccer ? "Soccer" : "Sportsbook";
                         
-                        var logResult = this.adjust3MDataAccess.LogPunterVirtualSetting(serviceName, selectedPunters, userId, model.AdjustDate);
+                        var logResult = this.adjust3MDataAccess.LogPunterVirtualSetting(serviceName, selectedPunters, this.model.DummyUser, this.model.AdjustDate);
 
                         if (!string.IsNullOrEmpty(logResult.ErrorMessage))
                         {
-                            LogService.Error($"Adjust3M Service - LogPunterVirtualSetting fail message {logResult.ErrorMessage}");
+                            LogService.Error($"VR - Ajust 3M job - LogPunterVirtualSetting fail message {logResult.ErrorMessage}");
                         }
 
                         var insertResult = this.adjust3MDataAccess.InsertCustomerMarginHistory(selectedPunters, model.SportGroupID, 12, serviceName, model.AdjustDate);
 
                         if (!string.IsNullOrEmpty(insertResult.ErrorMessage))
                         {
-                            LogService.Error($"Adjust3M Service - InsertCustomerMarginHistory fail message {insertResult.ErrorMessage}");
+                            LogService.Error($"VR - Ajust 3M job - InsertCustomerMarginHistory fail message {insertResult.ErrorMessage}");
                         }
                     }
                 }
@@ -233,11 +217,15 @@
                 {
                     this.model.FailedUpdatePunterList.AddRange(selectedPunters);
 
-                    LogService.Error($"VirtualSetting Service - UpdateVirtualSetting exception { this.model.ServiceName } { ex.Message }", ex);
+                    var logMessage = new LogMessage(ex.Message)
+                       .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                       .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                    LogService.Error($"VR - Ajust 3M job UpdateVirtualSetting exception message:  {logMessage}");
                 }
             }
 
-            return updateModel.Punters;
+            return punters;
         }
 
         private DataResult UpdatePunterVirtualSetting(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip)
@@ -301,7 +289,11 @@
             }
             catch (Exception ex)
             {
-                LogService.Error($"VirtualSetting Service - DetectBAAccounts Exception { ex.Message }", ex);
+                var logMessage = new LogMessage(ex.Message)
+                   .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                   .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"VR - Ajust 3M job DetectBAAccounts exception message:  {logMessage}");
             }
         }
 

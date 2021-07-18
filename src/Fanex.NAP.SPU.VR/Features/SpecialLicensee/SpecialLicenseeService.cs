@@ -80,9 +80,9 @@
             var customerListString = string.Join(",", customerList);
 
             if (sportType == 99)
-                LogService.Info("VR Setting - Special Licensee - OtherSports - Customers have passed Performance Check: " + customerListString);
+                LogService.Info("VR - Special Licensee - OtherSports - Customers have passed Performance Check: " + customerListString);
             else
-                LogService.Info("VR Setting - Special Licensee - Special SportBook - Customers have passed Performance Check: " + customerListString);
+                LogService.Info("VR - Special Licensee - Special SportBook - Customers have passed Performance Check: " + customerListString);
 
             var customerChunks = Utilities.ChunkList(customerList, punterChunkSize).ToList();
 
@@ -97,9 +97,9 @@
             var customerListString = string.Join(",", customerList);
 
             if (sportType == 99)
-                LogService.Info("VR Setting - Special Licensee - OtherSports - Customers have NOT passed Performance Check: " + customerListString);
+                LogService.Info("VR - Special Licensee - Customers have NOT passed Performance Check: " + customerListString);
             else
-                LogService.Info("VR Setting - Special Licensee - Special SportBook - Customers have NOT passed Performance Check: " + customerListString);
+                LogService.Info("VR - Special Licensee - Customers have NOT passed Performance Check: " + customerListString);
 
             var customerChunks = Utilities.ChunkList(customerList, punterChunkSize).ToList();
 

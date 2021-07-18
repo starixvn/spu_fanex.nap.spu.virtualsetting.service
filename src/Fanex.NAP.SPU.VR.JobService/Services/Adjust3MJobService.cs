@@ -7,6 +7,7 @@
     using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.Adjust3M;
+    using Fanex.NAP.SPU.VR.Features.Adjust3M.Model;
     using Sentry;
     using System;
     using System.Linq;
@@ -38,24 +39,33 @@
             {
                 var startTime = DateTime.Now;
 
-                this.adjust3MService.ResetPunter(true)
-                    .GetWinningPunterSoccerList(this.appSettings.Adjust3MSiteIds, this.appSettings.Adjust3MSuperIds, this.appSettings.Adjust3MVirtualRateThresholdForWinning)
+                var model = new VirtualSettingModel
+                {
+                    SiteIds = this.appSettings.Adjust3MSiteIds,
+                    SuperIds = this.appSettings.Adjust3MSuperIds,
+                    Ip = this.appSettings.Adjust3MIP,
+                    DummyUser = this.appSettings.Adjust3MDummyUser,
+                    AdjustDate = DateTime.Now
+                };
+
+                this.adjust3MService.ResetPunter(true, model)
+                    .GetWinningPunterSoccerList(this.appSettings.Adjust3MVirtualRateThresholdForWinning)
                     .FilterPunterBaseOnCurrentVirtualRate(1, false)
-                    .AdjustVirtualSettingForSuperProPunter(this.appSettings.Adjust3MDummyUser, this.appSettings.Adjust3MIP, this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForSuperProPunter)
-                    .AdjustVirtualSettingForNormal(this.appSettings.Adjust3MDummyUser, this.appSettings.Adjust3MIP, this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForWinning);
+                    .AdjustVirtualSettingForSuperProPunter(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForSuperProPunter)
+                    .AdjustVirtualSettingForNormal(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForWinning);
 
                 var puntersUpdatedSoccer = this.adjust3MService.CountPunterAffected();
 
-                this.adjust3MService.ResetPunter(false)
-                    .GetWinningPunterList(this.appSettings.Adjust3MSiteIds, this.appSettings.Adjust3MSuperIds, this.appSettings.Adjust3MVirtualRateThresholdForWinning)
+                model.AdjustDate = DateTime.Now;
+
+                this.adjust3MService.ResetPunter(false, model)
+                    .GetWinningPunterList(this.appSettings.Adjust3MVirtualRateThresholdForWinning)
                     .FilterPunterBaseOnCurrentVirtualRate(0, true)
-                    .AdjustVirtualSettingForNormal(this.appSettings.Adjust3MDummyUser, this.appSettings.Adjust3MIP, this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForWinning);                
+                    .AdjustVirtualSettingForNormal(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForWinning);
 
                 var puntersUpdatedSportbooks = this.adjust3MService.CountPunterAffected();
 
-                var endTime = DateTime.Now;
-
-                SendMail(this.appSettings.Adjust3MMailingListId, startTime, endTime, puntersUpdatedSoccer + puntersUpdatedSportbooks);
+                SendMail(this.appSettings.Adjust3MMailingListId, startTime, DateTime.Now, puntersUpdatedSoccer + puntersUpdatedSportbooks);
 
                 NotifyMessage(puntersUpdatedSoccer, puntersUpdatedSportbooks);
             }
@@ -90,8 +100,6 @@
 
         private void SendMail(int mailingListId, DateTime startTime, DateTime endTime, int puntersUpdated)
         {
-            var environment = this.appSettings.EnvironmentString;
-
             try
             {
                 var mailTemplatePath = AppDomain.CurrentDomain.BaseDirectory + VSMailInformTemplate;
@@ -102,21 +110,21 @@
 
                 var newMail = new Fanex.MailDelivery.Core.Models.Mail
                 {
-                    Subject = "VR Auto Adjustment finished" + " (" + environment + ")",
+                    Subject = "VR Auto Adjustment finished" + " (" + this.appSettings.EnvironmentString + ")",
                     Title = "VR Auto Mail Service",
                     Body = body,
                     MailingListId = mailingListId
                 };
 
-                LogService.Info($"Virtual Setting service ({ environment }) - SendMailExternal start TotalAffectedMembers: {puntersUpdated} at start time { startTime }");
-
-                SendMail(newMail);
-
-                LogService.Info($"Virtual Setting service ({ environment }) - SendMailExternal end");
+                SendMail(newMail);                
             }
             catch (Exception ex)
             {
-                LogService.Info($"Virtual Setting service ({ environment }) - SendMailExternal exception TotalAffectedMembers: {puntersUpdated} at start time { startTime }", ex);
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"VR - Adjust 3M job SendMail exeption TotalAffectedMembers: {puntersUpdated} at start time { startTime } message:  {logMessage}");
             }
         }
 

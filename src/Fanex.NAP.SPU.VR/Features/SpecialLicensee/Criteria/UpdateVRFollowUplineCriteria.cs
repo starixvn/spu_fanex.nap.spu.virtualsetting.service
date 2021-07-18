@@ -5,6 +5,7 @@
     public class UpdateVRFollowUplineCriteria : CriteriaBase
     {
         public string CustIDList { get; set; }
+
         public int Sporttype { get; set; }
 
         public override string GetSettingKey()

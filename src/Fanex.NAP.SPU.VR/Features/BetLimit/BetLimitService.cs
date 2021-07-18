@@ -1,9 +1,9 @@
-﻿using Fanex.NAP.SPU.CTS.Shares;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Fanex.NAP.SPU.VR.Features.BetLimit
+﻿namespace Fanex.NAP.SPU.VR.Features.BetLimit
 {
+    using Fanex.NAP.SPU.CTS.Shares;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public interface IBetLimitService
     {
         IEnumerable<int> GetBetLimitCustomers();

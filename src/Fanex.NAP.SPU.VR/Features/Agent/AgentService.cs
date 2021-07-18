@@ -42,7 +42,10 @@
 
         public void UpdateUnflagAbnormalAgent(string customerList, int type)
         {
-            agentDataAccess.UpdateUnflagAbnormalAgent(customerList, type);
+            if (!string.IsNullOrEmpty(customerList))
+            {
+                agentDataAccess.UpdateUnflagAbnormalAgent(customerList, type);
+            }            
         }
 
         public (IEnumerable<VRAgentUpdatedToZeroModel>, IEnumerable<VRAgentUpdatedToFollowSuperModel>) GetVRAgentUpdated()
