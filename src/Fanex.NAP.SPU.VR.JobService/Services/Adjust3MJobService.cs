@@ -37,37 +37,44 @@
         {
             try
             {
-                var startTime = DateTime.Now;
-
-                var model = new VirtualSettingModel
+                if (IsExecutedDate())
                 {
-                    SiteIds = this.appSettings.Adjust3MSiteIds,
-                    SuperIds = this.appSettings.Adjust3MSuperIds,
-                    Ip = this.appSettings.Adjust3MIP,
-                    DummyUser = this.appSettings.Adjust3MDummyUser,
-                    AdjustDate = DateTime.Now
-                };
+                    var startTime = DateTime.Now;
 
-                this.adjust3MService.ResetPunter(true, model)
-                    .GetWinningPunterSoccerList(this.appSettings.Adjust3MVirtualRateThresholdForWinning)
-                    .FilterPunterBaseOnCurrentVirtualRate(1, false)
-                    .AdjustVirtualSettingForSuperProPunter(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForSuperProPunter)
-                    .AdjustVirtualSettingForNormal(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForWinning);
+                    var model = new VirtualSettingModel
+                    {
+                        SiteIds = this.appSettings.Adjust3MSiteIds,
+                        SuperIds = this.appSettings.Adjust3MSuperIds,
+                        Ip = this.appSettings.Adjust3MIP,
+                        DummyUser = this.appSettings.Adjust3MDummyUser,
+                        AdjustDate = DateTime.Now
+                    };
 
-                var puntersUpdatedSoccer = this.adjust3MService.CountPunterAffected();
+                    this.adjust3MService.ResetPunter(true, model)
+                        .GetWinningPunterSoccerList(this.appSettings.Adjust3MVirtualRateThresholdForWinning)
+                        .FilterPunterBaseOnCurrentVirtualRate(1, false)
+                        .AdjustVirtualSettingForSuperProPunter(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForSuperProPunter)
+                        .AdjustVirtualSettingForNormal(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForWinning);
 
-                model.AdjustDate = DateTime.Now;
+                    var puntersUpdatedSoccer = this.adjust3MService.CountPunterAffected();
 
-                this.adjust3MService.ResetPunter(false, model)
-                    .GetWinningPunterList(this.appSettings.Adjust3MVirtualRateThresholdForWinning)
-                    .FilterPunterBaseOnCurrentVirtualRate(0, true)
-                    .AdjustVirtualSettingForNormal(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForWinning);
+                    model.AdjustDate = DateTime.Now;
 
-                var puntersUpdatedSportbooks = this.adjust3MService.CountPunterAffected();
+                    this.adjust3MService.ResetPunter(false, model)
+                        .GetWinningPunterList(this.appSettings.Adjust3MVirtualRateThresholdForWinning)
+                        .FilterPunterBaseOnCurrentVirtualRate(0, true)
+                        .AdjustVirtualSettingForNormal(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForWinning);
 
-                SendMail(this.appSettings.Adjust3MMailingListId, startTime, DateTime.Now, puntersUpdatedSoccer + puntersUpdatedSportbooks);
+                    var puntersUpdatedSportbooks = this.adjust3MService.CountPunterAffected();
 
-                NotifyMessage(puntersUpdatedSoccer, puntersUpdatedSportbooks);
+                    SendMail(this.appSettings.Adjust3MMailingListId, startTime, DateTime.Now, puntersUpdatedSoccer + puntersUpdatedSportbooks);
+
+                    NotifyMessage(puntersUpdatedSoccer, puntersUpdatedSportbooks);
+                }
+                else
+                {
+                    SendMailInternal(this.appSettings.MailingListIdToSPU);
+                }
             }
             catch (Exception ex)
             {
@@ -85,6 +92,15 @@
             return Task.FromResult(true);
         }
 
+        private bool IsExecutedDate()
+        {
+            var currentDate = DateTime.Today;
+
+            var adjust3MExecutedDate = this.appSettings.Adjust3MExecutedDate.Split(';').Select(x => Convert.ToInt32(x)).ToList();
+
+            return adjust3MExecutedDate.Contains(currentDate.Day);
+        }
+
         private void NotifyMessage(int puntersUpdatedSoccer, int puntersUpdatedSportbooks)
         {
             this.notifiedMessage = $"Auto adjust 3M job run COMPLETED." +
@@ -96,6 +112,32 @@
                .Config("0A40aOc7CtpzjbBSJu8KNWQRoXyjRvf9", "-1001400862084")
                .Message(new MessageModel("VR - Adjust 3M", DateTime.Now, appSettings.EnvironmentString, notifiedMessage))
                .SendWithoutDelay(isInfo: true);
+        }
+
+        private void SendMailInternal(int mailingListId)
+        {
+            try
+            {
+                var newMail = new Fanex.MailDelivery.Core.Models.Mail
+                {
+                    Subject = "VR Auto Mail Service - Still alive",
+                    Title = "VR Auto Mail Service - Still alive",
+                    Body = $"Is NOT the execution date for Updating Virtual Settings.",
+                    MailingListId = mailingListId
+                };                
+
+                SendMail(newMail);
+            }
+            catch (Exception ex)
+            {
+                var logMessage = new LogMessage(ex.Message)
+                  .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                  .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"VR - Ajust 3M job SendMailInternal exception message:  {logMessage}");
+
+                throw;
+            }
         }
 
         private void SendMail(int mailingListId, DateTime startTime, DateTime endTime, int puntersUpdated)
@@ -125,6 +167,8 @@
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error($"VR - Adjust 3M job SendMail exeption TotalAffectedMembers: {puntersUpdated} at start time { startTime } message:  {logMessage}");
+
+                throw;
             }
         }
 
@@ -136,5 +180,6 @@
 
             MailClientHandler.Stop();
         }
+        
     }
 }

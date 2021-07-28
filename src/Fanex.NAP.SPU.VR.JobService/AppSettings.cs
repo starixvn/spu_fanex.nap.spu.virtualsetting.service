@@ -18,6 +18,8 @@
 
         int RetryTime { get; }
 
+        string Adjust3MExecutedDate { get; }
+
         int Adjust3MPunterChunkSize { get; }
 
         int Adjust3MNewVirtualMultiplierForSuperProPunter { get; }
@@ -53,6 +55,8 @@
 
         private readonly int retryTime;
 
+        private readonly string adjust3MExecutedDate;
+
         private readonly int adjust3MPunterChunkSize;
 
         private readonly int adjust3MNewVirtualMultiplierForSuperProPunter;
@@ -86,6 +90,8 @@
             mailingListIdAgentAjust = GetValue<int>(nameof(MailingListIdAgentAjust));
 
             retryTime = GetValue<int>(nameof(RetryTime));
+
+            adjust3MExecutedDate = GetValue<string>(nameof(Adjust3MExecutedDate));
 
             adjust3MPunterChunkSize = GetValue<int>(nameof(Adjust3MPunterChunkSize));
 
@@ -139,6 +145,8 @@
         public int MailingListIdAgentAjust => mailingListIdAgentAjust;
 
         public int RetryTime => retryTime;
+
+        public string Adjust3MExecutedDate => adjust3MExecutedDate;
 
         public int Adjust3MPunterChunkSize => adjust3MPunterChunkSize;
 
