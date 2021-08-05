@@ -9,7 +9,7 @@
     using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.Agent;
     using Fanex.NAP.SPU.VR.Features.Agent.Model;
-    using Sentry;
+    using Sentry;    
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -38,32 +38,44 @@
 
         public Task<bool> Execute()
         {
-            try
+            var countRetry = 0;
+
+            while (countRetry < appSettings.RetryTime)
             {
-                agentService.InsertNewAgentAdjust();
+                try
+                {
+                    agentService.InsertNewAgentAdjust();
 
-                var updateUnflagAbnormalAgents = agentService.VerifySportsAgentPerformance();
+                    var updateUnflagAbnormalAgents = agentService.VerifySportsAgentPerformance();
 
-                agentService.UpdateFlagAbnormalAgent(1);
+                    agentService.UpdateFlagAbnormalAgent(1);
 
-                UpdateUnflagAbnormalAgent(updateUnflagAbnormalAgents, 1);                
+                    UpdateUnflagAbnormalAgent(updateUnflagAbnormalAgents, 1);
 
-                SendMail(this.appSettings.MailingListIdAgentAjust);
+                    SendMail(this.appSettings.MailingListIdAgentAjust);
 
-                NotifyMessage();
-            }
-            catch (System.Exception ex)
-            {
-                sentryClient.CaptureException(ex);
+                    countRetry = appSettings.RetryTime + 1;
 
-                var logMessage = new LogMessage(ex.Message)
-                   .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                   .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+                    NotifyMessage();
+                }
+                catch (Exception ex)
+                {
+                    var logMessage = new LogMessage(ex.Message)
+                       .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                       .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"VR - Agent job Execute exception message:  {logMessage}");
+                    LogService.Error($"VR - Agent job Execute exception message:  {logMessage}");
 
-                return Task.FromResult(false);
-            }
+                    sentryClient.CaptureException(ex);
+
+                    countRetry += 1;
+
+                    if (countRetry == appSettings.RetryTime)
+                    {
+                        return Task.FromResult(false);
+                    }
+                }
+            }            
 
             return Task.FromResult(true);
         }

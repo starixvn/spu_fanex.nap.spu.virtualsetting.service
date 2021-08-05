@@ -43,32 +43,44 @@
 
         public Task<bool> Execute()
         {
-            try
+            var countRetry = 0;
+
+            while (countRetry < appSettings.RetryTime)
             {
-                memberBigStakeServices.InsertMemberBigStake();
+                try
+                {
+                    memberBigStakeServices.InsertMemberBigStake();
 
-                var memberBigStakePerformance = memberBigStakeServices.GetMemberBigStakePerformance();
+                    var memberBigStakePerformance = memberBigStakeServices.GetMemberBigStakePerformance();
 
-                UpdateMemberBigStakeFirstBetDate(memberBigStakePerformance);
+                    UpdateMemberBigStakeFirstBetDate(memberBigStakePerformance);
 
-                UpdateMemberBigStakeStatus(memberBigStakePerformance);
+                    UpdateMemberBigStakeStatus(memberBigStakePerformance);
 
-                SendMail(this.appSettings.MailingListIdAgentAjust);
+                    SendMail(this.appSettings.MailingListIdAgentAjust);
 
-                NotifyMessage();
-            }
-            catch (Exception ex)
-            {
-                sentryClient.CaptureException(ex);
+                    countRetry = appSettings.RetryTime + 1;
 
-                var logMessage = new LogMessage(ex.Message)
-                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+                    NotifyMessage();
+                }
+                catch (Exception ex)
+                {
+                    sentryClient.CaptureException(ex);
 
-                LogService.Error($"VR - Member Big Stake job Execute exeption message:  {logMessage}");
+                    var logMessage = new LogMessage(ex.Message)
+                        .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                return Task.FromResult(false);
-            }
+                    LogService.Error($"VR - Member Big Stake job Execute exeption message:  {logMessage}");
+
+                    countRetry += 1;
+
+                    if (countRetry == appSettings.RetryTime)
+                    {
+                        return Task.FromResult(false);
+                    }
+                }
+            }           
 
             return Task.FromResult(true);
         }

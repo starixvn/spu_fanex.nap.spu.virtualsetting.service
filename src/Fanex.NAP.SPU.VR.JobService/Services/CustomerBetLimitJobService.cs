@@ -30,25 +30,39 @@
         }
 
         public Task<bool> Execute()
-        {           
-            try
+        {
+            var countRetry = 0;
+
+            while (countRetry < appSettings.RetryTime)
             {
-                this.StartTime();
-                this.UpdateBetLimit();
-                this.NotifyMessage();
-            }
-            catch (System.Exception ex)
-            {
-                var logMessage = new LogMessage(ex.Message)
-                  .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                  .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+                try
+                {
+                    this.StartTime();
 
-                LogService.Error($"VR - Bet Limit job Execute exception: message:  {logMessage}");
+                    this.UpdateBetLimit();
 
-                sentryClient.CaptureException(ex);
+                    countRetry = appSettings.RetryTime + 1;
 
-                return Task.FromResult(false);
-            }
+                    this.NotifyMessage();
+                }
+                catch (System.Exception ex)
+                {
+                    var logMessage = new LogMessage(ex.Message)
+                      .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                      .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                    LogService.Error($"VR - Bet Limit job Execute exception: message:  {logMessage}");
+
+                    sentryClient.CaptureException(ex);
+
+                    countRetry += 1;
+
+                    if (countRetry == appSettings.RetryTime)
+                    {
+                        return Task.FromResult(false);
+                    }
+                }
+            }           
 
             return Task.FromResult(true);
         }
