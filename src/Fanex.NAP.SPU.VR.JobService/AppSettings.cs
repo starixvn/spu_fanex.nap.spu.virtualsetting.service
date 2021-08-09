@@ -18,6 +18,8 @@
 
         int RetryTime { get; }
 
+        string SentryDsn { get; }
+
         string Adjust3MExecutedDate { get; }
 
         int Adjust3MPunterChunkSize { get; }
@@ -55,6 +57,8 @@
 
         private readonly int retryTime;
 
+        private readonly string sentryDsn;
+
         private readonly string adjust3MExecutedDate;
 
         private readonly int adjust3MPunterChunkSize;
@@ -90,6 +94,8 @@
             mailingListIdAgentAjust = GetValue<int>(nameof(MailingListIdAgentAjust));
 
             retryTime = GetValue<int>(nameof(RetryTime));
+
+            sentryDsn = GetValue<string>("Sentry:Dsn");
 
             adjust3MExecutedDate = GetValue<string>(nameof(Adjust3MExecutedDate));
 
@@ -145,6 +151,8 @@
         public int MailingListIdAgentAjust => mailingListIdAgentAjust;
 
         public int RetryTime => retryTime;
+
+        public string SentryDsn => sentryDsn;
 
         public string Adjust3MExecutedDate => adjust3MExecutedDate;
 

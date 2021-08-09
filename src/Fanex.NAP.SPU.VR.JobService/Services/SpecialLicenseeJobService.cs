@@ -41,7 +41,11 @@
 
                     countRetry = appSettings.RetryTime + 1;
 
-                    LogService.Info($"VR - Special Licensee job Execute: message:  tested");
+                    var message = $"VR - Special Licensee job run COMPLETED." +
+                    $"\n\r - OtherSports - Customers have passed Performance Check: {this.specialLicenseeService.PunterBasketballUpdated}" +
+                    $"\n\r - Special SportBook - Customers have passed Performance Check: {this.specialLicenseeService.PunterSportsbookUpdated}";
+
+                    LogService.Info(message);
 
                     NotifyMessage();
                 }

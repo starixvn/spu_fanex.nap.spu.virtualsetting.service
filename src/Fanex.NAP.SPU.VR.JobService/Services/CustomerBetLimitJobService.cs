@@ -42,8 +42,8 @@
                     //this.UpdateBetLimit();
 
                     countRetry = appSettings.RetryTime + 1;
-
-                    LogService.Info($"VR - Bet Limit job Execute: message:  tested");
+                 
+                    LogService.Info(this.notifiedMessage);
 
                     this.NotifyMessage();
                 }
@@ -53,7 +53,7 @@
                       .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                       .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                    LogService.Error($"VR - Bet Limit job Execute exception: message:  {logMessage}");
+                    LogService.Error($"VR - Bet Limit job Execute exception message:  {logMessage}");
 
                     sentryClient.CaptureException(ex);
 

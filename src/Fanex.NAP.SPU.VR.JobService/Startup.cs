@@ -49,7 +49,7 @@ namespace Fanex.NAP.SPU.VR.JobService
 
             services.RegisterService();
 
-            RegisterLogging();
+            RegisterLogging(appSettings);
 
             FanexDataConfig(appSettings);
         }
@@ -100,14 +100,14 @@ namespace Fanex.NAP.SPU.VR.JobService
               .Run();
         }
 
-        private void RegisterLogging()
+        private void RegisterLogging(IAppSettings appSettings)
         {
             LogManager
                 .SetDefaultLogCategory("")
                 .Use(new List<ILogEngine>
                 {
                      new SentryLogging(new SentryEngineOptions {
-                        Dsn = new Dsn("https://5a4fcb1e1d34474cb6b44ea9ff46428e@sentry.nexdev.net/117"),
+                        Dsn = new Dsn(appSettings.SentryDsn),
                         Environment = "DEV"
                      })
                 });

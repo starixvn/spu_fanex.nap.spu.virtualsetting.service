@@ -75,13 +75,19 @@
 
                         countRetry = appSettings.RetryTime + 1;
 
+                        //var message = $"VR - Auto adjust 3M job run COMPLETED." +
+                        //  $"\n\r - Members updated for soccer: {puntersUpdatedSoccer}" +
+                        //  $"\n\r - Members updated for sportbooks: {puntersUpdatedSportbooks}";
+
+                        //LogService.Info(message);
+
                         //NotifyMessage(puntersUpdatedSoccer, puntersUpdatedSportbooks);
                     }
                     else
                     {                       
                         SendMailInternal(this.appSettings.MailingListIdToSPU);
 
-                        LogService.Info($"VR - Ajust 3M job Execute message:  tested");
+                        LogService.Info($"VR - Ajust 3M job run COMPLETED");
 
                         countRetry = appSettings.RetryTime + 1;
                     }

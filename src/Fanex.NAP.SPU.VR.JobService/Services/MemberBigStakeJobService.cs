@@ -57,13 +57,11 @@
 
                     //UpdateMemberBigStakeStatus(memberBigStakePerformance);
 
-                    //SendMail(this.appSettings.MailingListIdAgentAjust);
-                    
-                    SendMail(this.appSettings.MailingListIdToSPU); // test send mail
+                    //SendMail(this.appSettings.MailingListIdAgentAjust);                                        
 
-                    LogService.Error($"VR - Member Big Stake job Execute message:  tested");
+                    LogService.Info($"VR - Member Big Stake job run COMPLETED");
 
-                    countRetry = appSettings.RetryTime + 1;
+                    countRetry = appSettings.RetryTime + 1;                  
 
                     NotifyMessage();
                 }
@@ -181,7 +179,7 @@
                 return;            
 
             var subject = DateTime.Now.ToString("yyyyMMdd") + " List of big credit members just having their first ticket.";
-            var body = GenerateMailBody();
+            var body = GenerateMailBody(); 
 
             try
             {

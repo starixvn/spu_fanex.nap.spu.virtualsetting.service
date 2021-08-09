@@ -54,11 +54,9 @@
 
                     //SendMail(this.appSettings.MailingListIdAgentAjust);
 
-                    SendMail(this.appSettings.MailingListIdToSPU); // test send mail
+                    LogService.Info($"VR - Agent job Execute COMPLETED");
 
-                    LogService.Info($"VR - Agent job Execute message:  tested");
-
-                    countRetry = appSettings.RetryTime + 1;
+                    countRetry = appSettings.RetryTime + 1;                    
 
                     NotifyMessage();
                 }
@@ -109,7 +107,7 @@
         private void SendMail(int mailingListId)
         {
             var subject = "List of new agents got VR updated by Agent profiling job";
-            var body = GenerateMailBody();
+            var body = GenerateMailBody();            
 
             try
             {
