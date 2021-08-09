@@ -39,9 +39,11 @@
                 {
                     this.StartTime();
 
-                    this.UpdateBetLimit();
+                    //this.UpdateBetLimit();
 
                     countRetry = appSettings.RetryTime + 1;
+
+                    LogService.Info($"VR - Bet Limit job Execute: message:  tested");
 
                     this.NotifyMessage();
                 }

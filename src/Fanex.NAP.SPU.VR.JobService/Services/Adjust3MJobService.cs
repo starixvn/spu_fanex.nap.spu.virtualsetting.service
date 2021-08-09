@@ -43,43 +43,45 @@
                 {
                     if (IsExecutedDate())
                     {
-                        var startTime = DateTime.Now;
+                        //var startTime = DateTime.Now;
 
-                        var model = new VirtualSettingModel
-                        {
-                            SiteIds = this.appSettings.Adjust3MSiteIds,
-                            SuperIds = this.appSettings.Adjust3MSuperIds,
-                            Ip = this.appSettings.Adjust3MIP,
-                            DummyUser = this.appSettings.Adjust3MDummyUser,
-                            AdjustDate = DateTime.Now
-                        };
+                        //var model = new VirtualSettingModel
+                        //{
+                        //    SiteIds = this.appSettings.Adjust3MSiteIds,
+                        //    SuperIds = this.appSettings.Adjust3MSuperIds,
+                        //    Ip = this.appSettings.Adjust3MIP,
+                        //    DummyUser = this.appSettings.Adjust3MDummyUser,
+                        //    AdjustDate = DateTime.Now
+                        //};
 
-                        this.adjust3MService.ResetPunter(true, model)
-                            .GetWinningPunterSoccerList(this.appSettings.Adjust3MVirtualRateThresholdForWinning)
-                            .FilterPunterBaseOnCurrentVirtualRate(1, false)
-                            .AdjustVirtualSettingForSuperProPunter(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForSuperProPunter)
-                            .AdjustVirtualSettingForNormal(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForWinning);
+                        //this.adjust3MService.ResetPunter(true, model)
+                        //    .GetWinningPunterSoccerList(this.appSettings.Adjust3MVirtualRateThresholdForWinning)
+                        //    .FilterPunterBaseOnCurrentVirtualRate(1, false)
+                        //    .AdjustVirtualSettingForSuperProPunter(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForSuperProPunter)
+                        //    .AdjustVirtualSettingForNormal(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForWinning);
 
-                        var puntersUpdatedSoccer = this.adjust3MService.CountPunterAffected();
+                        //var puntersUpdatedSoccer = this.adjust3MService.CountPunterAffected();
 
-                        model.AdjustDate = DateTime.Now;
+                        //model.AdjustDate = DateTime.Now;
 
-                        this.adjust3MService.ResetPunter(false, model)
-                            .GetWinningPunterList(this.appSettings.Adjust3MVirtualRateThresholdForWinning)
-                            .FilterPunterBaseOnCurrentVirtualRate(0, true)
-                            .AdjustVirtualSettingForNormal(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForWinning);
+                        //this.adjust3MService.ResetPunter(false, model)
+                        //    .GetWinningPunterList(this.appSettings.Adjust3MVirtualRateThresholdForWinning)
+                        //    .FilterPunterBaseOnCurrentVirtualRate(0, true)
+                        //    .AdjustVirtualSettingForNormal(this.appSettings.Adjust3MPunterChunkSize, this.appSettings.Adjust3MNewVirtualMultiplierForWinning);
 
-                        var puntersUpdatedSportbooks = this.adjust3MService.CountPunterAffected();
+                        //var puntersUpdatedSportbooks = this.adjust3MService.CountPunterAffected();
 
-                        SendMail(this.appSettings.Adjust3MMailingListId, startTime, DateTime.Now, puntersUpdatedSoccer + puntersUpdatedSportbooks);
+                        //SendMail(this.appSettings.Adjust3MMailingListId, startTime, DateTime.Now, puntersUpdatedSoccer + puntersUpdatedSportbooks);
 
                         countRetry = appSettings.RetryTime + 1;
 
-                        NotifyMessage(puntersUpdatedSoccer, puntersUpdatedSportbooks);
+                        //NotifyMessage(puntersUpdatedSoccer, puntersUpdatedSportbooks);
                     }
                     else
                     {                       
                         SendMailInternal(this.appSettings.MailingListIdToSPU);
+
+                        LogService.Info($"VR - Ajust 3M job Execute message:  tested");
 
                         countRetry = appSettings.RetryTime + 1;
                     }

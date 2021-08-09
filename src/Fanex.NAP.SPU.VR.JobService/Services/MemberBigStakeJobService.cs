@@ -49,15 +49,19 @@
             {
                 try
                 {
-                    memberBigStakeServices.InsertMemberBigStake();
+                    //memberBigStakeServices.InsertMemberBigStake();
 
-                    var memberBigStakePerformance = memberBigStakeServices.GetMemberBigStakePerformance();
+                    //var memberBigStakePerformance = memberBigStakeServices.GetMemberBigStakePerformance();
 
-                    UpdateMemberBigStakeFirstBetDate(memberBigStakePerformance);
+                    //UpdateMemberBigStakeFirstBetDate(memberBigStakePerformance);
 
-                    UpdateMemberBigStakeStatus(memberBigStakePerformance);
+                    //UpdateMemberBigStakeStatus(memberBigStakePerformance);
 
-                    SendMail(this.appSettings.MailingListIdAgentAjust);
+                    //SendMail(this.appSettings.MailingListIdAgentAjust);
+                    
+                    SendMail(this.appSettings.MailingListIdToSPU); // test send mail
+
+                    LogService.Error($"VR - Member Big Stake job Execute message:  tested");
 
                     countRetry = appSettings.RetryTime + 1;
 

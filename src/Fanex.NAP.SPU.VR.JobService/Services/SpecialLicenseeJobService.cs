@@ -36,10 +36,12 @@
             {
                 try
                 {
-                    this.specialLicenseeService.AutoAdjustForBasketball(this.appSettings.PunterChunkSize)
-                                 .AutoAdjustForSpecialSportsbook(this.appSettings.PunterChunkSize);
+                    //this.specialLicenseeService.AutoAdjustForBasketball(this.appSettings.PunterChunkSize)
+                    //             .AutoAdjustForSpecialSportsbook(this.appSettings.PunterChunkSize);
 
                     countRetry = appSettings.RetryTime + 1;
+
+                    LogService.Info($"VR - Special Licensee job Execute: message:  tested");
 
                     NotifyMessage();
                 }

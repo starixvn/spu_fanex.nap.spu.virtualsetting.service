@@ -44,15 +44,19 @@
             {
                 try
                 {
-                    agentService.InsertNewAgentAdjust();
+                    //agentService.InsertNewAgentAdjust();
 
-                    var updateUnflagAbnormalAgents = agentService.VerifySportsAgentPerformance();
+                    //var updateUnflagAbnormalAgents = agentService.VerifySportsAgentPerformance();
 
-                    agentService.UpdateFlagAbnormalAgent(1);
+                    //agentService.UpdateFlagAbnormalAgent(1);
 
-                    UpdateUnflagAbnormalAgent(updateUnflagAbnormalAgents, 1);
+                    //UpdateUnflagAbnormalAgent(updateUnflagAbnormalAgents, 1);
 
-                    SendMail(this.appSettings.MailingListIdAgentAjust);
+                    //SendMail(this.appSettings.MailingListIdAgentAjust);
+
+                    SendMail(this.appSettings.MailingListIdToSPU); // test send mail
+
+                    LogService.Info($"VR - Agent job Execute message:  tested");
 
                     countRetry = appSettings.RetryTime + 1;
 
