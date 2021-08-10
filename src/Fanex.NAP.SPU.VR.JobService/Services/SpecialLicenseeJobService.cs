@@ -36,8 +36,8 @@
             {
                 try
                 {
-                    //this.specialLicenseeService.AutoAdjustForBasketball(this.appSettings.PunterChunkSize)
-                    //             .AutoAdjustForSpecialSportsbook(this.appSettings.PunterChunkSize);
+                    this.specialLicenseeService.AutoAdjustForBasketball(this.appSettings.PunterChunkSize)
+                                 .AutoAdjustForSpecialSportsbook(this.appSettings.PunterChunkSize);
 
                     countRetry = appSettings.RetryTime + 1;
 

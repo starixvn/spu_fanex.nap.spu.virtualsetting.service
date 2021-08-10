@@ -49,15 +49,15 @@
             {
                 try
                 {
-                    //memberBigStakeServices.InsertMemberBigStake();
+                    memberBigStakeServices.InsertMemberBigStake();
 
-                    //var memberBigStakePerformance = memberBigStakeServices.GetMemberBigStakePerformance();
+                    var memberBigStakePerformance = memberBigStakeServices.GetMemberBigStakePerformance();
 
-                    //UpdateMemberBigStakeFirstBetDate(memberBigStakePerformance);
+                    UpdateMemberBigStakeFirstBetDate(memberBigStakePerformance);
 
-                    //UpdateMemberBigStakeStatus(memberBigStakePerformance);
+                    UpdateMemberBigStakeStatus(memberBigStakePerformance);
 
-                    //SendMail(this.appSettings.MailingListIdAgentAjust);                                        
+                    SendMail(this.appSettings.MailingListIdAgentAjust);
 
                     LogService.Info($"VR - Member Big Stake job run COMPLETED");
 

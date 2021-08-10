@@ -39,7 +39,7 @@
                 {
                     this.StartTime();
 
-                    //this.UpdateBetLimit();
+                    this.UpdateBetLimit();
 
                     countRetry = appSettings.RetryTime + 1;
                  

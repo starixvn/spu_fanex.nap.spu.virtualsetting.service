@@ -44,15 +44,15 @@
             {
                 try
                 {
-                    //agentService.InsertNewAgentAdjust();
+                    agentService.InsertNewAgentAdjust();
 
-                    //var updateUnflagAbnormalAgents = agentService.VerifySportsAgentPerformance();
+                    var updateUnflagAbnormalAgents = agentService.VerifySportsAgentPerformance();
 
-                    //agentService.UpdateFlagAbnormalAgent(1);
+                    agentService.UpdateFlagAbnormalAgent(1);
 
-                    //UpdateUnflagAbnormalAgent(updateUnflagAbnormalAgents, 1);
+                    UpdateUnflagAbnormalAgent(updateUnflagAbnormalAgents, 1);
 
-                    //SendMail(this.appSettings.MailingListIdAgentAjust);
+                    SendMail(this.appSettings.MailingListIdAgentAjust);
 
                     LogService.Info($"VR - Agent job Execute COMPLETED");
 
