@@ -6,6 +6,8 @@
 
     public class VirtualSettingModel
     {
+        public string ServiceName { get; set; }
+
         public DateTime AdjustDate { get; set; }
 
         public byte SportGroupID { get; set; }

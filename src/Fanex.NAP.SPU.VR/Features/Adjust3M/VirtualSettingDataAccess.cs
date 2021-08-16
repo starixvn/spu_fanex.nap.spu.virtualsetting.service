@@ -9,7 +9,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    public interface IAdjust3MDataAccess
+    public interface IVirtualSettingDataAccess
     {
         IEnumerable<int> GetBACustIds(string custIds);
 
@@ -26,11 +26,11 @@
         DataResult InsertCustomerMarginHistory(IEnumerable<PunterEntity> punters, byte sportGroupID, int numOfMonth, string serviceName, DateTime adjustDate);
     }
 
-    public class Adjust3MDataAccess : IAdjust3MDataAccess
+    public class VirtualSettingDataAccess : IVirtualSettingDataAccess
     {
         private readonly IDynamicRepository repository;
 
-        public Adjust3MDataAccess()
+        public VirtualSettingDataAccess()
         {
             repository = new DynamicRepository();
         }
