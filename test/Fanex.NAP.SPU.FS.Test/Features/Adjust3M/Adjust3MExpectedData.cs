@@ -19,6 +19,26 @@
             }
         }
         
+        public static IEnumerable<object[]> ExpectedSoccerInitModel
+        {
+            get
+            {
+                return new List<object[]> {
+                    new object[] { "", "", DateTime.Now, 1 }                   
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> ExpectedSportbookInitModel
+        {
+            get
+            {
+                return new List<object[]> {
+                    new object[] { "", "", DateTime.Now, 1 }
+                };
+            }
+        }
+
         public static IEnumerable<object[]> ExpectedGetWinningPunterSoccerList
         {
             get

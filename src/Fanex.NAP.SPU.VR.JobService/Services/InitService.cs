@@ -31,7 +31,9 @@
 
         private static void RegisterAdjust3MService(this IServiceCollection services)
         {
-            services.AddSingleton<IVirtualSettingDataAccess, VirtualSettingDataAccess>();
+            services.AddSingleton<IAdjust3MDataAccess, Adjust3MDataAccess>();
+            services.AddSingleton<ISoccerService, SoccerService>();
+            services.AddSingleton<ISportsbookService, SportsbookService>();
             services.AddSingleton<IAdjust3MJobService, Adjust3MJobService>();
         }
 

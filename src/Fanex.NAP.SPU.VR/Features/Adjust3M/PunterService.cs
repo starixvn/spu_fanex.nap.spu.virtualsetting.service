@@ -1,6 +1,8 @@
 ﻿namespace Fanex.NAP.SPU.VR.Features.Adjust3M
 {
     using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
     using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Entities;
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Model;
@@ -8,9 +10,7 @@
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+    using System.Linq;       
 
     public interface IPunterService
     {
@@ -30,18 +30,18 @@
     public class PunterService : IPunterService
     {
         private bool _soccer;
-        private IVirtualSettingDataAccess _dataAccess;
+        private IAdjust3MDataAccess _dataAccess;
         private VirtualSettingModel _model;
         private IEnumerable<PunterEntity> _punters { get; set; }
         private Dictionary<int, PunterEntity> _puntersDict;
         private IEnumerable<PunterEntity> _proPuntersUpdated;
         private IEnumerable<PunterEntity> _normalPuntersUpdated;
 
-        public PunterService(VirtualSettingModel model, IVirtualSettingDataAccess dataAccess, bool soccer = false)
+        public PunterService(IAdjust3MDataAccess dataAccess, VirtualSettingModel model, bool soccer = false)
         {
-            _model = model;
-            _dataAccess = dataAccess;
+            _model = model;            
             _soccer = soccer;
+            _dataAccess = dataAccess;
         }
 
         public IPunterService GetWinningPunterSoccerList()
@@ -179,12 +179,11 @@
 
                     if (!updateResult)
                     {
-                        _model.FailedUpdatePunterList.AddRange(selectedPunters);
-
-                        LogService.Error($"VirtualSetting Service - UpdatePunterVirtualSetting fail { _model.ServiceName }");
+                        _model.FailedUpdatePunterList.AddRange(selectedPunters);                        
 
                         var jsonData = JsonConvert.SerializeObject(punters);
-                        LogService.Error($"VirtualSetting Service - UpdatePunterVirtualSetting fail { _model.ServiceName } userId {userId} newVirtualRate {newVirtualRate} ip {ip} punter(s) {jsonData}");
+
+                        LogService.Error($"VR - Ajust 3M UpdatePunterVirtualSetting failed { _model.ServiceName } userId {userId} newVirtualRate {newVirtualRate} ip {ip} punter(s) {jsonData}");
                     }
                     else
                     {
@@ -197,7 +196,12 @@
                 {
                     _model.FailedUpdatePunterList.AddRange(selectedPunters);
 
-                    LogService.Error($"VirtualSetting Service - UpdateVirtualSetting exception { _model.ServiceName } { ex.Message }", ex);
+                    var logMessage = new LogMessage(ex.Message)
+                       .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                       .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex))
+                       .AddMessage($"Service Name { _model.ServiceName }").ToString();
+
+                    LogService.Error($"VR - Ajust 3M UpdateVirtualSetting exception {logMessage}");
                 }
             }
 
@@ -227,7 +231,12 @@
             }
             catch (Exception ex)
             {
-                LogService.Error($"VirtualSetting Service - DetectBAAccounts Exception { ex.Message }", ex);
+                var logMessage = new LogMessage(ex.Message)
+                      .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                      .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex))
+                      .AddMessage($"Service Name { _model.ServiceName }").ToString();
+
+                LogService.Error($"VR - Ajust 3M DetectBAAccounts exception { logMessage }");
             }
         }
 
@@ -239,7 +248,12 @@
             }
             catch (Exception ex)
             {
-                LogService.Error($"VirtualSetting Service - GetCurrentCustomerVirtualRate Exception { ex.Message }", ex);
+                var logMessage = new LogMessage(ex.Message)
+                      .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                      .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex))
+                      .AddMessage($"Service Name { _model.ServiceName }").ToString();
+
+                LogService.Error($"VR - Ajust 3M GetCurrentCustomerVirtualRate exception { logMessage }");
             }
 
             return null;
@@ -273,7 +287,7 @@
 
                 if (!isSuccessful)
                 {
-                    LogService.Error($"VirtualSetting Service - UpdatePunterVirtualSettingForAllSports fail { _model.ServiceName } message {result.ErrorMessage}");
+                    LogService.Error($"VR - Ajust 3M UpdatePunterVirtualSettingForAllSports failed { _model.ServiceName } message {result.ErrorMessage}");
                 }
 
                 return isSuccessful;
@@ -294,7 +308,7 @@
 
                 if (!isSuccessful)
                 {
-                    LogService.Error($"VirtualSetting Service - UpdatePunterVirtualSettingForOtherSports fail { _model.ServiceName } message {result.ErrorMessage}");
+                    LogService.Error($"VR - Ajust 3M UpdatePunterVirtualSettingForOtherSports failed { _model.ServiceName } message {result.ErrorMessage}");
                 }
 
                 return isSuccessful;
@@ -313,18 +327,21 @@
 
                 if (!isSuccessful)
                 {
-                    LogService.Error($"VirtualSetting Service - LoggingUpdateVirtualSetting fail { _model.ServiceName } message {logResult.ErrorMessage}");
-
                     var jsonData = JsonConvert.SerializeObject(punters);
-                    LogService.Error($"VirtualSetting Service - LoggingUpdateVirtualSetting fail { _model.ServiceName } userId {userId} punter(s) {jsonData}");
+
+                    LogService.Error($"VR - Ajust 3M LoggingUpdateVirtualSetting failed { _model.ServiceName } userId {userId} punter(s) {jsonData}");
                 }
             }
             catch (Exception ex)
-            {
-                LogService.Error($"VirtualSetting Service - LoggingUpdateVirtualSetting exception { _model.ServiceName } message { ex.Message }", ex);
-
+            {               
                 var jsonData = JsonConvert.SerializeObject(punters);
-                LogService.Error($"VirtualSetting Service - LoggingUpdateVirtualSetting exception { _model.ServiceName }  userId {userId} punter(s) {jsonData}");
+
+                var logMessage = new LogMessage(ex.Message)
+                      .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                      .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex))
+                      .AddMessage($"Service Name { _model.ServiceName } userId {userId}").ToString();
+
+                LogService.Error($"VR - Ajust 3M LoggingUpdateVirtualSetting exception { logMessage } punter(s) {jsonData}");
             }
         }
 
@@ -332,7 +349,6 @@
         {
             try
             {
-                //var numOfMonth = AppSettings.NumOfMonth;
                 var numOfMonth = 12;
 
                 var result = _dataAccess.InsertCustomerMarginHistory(punters, _model.SportGroupID, numOfMonth, _model.ServiceName, _model.AdjustDate);
@@ -341,18 +357,21 @@
 
                 if (!isSuccessful)
                 {
-                    LogService.Error($"VirtualSetting Service - UpdateCustomerMarginHistory fail { _model.ServiceName } message {result.ErrorMessage}");
-
                     var jsonData = JsonConvert.SerializeObject(punters);
-                    LogService.Error($"VirtualSetting Service - UpdateCustomerMarginHistory fail { _model.ServiceName } punter(s) {jsonData}");
+
+                    LogService.Error($"VR - Ajust 3M UpdateCustomerMarginHistory fail { _model.ServiceName } punter(s) {jsonData}");
                 }
             }
             catch (Exception ex)
-            {
-                LogService.Error($"VirtualSetting Service - UpdateCustomerMarginHistory exception { _model.ServiceName } { ex.Message }", ex);
-
+            {                
                 var jsonData = JsonConvert.SerializeObject(punters);
-                LogService.Error($"VirtualSetting Service - UpdateCustomerMarginHistory exception { _model.ServiceName } punter(s) {jsonData}");
+
+                var logMessage = new LogMessage(ex.Message)
+                      .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                      .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex))
+                      .AddMessage($"Service Name { _model.ServiceName }").ToString();
+
+                LogService.Error($"VR - Ajust 3M UpdateCustomerMarginHistory exception { logMessage } punter(s) {jsonData}");
             }
         }
 
@@ -369,7 +388,7 @@
 
             if (_model != null && _model.FailedUpdatePunterList.Any())
             {
-                var error = $"List of { sportType } {punterType} update fail({_model.FailedUpdatePunterList.Count}) : {string.Join(",", _model.FailedUpdatePunterList.Select(p => p.CustID))}";
+                var error = $"List of { sportType } {punterType} update failed({_model.FailedUpdatePunterList.Count}) : {string.Join(",", _model.FailedUpdatePunterList.Select(p => p.CustID))}";
 
                 LogService.Error(error);
             }

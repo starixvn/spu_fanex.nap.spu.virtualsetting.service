@@ -8,11 +8,11 @@
 
     public class Adjust3MServiceTest
     {
-        private readonly VirtualSettingDataAccess dataAccess;       
+        private readonly Adjust3MDataAccess dataAccess;       
 
         public Adjust3MServiceTest()
         {
-            dataAccess = Substitute.For<VirtualSettingDataAccess>();
+            dataAccess = Substitute.For<Adjust3MDataAccess>();
         }
 
         //[Theory]

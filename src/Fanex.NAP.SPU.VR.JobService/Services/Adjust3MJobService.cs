@@ -24,12 +24,16 @@
         private const string VSMailInformTemplate = @"MailTemplate/Adjust3M/MailInformTemplate.cshtml";
         private readonly ISentryClient sentryClient;
         private readonly IAppSettings appSettings;
-        private DateTime _stopTime;
+        private readonly ISoccerService soccerService;
+        private readonly ISportsbookService sportsbookService;
+        private DateTime stopTime;
 
-        public Adjust3MJobService(ISentryClient sentryClient, IAppSettings appSettings)
+        public Adjust3MJobService(ISentryClient sentryClient, IAppSettings appSettings, ISoccerService soccerService, ISportsbookService sportsbookService)
         {
             this.sentryClient = sentryClient;
-            this.appSettings = appSettings;            
+            this.appSettings = appSettings;
+            this.soccerService = soccerService;
+            this.sportsbookService = sportsbookService;
         }
 
         public Task<bool> Execute()
@@ -46,7 +50,7 @@
 
                     SendMail(appSettings.Adjust3MMailingListId
                         , startTime
-                        , _stopTime
+                        , stopTime
                         , (puntersUpdatedSoccer + puntersUpdatedSportbooks));
 
                     var message = $"VR - Auto adjust 3M job run COMPLETED." +
@@ -96,20 +100,20 @@
                 PunterChunkSize = appSettings.Adjust3MPunterChunkSize
             };
 
-            ICustomerSettingsService service = new VRSoccerService(appSettings.Adjust3MSiteIds
-                , appSettings.Adjust3MSuperIds
-                , DateTime.Now
-                , appSettings.Adjust3MVirtualRateThresholdForWinning);
-          
-            service.AutoAdjustVirtualSettings(updateVirtualSettingEntity
-                , appSettings.Adjust3MNewVirtualMultiplierForSuperProPunter
-                , appSettings.Adjust3MNewVirtualMultiplierForWinning);            
+            this.soccerService
+                    .InitModel(appSettings.Adjust3MSiteIds
+                            , appSettings.Adjust3MSuperIds
+                            , DateTime.Now
+                            , appSettings.Adjust3MVirtualRateThresholdForWinning)
+                    .AutoAdjustVirtualSettings(updateVirtualSettingEntity
+                            , appSettings.Adjust3MNewVirtualMultiplierForSuperProPunter
+                            , appSettings.Adjust3MNewVirtualMultiplierForWinning);
 
-            LogService.Info("VR - Ajust 3M ExecuteForSoccer is called.");
+            stopTime = DateTime.Now;
 
-            _stopTime = DateTime.Now;
+            LogService.Info($"VR - Ajust 3M ExecuteForSoccer is called stop time {stopTime}");
 
-            return service.PuntersUpdated;
+            return this.soccerService.PuntersUpdated;
         }
 
         public int UpdateForSportbooks()
@@ -120,19 +124,20 @@
                 IP = appSettings.Adjust3MIP,
                 PunterChunkSize = appSettings.Adjust3MPunterChunkSize
             };
+         
+            this.sportsbookService
+                    .InitModel(appSettings.Adjust3MSiteIds
+                            , appSettings.Adjust3MSuperIds
+                            , DateTime.Now
+                            , appSettings.Adjust3MVirtualRateThresholdForWinning)
+                    .AutoAdjustVirtualSettings(updateVirtualSettingEntity
+                            , appSettings.Adjust3MNewVirtualMultiplierForWinning);
 
-            ICustomerSettingsService service = new VRSportsbookService(appSettings.Adjust3MSiteIds
-                , appSettings.Adjust3MSuperIds
-                , DateTime.Now
-                , appSettings.Adjust3MVirtualRateThresholdForWinning);
+            stopTime = DateTime.Now;
 
-            service.AutoAdjustVirtualSettings(updateVirtualSettingEntity, 0, appSettings.Adjust3MNewVirtualMultiplierForWinning);
+            LogService.Info($"VR - Ajust 3M ExecuteForSportbooks is called stop time {stopTime}");
 
-            LogService.Info("VR - Ajust 3M ExecuteForSportbooks is called.");
-
-            _stopTime = DateTime.Now;
-
-            return service.PuntersUpdated;
+            return this.sportsbookService.PuntersUpdated;
         }
 
         private void NotifyMessage(string message)
