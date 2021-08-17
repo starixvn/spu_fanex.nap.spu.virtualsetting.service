@@ -7,19 +7,17 @@
 
     public interface ISportsbookService
     {
-        int PuntersUpdated { get; set; }
+        int GetCountAffected();
 
         ISportsbookService InitModel(string siteIds, string superIds, DateTime adjustDate, double virtualRateThresholdForWinning);
 
-        ISportsbookService AutoAdjustVirtualSettings(UpdateVirtualSettingEntity updateVirtualSetting, double NewVirtualMultiplierForWinning);
+        ISportsbookService AutoAdjust(UpdateVirtualSettingEntity updateVirtualSetting, double NewVirtualMultiplierForWinning);
     }
 
     public class SportsbookService : ISportsbookService
     {
         private IPunterService punterService;
-        private IAdjust3MDataAccess dataAccess;
-
-        public int PuntersUpdated { get; set; }
+        private readonly IAdjust3MDataAccess dataAccess;                
 
         public SportsbookService(IAdjust3MDataAccess dataAccess)
         {
@@ -44,18 +42,26 @@
             return this;                 
         }
 
-        public ISportsbookService AutoAdjustVirtualSettings(UpdateVirtualSettingEntity updateVirtualSetting, double NewVirtualMultiplierForWinning)
+        public ISportsbookService AutoAdjust(UpdateVirtualSettingEntity updateVirtualSetting, double NewVirtualMultiplierForWinning)
         {
             if (this.punterService != null)
             {
                 this.punterService.GetWinningPunterList()
                    .FilterPunterBaseOnCurrentVirtualRate(0, true)
-                   .AdjustVirtualSettingForNormal(updateVirtualSetting, NewVirtualMultiplierForWinning);
-
-                PuntersUpdated = this.punterService.CountAffected();
+                   .AdjustVirtualSettingForNormal(updateVirtualSetting, NewVirtualMultiplierForWinning);                                
             }
            
             return this;
+        }
+
+        public int GetCountAffected()
+        {
+            if(this.punterService.CountAffected() != 0)
+            {
+                return this.punterService.CountAffected();
+            }
+
+            return 0;
         }
     }
 }

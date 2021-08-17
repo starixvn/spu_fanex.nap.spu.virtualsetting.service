@@ -46,7 +46,7 @@
             // Act
             service.InitModel(siteIds, superIds, adjustDate, virtualRateThresholdForWinning);
 
-            var result = service.AutoAdjustVirtualSettings(updateVirtualSettingEntity, 1);
+            var result = service.AutoAdjust(updateVirtualSettingEntity, 1);
 
             // Assert
             Assert.IsAssignableFrom<ISportsbookService>(result);

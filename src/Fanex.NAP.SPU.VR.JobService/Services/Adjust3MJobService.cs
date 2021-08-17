@@ -100,20 +100,21 @@
                 PunterChunkSize = appSettings.Adjust3MPunterChunkSize
             };
 
-            this.soccerService
+            var countAffected = this.soccerService
                     .InitModel(appSettings.Adjust3MSiteIds
                             , appSettings.Adjust3MSuperIds
                             , DateTime.Now
                             , appSettings.Adjust3MVirtualRateThresholdForWinning)
-                    .AutoAdjustVirtualSettings(updateVirtualSettingEntity
+                    .AutoAdjust(updateVirtualSettingEntity
                             , appSettings.Adjust3MNewVirtualMultiplierForSuperProPunter
-                            , appSettings.Adjust3MNewVirtualMultiplierForWinning);
+                            , appSettings.Adjust3MNewVirtualMultiplierForWinning)
+                    .GetCountAffected();
 
             stopTime = DateTime.Now;
 
             LogService.Info($"VR - Ajust 3M ExecuteForSoccer is called stop time {stopTime}");
 
-            return this.soccerService.PuntersUpdated;
+            return countAffected;
         }
 
         public int UpdateForSportbooks()
@@ -124,20 +125,21 @@
                 IP = appSettings.Adjust3MIP,
                 PunterChunkSize = appSettings.Adjust3MPunterChunkSize
             };
-         
-            this.sportsbookService
-                    .InitModel(appSettings.Adjust3MSiteIds
-                            , appSettings.Adjust3MSuperIds
-                            , DateTime.Now
-                            , appSettings.Adjust3MVirtualRateThresholdForWinning)
-                    .AutoAdjustVirtualSettings(updateVirtualSettingEntity
-                            , appSettings.Adjust3MNewVirtualMultiplierForWinning);
+
+            var countAffected = this.sportsbookService
+                     .InitModel(appSettings.Adjust3MSiteIds
+                             , appSettings.Adjust3MSuperIds
+                             , DateTime.Now
+                             , appSettings.Adjust3MVirtualRateThresholdForWinning)
+                     .AutoAdjust(updateVirtualSettingEntity
+                             , appSettings.Adjust3MNewVirtualMultiplierForWinning)
+                     .GetCountAffected();
 
             stopTime = DateTime.Now;
 
             LogService.Info($"VR - Ajust 3M ExecuteForSportbooks is called stop time {stopTime}");
 
-            return this.sportsbookService.PuntersUpdated;
+            return countAffected;
         }
 
         private void NotifyMessage(string message)
@@ -207,7 +209,7 @@
             }
         }
 
-        private void SendMail(Fanex.MailDelivery.Core.Models.Mail mail)
+        private static void SendMail(Fanex.MailDelivery.Core.Models.Mail mail)
         {
             MailClientHandler.Start();
 

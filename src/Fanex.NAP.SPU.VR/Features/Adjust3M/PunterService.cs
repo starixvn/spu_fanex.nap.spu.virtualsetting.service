@@ -10,7 +10,7 @@
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    using System.Linq;       
+    using System.Linq;
 
     public interface IPunterService
     {
@@ -29,9 +29,9 @@
 
     public class PunterService : IPunterService
     {
-        private bool _soccer;
-        private IAdjust3MDataAccess _dataAccess;
-        private VirtualSettingModel _model;
+        private readonly bool _soccer;
+        private readonly IAdjust3MDataAccess _dataAccess;
+        private readonly VirtualSettingModel _model;
         private IEnumerable<PunterEntity> _punters { get; set; }
         private Dictionary<int, PunterEntity> _puntersDict;
         private IEnumerable<PunterEntity> _proPuntersUpdated;
@@ -39,7 +39,7 @@
 
         public PunterService(IAdjust3MDataAccess dataAccess, VirtualSettingModel model, bool soccer = false)
         {
-            _model = model;            
+            _model = model;
             _soccer = soccer;
             _dataAccess = dataAccess;
         }
@@ -158,8 +158,10 @@
             {
                 return _normalPuntersUpdated.Count();
             }
-
-            return 0;
+            else
+            {
+                return 0;
+            }            
         }
 
         public IEnumerable<PunterEntity> UpdateVirtualSetting(IEnumerable<PunterEntity> punters, UpdateVirtualSettingEntity updateVirtualSetting, double newVirtualRate)
@@ -179,7 +181,7 @@
 
                     if (!updateResult)
                     {
-                        _model.FailedUpdatePunterList.AddRange(selectedPunters);                        
+                        _model.FailedUpdatePunterList.AddRange(selectedPunters);
 
                         var jsonData = JsonConvert.SerializeObject(punters);
 
@@ -256,22 +258,22 @@
                 LogService.Error($"VR - Ajust 3M GetCurrentCustomerVirtualRate exception { logMessage }");
             }
 
-            return null;
+            return new List<CustomerVirtualRateEntity>();
         }
 
         private bool UpdatePunterVirtualSetting(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip)
         {
-            switch (_soccer)
+
+            if (_soccer)
             {
-                case true:
-                    var result = _dataAccess.UpdatePunterVirtualSetting(punters, virtualMultiplier, userId, ip, 1);
+                var result = _dataAccess.UpdatePunterVirtualSetting(punters, virtualMultiplier, userId, ip, 1);
 
-                    return string.IsNullOrEmpty(result.ErrorMessage);
-
-                default:
-                    return UpdatePunterVirtualSettingForAllSports(punters, virtualMultiplier, userId, ip) &&
+                return string.IsNullOrEmpty(result.ErrorMessage);
+            }
+            else
+            {
+                return UpdatePunterVirtualSettingForAllSports(punters, virtualMultiplier, userId, ip) &&
                             UpdatePunterVirtualSettingForOtherSports(punters, virtualMultiplier, userId, ip);
-
             }
         }
 
@@ -333,7 +335,7 @@
                 }
             }
             catch (Exception ex)
-            {               
+            {
                 var jsonData = JsonConvert.SerializeObject(punters);
 
                 var logMessage = new LogMessage(ex.Message)
@@ -363,7 +365,7 @@
                 }
             }
             catch (Exception ex)
-            {                
+            {
                 var jsonData = JsonConvert.SerializeObject(punters);
 
                 var logMessage = new LogMessage(ex.Message)

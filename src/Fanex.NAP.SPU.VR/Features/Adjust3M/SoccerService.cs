@@ -6,22 +6,20 @@
     using System.Collections.Generic;
 
     public interface ISoccerService
-    {
-        int PuntersUpdated { get; }
-
+    {        
         ISoccerService InitModel(string siteIds, string superIds, DateTime adjustDate, double virtualRateThresholdForWinning);
 
-        ISoccerService AutoAdjustVirtualSettings(UpdateVirtualSettingEntity updateVirtualSetting
+        ISoccerService AutoAdjust(UpdateVirtualSettingEntity updateVirtualSetting
            , double newVirtualMultiplierForSuperProPunter
            , double NewVirtualMultiplierForWinning);
+
+        int GetCountAffected();
     }
 
     public class SoccerService : ISoccerService
     {
         private IPunterService punterService;
-        private IAdjust3MDataAccess dataAccess;
-
-        public int PuntersUpdated { get; set; }
+        private readonly IAdjust3MDataAccess dataAccess;                
 
         public SoccerService(IAdjust3MDataAccess dataAccess)
         {
@@ -46,7 +44,7 @@
             return this;
         }
 
-        public ISoccerService AutoAdjustVirtualSettings(UpdateVirtualSettingEntity updateVirtualSetting
+        public ISoccerService AutoAdjust(UpdateVirtualSettingEntity updateVirtualSetting
             , double newVirtualMultiplierForSuperProPunter
             , double NewVirtualMultiplierForWinning)
         {
@@ -55,12 +53,20 @@
                 this.punterService.GetWinningPunterSoccerList()
                    .FilterPunterBaseOnCurrentVirtualRate(1, false)
                    .AdjustVirtualSettingForSuperProPunter(updateVirtualSetting, newVirtualMultiplierForSuperProPunter)
-                   .AdjustVirtualSettingForNormal(updateVirtualSetting, NewVirtualMultiplierForWinning);
-
-                PuntersUpdated = this.punterService.CountAffected();
+                   .AdjustVirtualSettingForNormal(updateVirtualSetting, NewVirtualMultiplierForWinning);                                
             }
 
             return this;
+        }
+
+        public int GetCountAffected()
+        {
+            if(this.punterService.CountAffected() != 0)
+            {
+                return this.punterService.CountAffected();
+            }
+
+            return 0;
         }
     }
 }
