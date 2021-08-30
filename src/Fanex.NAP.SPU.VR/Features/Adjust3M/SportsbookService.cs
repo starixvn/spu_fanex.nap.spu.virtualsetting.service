@@ -56,12 +56,7 @@
 
         public int GetCountAffected()
         {
-            if(this.punterService.CountAffected() != 0)
-            {
-                return this.punterService.CountAffected();
-            }
-
-            return 0;
+            return this.punterService.CountAffected();
         }
     }
 }

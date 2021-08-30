@@ -48,12 +48,30 @@
         {
             _punters = _dataAccess.GetWinningPunterSoccerList(_model.SiteIds, _model.SuperIds, _model.VirtualRateThreshold);
 
+            if (_punters != null && _punters.Any())
+            {
+                LogService.Info($"List of Winning Punter Soccer is { string.Join(",", _punters.Select(p => p.CustID))}");
+            }
+            else
+            {
+                LogService.Info($"List of Winning Punter Soccer is 0");
+            }
+
             return this;
         }
 
         public IPunterService GetWinningPunterList()
         {
             _punters = _dataAccess.GetWinningPunterList(_model.SiteIds, _model.SuperIds, _model.VirtualRateThreshold);
+
+            if (_punters != null && _punters.Any())
+            {
+                LogService.Info($"List of Winning Punter is { string.Join(",", _punters.Select(p => p.CustID))}");
+            }
+            else
+            {
+                LogService.Info($"List of Winning Punter is 0");
+            }
 
             return this;
         }
@@ -98,6 +116,8 @@
         {
             if (_puntersDict == null || !_puntersDict.Any())
             {
+                LogService.Info($"List of AdjustVirtualSettingForSuperProPunter _puntersDict is 0");
+
                 return this;
             }
 
@@ -105,6 +125,8 @@
 
             if (!proPunters.Any())
             {
+                LogService.Info($"List of AdjustVirtualSettingForSuperProPunter proPunters is 0");
+
                 return this;
             }
 
@@ -123,6 +145,8 @@
         {
             if (_puntersDict == null || !_puntersDict.Any())
             {
+                LogService.Info($"List of AdjustVirtualSettingForNormal _puntersDict is 0");
+
                 return this;
             }
 
@@ -130,6 +154,8 @@
 
             if (!normalPunters.Any())
             {
+                LogService.Info($"List of AdjustVirtualSettingForNormal normalPunters is 0");
+
                 return this;
             }
 
@@ -361,7 +387,7 @@
                 {
                     var jsonData = JsonConvert.SerializeObject(punters);
 
-                    LogService.Error($"VR - Ajust 3M UpdateCustomerMarginHistory fail { _model.ServiceName } punter(s) {jsonData}");
+                    LogService.Error($"VR - Ajust 3M UpdateCustomerMarginHistory failed { _model.ServiceName } punter(s) {jsonData}");
                 }
             }
             catch (Exception ex)
