@@ -64,9 +64,7 @@
                 VirtualRateThreshold = virtualRateThreshold
             };
 
-            //return this.repository.Fetch<PunterEntity>(criteria);
-
-            return GetWinningPunterSoccerListDataTest();
+            return this.repository.Fetch<PunterEntity>(criteria);
         }
 
         public IEnumerable<PunterEntity> GetWinningPunterList(string siteIds, string superIds, double virtualRateThreshold)
@@ -78,9 +76,7 @@
                 VirtualRateThreshold = virtualRateThreshold
             };
 
-            //return this.repository.Fetch<PunterEntity>(criteria);
-
-            return GetWinningPunterListDataTest();
+            return this.repository.Fetch<PunterEntity>(criteria);            
         }
 
         public DataResult UpdatePunterVirtualSetting(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip, short sportType)

@@ -50,11 +50,11 @@
 
             if (_punters != null && _punters.Any())
             {
-                LogService.Info($"List of Winning Punter Soccer is { string.Join(",", _punters.Select(p => p.CustID))}");
+                LogService.Info($"VR - Ajust 3M List of Winning Punter Soccer is { string.Join(",", _punters.Select(p => p.CustID))}");
             }
             else
             {
-                LogService.Info($"List of Winning Punter Soccer is 0");
+                LogService.Info($"VR - Ajust 3M List of Winning Punter Soccer is 0");
             }
 
             return this;
@@ -66,11 +66,11 @@
 
             if (_punters != null && _punters.Any())
             {
-                LogService.Info($"List of Winning Punter is { string.Join(",", _punters.Select(p => p.CustID))}");
+                LogService.Info($"VR - Ajust 3M List of Winning Punter is { string.Join(",", _punters.Select(p => p.CustID))}");
             }
             else
             {
-                LogService.Info($"List of Winning Punter is 0");
+                LogService.Info($"VR - Ajust 3M List of Winning Punter is 0");
             }
 
             return this;
@@ -116,7 +116,7 @@
         {
             if (_puntersDict == null || !_puntersDict.Any())
             {
-                LogService.Info($"List of AdjustVirtualSettingForSuperProPunter _puntersDict is 0");
+                LogService.Info($"VR - Ajust 3M List of AdjustVirtualSettingForSuperProPunter _puntersDict is 0");
 
                 return this;
             }
@@ -125,7 +125,7 @@
 
             if (!proPunters.Any())
             {
-                LogService.Info($"List of AdjustVirtualSettingForSuperProPunter proPunters is 0");
+                LogService.Info($"VR - Ajust 3M List of AdjustVirtualSettingForSuperProPunter proPunters is 0");
 
                 return this;
             }
@@ -145,7 +145,7 @@
         {
             if (_puntersDict == null || !_puntersDict.Any())
             {
-                LogService.Info($"List of AdjustVirtualSettingForNormal _puntersDict is 0");
+                LogService.Info($"VR - Ajust 3M List of AdjustVirtualSettingForNormal _puntersDict is 0");
 
                 return this;
             }
@@ -154,7 +154,7 @@
 
             if (!normalPunters.Any())
             {
-                LogService.Info($"List of AdjustVirtualSettingForNormal normalPunters is 0");
+                LogService.Info($"VR - Ajust 3M List of AdjustVirtualSettingForNormal normalPunters is 0");
 
                 return this;
             }
@@ -328,7 +328,7 @@
         {
             var puntersForOtherSports = punters.Where(p => p.SportType == 2);
 
-            if (puntersForOtherSports != null & puntersForOtherSports.Any())
+            if (puntersForOtherSports != null && puntersForOtherSports.Any())
             {
                 var result = _dataAccess.UpdatePunterVirtualSetting(puntersForOtherSports, virtualMultiplier, userId, ip, 2);
 
@@ -409,14 +409,14 @@
 
             if (punters != null && punters.Any())
             {
-                var info = $"List of { sportType } {punterType} updated({punters.Count()}): { string.Join(",", punters.Select(p => p.CustID))}";
+                var info = $"VR - Ajust 3M List of { sportType } {punterType} updated({punters.Count()}): { string.Join(",", punters.Select(p => p.CustID))}";
 
                 LogService.Info(info);
             }
 
             if (_model != null && _model.FailedUpdatePunterList.Any())
             {
-                var error = $"List of { sportType } {punterType} update failed({_model.FailedUpdatePunterList.Count}) : {string.Join(",", _model.FailedUpdatePunterList.Select(p => p.CustID))}";
+                var error = $"VR - Ajust 3M List of { sportType } {punterType} update failed({_model.FailedUpdatePunterList.Count}) : {string.Join(",", _model.FailedUpdatePunterList.Select(p => p.CustID))}";
 
                 LogService.Error(error);
             }
