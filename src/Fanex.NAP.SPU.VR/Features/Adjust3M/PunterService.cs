@@ -46,7 +46,7 @@
 
         public IPunterService GetWinningPunterSoccerList()
         {
-            _punters = _dataAccess.GetWinningPunterSoccerList(_model.SiteIds, _model.SuperIds, _model.VirtualRateThreshold);
+            _punters = _dataAccess.GetWinningPunterSoccerList(_model.SiteIds, _model.SuperIds, _model.VirtualRateThreshold);            
 
             if (_punters != null && _punters.Any())
             {

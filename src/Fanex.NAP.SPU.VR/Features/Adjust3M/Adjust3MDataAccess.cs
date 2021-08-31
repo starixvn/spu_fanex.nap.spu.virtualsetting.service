@@ -64,7 +64,9 @@
                 VirtualRateThreshold = virtualRateThreshold
             };
 
-            return this.repository.Fetch<PunterEntity>(criteria);
+            //return this.repository.Fetch<PunterEntity>(criteria);
+
+            return GetWinningPunterSoccerListDataTest();
         }
 
         public IEnumerable<PunterEntity> GetWinningPunterList(string siteIds, string superIds, double virtualRateThreshold)
@@ -76,7 +78,9 @@
                 VirtualRateThreshold = virtualRateThreshold
             };
 
-            return this.repository.Fetch<PunterEntity>(criteria);
+            //return this.repository.Fetch<PunterEntity>(criteria);
+
+            return GetWinningPunterListDataTest();
         }
 
         public DataResult UpdatePunterVirtualSetting(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip, short sportType)
@@ -204,5 +208,57 @@
                 };
             }
         }
+
+        #region Data Test
+        private IEnumerable<PunterEntity> GetWinningPunterSoccerListDataTest()
+        {
+            var punters = new List<PunterEntity>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                var punter = new PunterEntity
+                {
+                    CustID = 1234 + i,
+                    IsBA = false,
+                    IsSuperProPunters = i % 2 == 0 ? true : false,
+                    MRecommend = 0,
+                    SiteID = i % 2 == 0 ? 1 : 2,
+                    OldVirtualRate = 1.1,
+                    SportType = i % 2 == 0 ? 1 : 2,
+                    ReportDate = DateTime.Now
+                };
+
+                punters.Add(punter);
+            }
+
+            return punters;
+        }
+
+        private IEnumerable<PunterEntity> GetWinningPunterListDataTest()
+        {
+            var punters = new List<PunterEntity>();
+
+            for (int i = 0; i < 7; i++)
+            {
+                var punter = new PunterEntity
+                {
+                    CustID = 4567 + i,
+                    IsBA = false,
+                    IsSuperProPunters = i % 2 == 0 ? true : false,
+                    MRecommend = 0,
+                    SiteID = i % 2 == 0 ? 1 : 2,
+                    OldVirtualRate = 1.1,
+                    SportType = i % 2 == 0 ? 1 : 2,
+                    ReportDate = DateTime.Now
+                };
+
+                punters.Add(punter);
+            }
+
+            return punters;
+        }
+
+        #endregion
+
     }
 }

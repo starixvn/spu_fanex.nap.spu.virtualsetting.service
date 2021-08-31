@@ -40,7 +40,10 @@
         {           
             try
             {
-                if (IsExecutedDate())
+                var test = true;
+
+                //if (IsExecutedDate())
+                if(test)
                 {
                     var startTime = DateTime.Now;
 
@@ -53,10 +56,10 @@
                     //    , stopTime
                     //    , (puntersUpdatedSoccer + puntersUpdatedSportbooks));
 
-                    SendMail(appSettings.MailingListIdToSPU
-                        , startTime
-                        , stopTime
-                        , (puntersUpdatedSoccer + puntersUpdatedSportbooks));
+                    //SendMail(appSettings.MailingListIdToSPU
+                    //    , startTime
+                    //    , stopTime
+                    //    , (puntersUpdatedSoccer + puntersUpdatedSportbooks));
 
                     var message = $"VR - Auto adjust 3M job run COMPLETED." +
                       $"\n\r - Members updated for soccer: {puntersUpdatedSoccer}" +
