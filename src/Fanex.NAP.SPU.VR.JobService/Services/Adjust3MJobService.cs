@@ -48,12 +48,7 @@
 
                     var puntersUpdatedSportbooks = UpdateForSportbooks();
 
-                    //SendMail(appSettings.Adjust3MMailingListId
-                    //    , startTime
-                    //    , stopTime
-                    //    , (puntersUpdatedSoccer + puntersUpdatedSportbooks));
-
-                    SendMail(appSettings.MailingListIdToSPU
+                    SendMail(appSettings.Adjust3MMailingListId
                         , startTime
                         , stopTime
                         , (puntersUpdatedSoccer + puntersUpdatedSportbooks));
