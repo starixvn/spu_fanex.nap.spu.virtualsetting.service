@@ -1,12 +1,7 @@
-﻿using Fanex.Data.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.SPU.VR.Features.BetLimit.Criteria
+﻿namespace Fanex.NAP.SPU.VR.Features.BetLimit.Criteria
 {
+    using Fanex.Data.Repository;
+
     public class RemoveCustomerBetLimitCriteria: CriteriaBase
     {
         public string CustIdList { get; set; }

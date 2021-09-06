@@ -1,24 +1,35 @@
-﻿using Fanex.NAP.SPU.VR.JobService.Services;
-using Microsoft.AspNetCore.Mvc;
-using Sentry;
-using System;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.SPU.DCS.JobService.Controllers
+﻿namespace Fanex.NAP.SPU.VR.JobService.Controllers
 {
+    using Fanex.NAP.SPU.VR.JobService.Services;
+    using Microsoft.AspNetCore.Mvc;
+    using Sentry;
+    using System;
+    using System.Threading.Tasks;
+
     [ApiController]
     [Route("api/job")]
     public class JobController : ControllerBase
     {
         private readonly ISentryClient sentryClient;
-        private readonly ICustomerBetLimitJobService customerBetLimitJobService;       
+        private readonly ICustomerBetLimitJobService customerBetLimitJobService;
+        private readonly ISpecialLicenseeJobService specialLicenseeJobService;
+        private readonly IAgentJobService agentJobService;
+        private readonly IMemberBigStakeJobService memberBigStakeJobService;
+        private readonly IAdjust3MJobService adjust3MJobService;
 
         public JobController(ISentryClient sentryClient,
-            ICustomerBetLimitJobService customerBetLimitJobService)
+            ICustomerBetLimitJobService customerBetLimitJobService,
+            ISpecialLicenseeJobService specialLicenseeJobService,
+            IAgentJobService agentJobService,
+            IMemberBigStakeJobService memberBigStakeJobService,
+            IAdjust3MJobService adjust3MJobService)
         {
             this.sentryClient = sentryClient;
             this.customerBetLimitJobService = customerBetLimitJobService;
-            
+            this.specialLicenseeJobService = specialLicenseeJobService;
+            this.agentJobService = agentJobService;
+            this.memberBigStakeJobService = memberBigStakeJobService;
+            this.adjust3MJobService = adjust3MJobService;
         }
 
         [HttpPost("betlimit")]
@@ -35,10 +46,7 @@ namespace Fanex.NAP.SPU.DCS.JobService.Controllers
         {
             sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
 
-            //return await this.customerBetLimitJobService.Execute();
-
-            return await Task.FromResult(true);
-
+            return await this.memberBigStakeJobService.Execute();
         }
 
         [HttpPost("spaciallicensee")]
@@ -46,8 +54,7 @@ namespace Fanex.NAP.SPU.DCS.JobService.Controllers
         {
             sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
 
-            return await Task.FromResult(true);
-
+            return await this.specialLicenseeJobService.Execute();
         }
 
         [HttpPost("agent")]
@@ -55,8 +62,7 @@ namespace Fanex.NAP.SPU.DCS.JobService.Controllers
         {
             sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
 
-            return await Task.FromResult(true);
-
+            return await this.agentJobService.Execute();
         }
 
         [HttpPost("adjustvrsetting")]
@@ -64,7 +70,7 @@ namespace Fanex.NAP.SPU.DCS.JobService.Controllers
         {
             sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
 
-            return await Task.FromResult(true);
+            return await this.adjust3MJobService.Execute();
 
         }
 

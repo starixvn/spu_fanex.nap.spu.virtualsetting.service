@@ -1,21 +1,25 @@
-using Fanex.Data;
-using Fanex.Data.MySql;
-using Fanex.Data.SqlServer;
-using Fanex.NAP.SPU.VR.JobService;
-using Fanex.NAP.SPU.VR.JobService.Services;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using System.IO;
-using System.Linq;
-
-namespace Fanex.NAP.SPU.DCS.JobService
+namespace Fanex.NAP.SPU.VR.JobService
 {
+    using Fanex.Data;
+    using Fanex.Data.MySql;
+    using Fanex.Data.SqlServer;
+    using Fanex.Logging;
+    using Fanex.Logging.Sentry;
+    using Fanex.MailDelivery.Client;
+    using Fanex.NAP.SPU.VR.JobService.Services;
+    using HealthChecks.UI.Client;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using Microsoft.OpenApi.Models;
+    using Sentry;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -43,7 +47,9 @@ namespace Fanex.NAP.SPU.DCS.JobService
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Fanex.NAP.SPU.VR.JobService", Version = "v1" });
             });
 
-            services.RegisterService();            
+            services.RegisterService();
+
+            RegisterLogging(appSettings);
 
             FanexDataConfig(appSettings);
         }
@@ -93,5 +99,19 @@ namespace Fanex.NAP.SPU.DCS.JobService
               .UseDefaultDbSettingProvider(resourcePath: appSettings.SPName)
               .Run();
         }
+
+        private void RegisterLogging(IAppSettings appSettings)
+        {
+            LogManager
+                .SetDefaultLogCategory("")
+                .Use(new List<ILogEngine>
+                {
+                     new SentryLogging(new SentryEngineOptions {
+                        Dsn = new Dsn(appSettings.SentryDsn),
+                        Environment = "DEV"
+                     })
+                });
+        }
+      
     }
 }

@@ -13,6 +13,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="MailTemplate\Adjust3M\MailInformTemplate.cshtml" />
+    <Content Remove="MailTemplate\Agent\MailInformNoAgentAffectTemplate.cshtml" />
+    <Content Remove="MailTemplate\Agent\MailInformTemplate.cshtml" />
+    <Content Remove="MailTemplate\MemberBigStake\MailInformBigCreditMemberAndBigLossTemplate.cshtml" />
+    <Content Remove="MailTemplate\MemberBigStake\MailInformBigCreditMemberTemplate.cshtml" />
+    <Content Remove="MailTemplate\MemberBigStake\MailInformBigLossTemplate.cshtml" />
+    <Content Remove="MailTemplate\MemberBigStake\MailInformNoMemberAffectTemplate.cshtml" />
+    <Content Remove="MailTemplate\SpecialLicensee\MailInformTemplate.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <AdditionalFiles Include="..\..\.sonarlint\fanex.nap.spu.dcs\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
 
@@ -23,6 +34,7 @@
     <PackageReference Include="Fanex.Data.MySql" Version="4.2.2" />
     <PackageReference Include="Fanex.Data.Repository" Version="4.2.2" />
     <PackageReference Include="Fanex.Data.SqlServer" Version="4.2.2" />
+    <PackageReference Include="Fanex.MailStation" Version="2.1.0" />
     <PackageReference Include="Fanex.NAP.SPU.AspNetCore.Notification" Version="1.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.6" NoWarn="NU1605" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.6" NoWarn="NU1605" />
@@ -39,6 +51,33 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="App_Data\LOCAL\SPNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="MailTemplate\Adjust3M\MailInformTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="MailTemplate\Agent\MailInformNoAgentAffectTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="MailTemplate\Agent\MailInformTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="MailTemplate\MemberBigStake\MailInformBigCreditMemberAndBigLossTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="MailTemplate\MemberBigStake\MailInformBigCreditMemberTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="MailTemplate\MemberBigStake\MailInformBigLossTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="MailTemplate\MemberBigStake\MailInformNoMemberAffectTemplate.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="MailTemplate\SpecialLicensee\MailInformTemplate.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

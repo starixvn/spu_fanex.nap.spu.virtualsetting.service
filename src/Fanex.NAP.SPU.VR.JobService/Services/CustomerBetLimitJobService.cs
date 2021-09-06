@@ -1,12 +1,15 @@
-﻿using Fanex.NAP.SPU.Notification.Services;
-using Fanex.NAP.SPU.VR.Features.BetLimit;
-using Sentry;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.SPU.VR.JobService.Services
+﻿namespace Fanex.NAP.SPU.VR.JobService.Services
 {
+    using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
+    using Fanex.NAP.SPU.Notification.Services;
+    using Fanex.NAP.SPU.VR.Features.BetLimit;
+    using Sentry;
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     public interface ICustomerBetLimitJobService
     {        
         Task<bool> Execute();
@@ -16,10 +19,10 @@ namespace Fanex.NAP.SPU.VR.JobService.Services
     {
         private readonly ISentryClient sentryClient;
         private readonly IAppSettings appSettings;
-        private readonly IBetLimitServices betLimitService;
+        private readonly IBetLimitService betLimitService;
         private string notifiedMessage = string.Empty;
         
-        public CustomerBetLimitJobService(ISentryClient sentryClient, IAppSettings appSettings, IBetLimitServices betLimitService)
+        public CustomerBetLimitJobService(ISentryClient sentryClient, IAppSettings appSettings, IBetLimitService betLimitService)
         {
             this.sentryClient = sentryClient;           
             this.appSettings = appSettings;
@@ -27,19 +30,41 @@ namespace Fanex.NAP.SPU.VR.JobService.Services
         }
 
         public Task<bool> Execute()
-        {           
-            try
-            {
-                this.StartTime();
-                this.UpdateBetLimit();
-                this.NotifyMessage();
-            }
-            catch (System.Exception ex)
-            {
-                sentryClient.CaptureException(ex);
+        {
+            var countRetry = 0;
 
-                return Task.FromResult(false);
-            }
+            while (countRetry < appSettings.RetryTime)
+            {
+                try
+                {
+                    this.StartTime();
+
+                    this.UpdateBetLimit();
+
+                    countRetry = appSettings.RetryTime + 1;
+                 
+                    LogService.Info(this.notifiedMessage);
+
+                    this.NotifyMessage();
+                }
+                catch (System.Exception ex)
+                {
+                    var logMessage = new LogMessage(ex.Message)
+                      .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                      .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                    LogService.Error($"VR - Bet Limit job Execute exception message:  {logMessage}");
+
+                    sentryClient.CaptureException(ex);
+
+                    countRetry += 1;
+
+                    if (countRetry == appSettings.RetryTime)
+                    {
+                        return Task.FromResult(false);
+                    }
+                }
+            }           
 
             return Task.FromResult(true);
         }
@@ -79,7 +104,11 @@ namespace Fanex.NAP.SPU.VR.JobService.Services
                     $"\n\r - Raw customers: {betLimitService.RawCustomer}"+
                     $"\n\r - Passed customers: {betLimitService.UpdateCustomers}" +
                     $"\n\r - NOT Passed customers: {betLimitService.RemovedCustomers}";
-
+            }
+            else
+            {
+                this.notifiedMessage = $"Auto update Bet Limit job run COMPLETED." +                    
+                    $"\n\r - Raw customers: 0";                
             }
         }
     }
