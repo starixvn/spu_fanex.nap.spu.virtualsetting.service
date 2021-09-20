@@ -57,13 +57,13 @@
 
                     UpdateMemberBigStakeStatus(memberBigStakePerformance);
 
-                    SendMail(this.appSettings.MailingListIdAgentAjust);
+                    //SendMail(this.appSettings.MailingListIdAgentAjust);
 
                     LogService.Info($"VR - Member Big Stake job run COMPLETED");
 
                     countRetry = appSettings.RetryTime + 1;                  
 
-                    NotifyMessage();
+                    //NotifyMessage();
                 }
                 catch (Exception ex)
                 {
