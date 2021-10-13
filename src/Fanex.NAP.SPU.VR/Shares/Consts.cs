@@ -21,5 +21,7 @@
         public const string VSSoccer = "Soccer";
 
         public const string VSSportbook = "Sport book";
+
+        public const int SleepTime_SapaSportDangerLevel = 120000 ;
     }
 }
