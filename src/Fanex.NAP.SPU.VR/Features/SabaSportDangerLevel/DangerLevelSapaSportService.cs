@@ -15,7 +15,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
 
         IDangerLevelSapaSportService Start();
 
-        IDangerLevelSapaSportService GetSapaSportDangerLevel();
+        IDangerLevelSapaSportService GetSapaSportDangerLevel(int environtment);
 
         UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize);
     }
@@ -43,7 +43,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
 
             while (countRetry < retryTimesCheckDataReady)
             {
-                bool isDataReady = dataAccess.IsDataSabaSportDangerLevelReady() == 1;
+                bool isDataReady = dataAccess.CheckDataSabaSportDangerLevelReady() == 1;
 
                 if (isDataReady)
                 {
@@ -58,9 +58,9 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
             return false;
         }
 
-        public IDangerLevelSapaSportService GetSapaSportDangerLevel()
+        public IDangerLevelSapaSportService GetSapaSportDangerLevel(int environtment)
         {
-            winlossSapaSportInfo = dataAccess.GetSapaSportDangerLevel();
+            winlossSapaSportInfo = dataAccess.GetSapaSportDangerLevel(environtment);
 
             return this;
         }

@@ -68,7 +68,7 @@
 
             var result = service
                             .Start()
-                            .GetSapaSportDangerLevel()
+                            .GetSapaSportDangerLevel(appSettings.Environment)
                             .RetryUpdateDangerLevelToMainDB(appSettings.RetryTimesSapaSportDangerLevelForUpdateDangerLevel, batchSize);
 
             if (result.ErrorCode != 0)

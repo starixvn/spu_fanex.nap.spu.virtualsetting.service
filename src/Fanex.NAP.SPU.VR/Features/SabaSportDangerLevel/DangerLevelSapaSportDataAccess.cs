@@ -4,12 +4,14 @@
     using Fanex.NAP.SPU.CTS.CC.Features.SabaSportDangerLevel;
     using Fanex.NAP.SPU.CTS.Shares;
     using System.Collections.Generic;
+    using System.Linq;
+    using static Fanex.NAP.SPU.VR.Shares.Consts;
 
     public interface IDangerLevelSapaSportDataAccess
     {
-        int IsDataSabaSportDangerLevelReady();
+        int CheckDataSabaSportDangerLevelReady();
 
-        IEnumerable<SapaSportDangerLevelEntity> GetSapaSportDangerLevel(bool includeUUS = true);
+        IEnumerable<SapaSportDangerLevelEntity> GetSapaSportDangerLevel(int environment);
 
         UpdateDangerResultEntity UpdateDangerLevelToMainDB(IEnumerable<SapaSportDangerLevelEntity> winLossSapaSportInfo);
     }
@@ -23,19 +25,21 @@
             _repository = new DynamicRepository();
         }
 
-        public int IsDataSabaSportDangerLevelReady()
+        public int CheckDataSabaSportDangerLevelReady()
         {
             var criteria = new SabaSportDangerLevelDateReadyCheckCriteria();
 
-            return _repository.Execute(criteria);
+            return _repository.Fetch<int>(criteria)?.FirstOrDefault() ?? 0;
         }
 
-        public IEnumerable<SapaSportDangerLevelEntity> GetSapaSportDangerLevel(bool includeUUS = true)
+        public IEnumerable<SapaSportDangerLevelEntity> GetSapaSportDangerLevel(int environment)
         {
-            var criteria = new SabaSportDangerLevelDateReadyCheckCriteria
+            var criteria = new SabaSportDangerLevelGetCriteria();
+
+            if (environment == (int)Environment.PRO)
             {
-                IncludeUUS = includeUUS
-            };
+                criteria.IncludeUUS = 1;
+            }
 
             return _repository.Fetch<SapaSportDangerLevelEntity>(criteria);
         }
