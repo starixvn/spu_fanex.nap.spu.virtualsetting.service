@@ -1,7 +1,8 @@
 ﻿using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.Database;
-using Fanex.NAP.SPU.CTS.Shares;
 using Fanex.NAP.SPU.VR.Shares;
+using Newtonsoft.Json;
+using Sentry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
 
         IDangerLevelSapaSportService GetSapaSportDangerLevel(int environtment);
 
-        UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize);
+        UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize, ISentryClient sentryClient);
     }
 
     public class DangerLevelSapaSportService : IDangerLevelSapaSportService
@@ -52,7 +53,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
 
                 countRetry++;
 
-                Thread.Sleep(Consts.SleepTime_SapaSportDangerLevel);
+                Thread.Sleep(Consts.SleepTime_SapaSportCheckDangerLevel);
             }
 
             return false;
@@ -65,13 +66,13 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
             return this;
         }
 
-        public UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize)
+        public UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize, ISentryClient sentryClient)
         {
-            var successBatch = new List<SapaSportDangerLevelEntity>();
+            var errorLog = new UpdateDangerResultEntity { ErrorCode = 0, ErrorMsg = string.Empty };
 
             if (winlossSapaSportInfo != null && winlossSapaSportInfo.Any())
             {
-                var winlossInfoChunk = winlossSapaSportInfo.ChunkList(batchSize);
+                var winlossInfoChunk = ChunkSize(winlossSapaSportInfo.OrderBy(c => c.CustID).ToList(), batchSize);
 
                 foreach (var batchData in winlossInfoChunk)
                 {
@@ -79,16 +80,19 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
 
                     if (result.ErrorCode != 0)
                     {
-                        result.InPutParam = winlossSapaSportInfo.Except(successBatch);
+                        errorLog = result;
 
-                        return result;
+                        var logMessage = new LogMessage($"VR - Update Sapa Sport Danger Level Job")
+                                            .AddMessage($"Inner Exception: {result.ErrorMsg}")
+                                            .AddMessage($"DateTime: {DateTime.Now}")
+                                            .AddMessage($"Update DangerLevel To CustDB FAIL: {JsonConvert.SerializeObject(result.InPutParam)}").ToString();
+
+                        sentryClient.CaptureMessage(logMessage, Sentry.Protocol.SentryLevel.Error);
                     }
-
-                    successBatch.AddRange(batchData);
                 }
             }
 
-            return new UpdateDangerResultEntity { ErrorCode = 0, ErrorMsg = string.Empty };
+            return errorLog;
         }
 
         private UpdateDangerResultEntity RetryUpdateDangerLevel(IEnumerable<SapaSportDangerLevelEntity> data, int retryTimes)
@@ -106,7 +110,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
                 {
                     result = dataAccess.UpdateDangerLevelToMainDB(data);
 
-                    if (result.ErrorCode != 0)
+                    if (result.ErrorCode == 0)
                     {
                         return result;
                     }
@@ -123,9 +127,41 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
 
                     retryTimes--;
                 }
+
+                Thread.Sleep(Consts.SleepTime_SapaSportUpdateDangerLevel);
             }
 
             return result;
+        }
+
+        public static IEnumerable<IEnumerable<SapaSportDangerLevelEntity>> ChunkSize(List<SapaSportDangerLevelEntity> sportInfo, int batchSize)
+        {
+            var queue = new Queue<SapaSportDangerLevelEntity>();
+            var totalItem = sportInfo.Count;
+
+            for (int index = 0; index < totalItem; index++)
+            {
+                if (queue.Count >= batchSize)
+                {
+                    var prevIndex = index - 1;
+
+                    if (sportInfo[index].CustID == sportInfo[prevIndex].CustID)
+                    {
+                        queue.Enqueue(sportInfo[index]);
+
+                        continue;
+                    }
+
+                    var ret = queue;
+                    queue = new Queue<SapaSportDangerLevelEntity>();
+
+                    yield return ret;
+                }
+
+                queue.Enqueue(sportInfo[index]);
+            }
+
+            yield return queue;
         }
     }
 }

@@ -5,7 +5,6 @@
     using Fanex.Logging.Extensions.Database;
     using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel;
-    using Newtonsoft.Json;
     using Sentry;
     using System;
     using System.Threading.Tasks;
@@ -40,6 +39,7 @@
             catch (Exception ex)
             {
                 var logMessage = new LogMessage(ex.Message)
+                    .AddMessage($"VR - { appSettings.EnvironmentString} - Update Sapa Sport DangerLevel Job")
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
@@ -69,19 +69,12 @@
             var result = service
                             .Start()
                             .GetSapaSportDangerLevel(appSettings.Environment)
-                            .RetryUpdateDangerLevelToMainDB(appSettings.RetryTimesSapaSportDangerLevelForUpdateDangerLevel, batchSize);
+                            .RetryUpdateDangerLevelToMainDB(appSettings.RetryTimesSapaSportDangerLevelForUpdateDangerLevel, batchSize, sentryClient);
 
             if (result.ErrorCode != 0)
             {
-                var logMessage = new LogMessage($"VR - {appSettings.EnvironmentString} - Update Sapa Sport Danger Level Job")
-                                            .AddMessage($"Inner Exception: {result.ErrorMsg}")
-                                            .AddMessage($"DateTime: {DateTime.Now}")
-                                            .AddMessage($"Update DangerLevel To CustDB FAIL: {JsonConvert.SerializeObject(result.InPutParam)}").ToString();
-
                 this.notifiedMessage = $"Update Danger Level FAIL." +
                     $"\n\r - Updating DangerLevel of SABASport to CustDB FAIL";
-
-                sentryClient.CaptureMessage(logMessage, Sentry.Protocol.SentryLevel.Error);
             }
 
             return result.ErrorCode == 0;

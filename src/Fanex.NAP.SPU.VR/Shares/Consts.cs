@@ -22,7 +22,9 @@
 
         public const string VSSportbook = "Sport book";
 
-        public const int SleepTime_SapaSportDangerLevel = 120000 ;
+        public const int SleepTime_SapaSportCheckDangerLevel = 120000;
+
+        public const int SleepTime_SapaSportUpdateDangerLevel = 60000;
 
         public enum Environment
         {
