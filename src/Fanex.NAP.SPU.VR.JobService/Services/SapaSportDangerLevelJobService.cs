@@ -58,9 +58,9 @@
         {
             if (!service.IsDataSabaSportDangerLevelReady(appSettings.RetryTimesSapaSportDangerLevelForCheckingDataReady))
             {
-                LogService.Error($"VR - Update Sapa Sport Danger Level Job - Data for checking NOT READY - DateTime: {DateTime.Now}");
+                LogService.Error($"VR - {appSettings.EnvironmentString} - Update Sapa Sport Danger Level Job - Data for checking NOT READY - DateTime: {DateTime.Now}");
 
-                this.notifiedMessage = $"Update Sapa Sport Danger Level job FAIL." +
+                this.notifiedMessage = $"Update Danger Level FAIL." +
                     $"\n\r - Checking data for SABASportsDangerLevel DO NOT READY";
 
                 return false;
@@ -73,12 +73,12 @@
 
             if (result.ErrorCode != 0)
             {
-                var logMessage = new LogMessage("VR - Update Sapa Sport Danger Level Job")
+                var logMessage = new LogMessage($"VR - {appSettings.EnvironmentString} - Update Sapa Sport Danger Level Job")
                                             .AddMessage($"Inner Exception: {result.ErrorMsg}")
                                             .AddMessage($"DateTime: {DateTime.Now}")
                                             .AddMessage($"Update DangerLevel To CustDB FAIL: {JsonConvert.SerializeObject(result.InPutParam)}").ToString();
 
-                this.notifiedMessage = $"Update Sapa Sport Danger Level job FAIL." +
+                this.notifiedMessage = $"Update Danger Level FAIL." +
                     $"\n\r - Updating DangerLevel of SABASport to CustDB FAIL";
 
                 sentryClient.CaptureMessage(logMessage, Sentry.Protocol.SentryLevel.Error);
@@ -94,7 +94,7 @@
                 var telegramService = new NotificationService();
                 telegramService
                    .Config("0A40aOc7CtpzjbBSJu8KNWQRoXyjRvf9", "-1001400862084")
-                   .Message(new MessageModel("VR - Auto Update Bet Limit", DateTime.Now, appSettings.EnvironmentString, notifiedMessage))
+                   .Message(new MessageModel("VR - Auto Update Sapa Sport DangerLevel", DateTime.Now, appSettings.EnvironmentString, notifiedMessage))
                    .SendWithoutDelay(isInfo: true);
             }
         }
