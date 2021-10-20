@@ -63,13 +63,13 @@
                 this.notifiedMessage = $"Update Danger Level FAIL." +
                     $"\n\r - Checking data for SABASportsDangerLevel DO NOT READY";
 
-                return false;
+                return true;
             }
 
             var result = service
                             .Start()
                             .GetSapaSportDangerLevel(appSettings.Environment)
-                            .RetryUpdateDangerLevelToMainDB(appSettings.RetryTimesSapaSportDangerLevelForUpdateDangerLevel, batchSize, sentryClient);
+                            .RetryUpdateDangerLevelToMainDB(appSettings.RetryTimesSapaSportDangerLevelForUpdateDangerLevel, batchSize, sentryClient, appSettings.Environment);
 
             if (result.ErrorCode != 0)
             {

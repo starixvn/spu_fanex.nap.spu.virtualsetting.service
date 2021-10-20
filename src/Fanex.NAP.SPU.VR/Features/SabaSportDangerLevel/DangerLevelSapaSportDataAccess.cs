@@ -13,7 +13,7 @@
 
         IEnumerable<SapaSportDangerLevelEntity> GetSapaSportDangerLevel(int environment);
 
-        UpdateDangerResultEntity UpdateDangerLevelToMainDB(IEnumerable<SapaSportDangerLevelEntity> winLossSapaSportInfo);
+        UpdateDangerResultEntity UpdateDangerLevelToMainDB(IEnumerable<SapaSportDangerLevelEntity> winLossSapaSportInfo, int environtment);
     }
 
     public class DangerLevelSapaSportDataAccess : IDangerLevelSapaSportDataAccess
@@ -44,12 +44,22 @@
             return _repository.Fetch<SapaSportDangerLevelEntity>(criteria);
         }
 
-        public UpdateDangerResultEntity UpdateDangerLevelToMainDB(IEnumerable<SapaSportDangerLevelEntity> winLossSapaSportInfo)
+        public UpdateDangerResultEntity UpdateDangerLevelToMainDB(IEnumerable<SapaSportDangerLevelEntity> winLossSapaSportInfo, int environtment)
         {
             var criteria = new SabaSportDangerLevelUpdateCriteria
             {
                 CustsToXML = winLossSapaSportInfo.ToXmlString()
             };
+
+            if (environtment == (int)Environment.PRO)
+            {
+                criteria.Enviroment = "PRO";
+            }
+            
+            if (environtment == (int)Environment.UAT)
+            {
+                criteria.Enviroment = "UAT";
+            }    
 
             _repository.Execute(criteria);
 

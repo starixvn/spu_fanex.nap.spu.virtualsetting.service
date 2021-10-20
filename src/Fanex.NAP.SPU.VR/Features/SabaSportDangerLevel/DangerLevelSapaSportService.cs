@@ -18,7 +18,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
 
         IDangerLevelSapaSportService GetSapaSportDangerLevel(int environtment);
 
-        UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize, ISentryClient sentryClient);
+        UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize, ISentryClient sentryClient, int environtment);
     }
 
     public class DangerLevelSapaSportService : IDangerLevelSapaSportService
@@ -66,7 +66,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
             return this;
         }
 
-        public UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize, ISentryClient sentryClient)
+        public UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize, ISentryClient sentryClient, int environtment)
         {
             var errorLog = new UpdateDangerResultEntity { ErrorCode = 0, ErrorMsg = string.Empty };
 
@@ -76,7 +76,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
 
                 foreach (var batchData in winlossInfoChunk)
                 {
-                    var result = RetryUpdateDangerLevel(batchData, retryTimes);
+                    var result = RetryUpdateDangerLevel(batchData, retryTimes, environtment);
 
                     if (result.ErrorCode != 0)
                     {
@@ -95,7 +95,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
             return errorLog;
         }
 
-        private UpdateDangerResultEntity RetryUpdateDangerLevel(IEnumerable<SapaSportDangerLevelEntity> data, int retryTimes)
+        private UpdateDangerResultEntity RetryUpdateDangerLevel(IEnumerable<SapaSportDangerLevelEntity> data, int retryTimes, int environtment)
         {
             var result = new UpdateDangerResultEntity { ErrorCode = 0, ErrorMsg = string.Empty };
 
@@ -108,7 +108,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
             {
                 try
                 {
-                    result = dataAccess.UpdateDangerLevelToMainDB(data);
+                    result = dataAccess.UpdateDangerLevelToMainDB(data, environtment);
 
                     if (result.ErrorCode == 0)
                     {
