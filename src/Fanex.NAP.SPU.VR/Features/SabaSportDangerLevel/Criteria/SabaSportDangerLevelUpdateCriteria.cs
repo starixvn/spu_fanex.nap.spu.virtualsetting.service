@@ -11,6 +11,9 @@
         [SpParam(SqlParamName = "Enviroment")]
         public string Enviroment { get; set; }
 
+        [SpParam(SqlParamName = "IncludeUUS")]
+        public int IncludeUUS { get; set; }
+
         [SpParam(SqlParamName = "ErrCode")]
         public int ErrorCode { get; set; }
 

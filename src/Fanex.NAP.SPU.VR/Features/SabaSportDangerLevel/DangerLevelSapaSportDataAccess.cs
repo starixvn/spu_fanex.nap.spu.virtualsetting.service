@@ -54,6 +54,7 @@
             if (environtment == (int)Environment.PRO)
             {
                 criteria.Enviroment = "PRO";
+                criteria.IncludeUUS = 1;
             }
             
             if (environtment == (int)Environment.UAT)
