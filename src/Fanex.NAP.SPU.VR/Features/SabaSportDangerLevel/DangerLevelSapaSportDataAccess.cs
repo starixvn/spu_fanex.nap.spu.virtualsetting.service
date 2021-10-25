@@ -41,6 +41,11 @@
                 criteria.IncludeUUS = 1;
             }
 
+            if (environment == (int)Environment.UAT)
+            {
+                criteria.IncludeUUS = 0;
+            }
+
             return _repository.Fetch<SapaSportDangerLevelEntity>(criteria);
         }
 
@@ -60,6 +65,7 @@
             if (environtment == (int)Environment.UAT)
             {
                 criteria.Enviroment = "UAT";
+                criteria.IncludeUUS = 0;
             }    
 
             _repository.Execute(criteria);
