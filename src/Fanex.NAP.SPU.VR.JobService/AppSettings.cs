@@ -42,6 +42,10 @@
 
         int MailingListIdToSPU { get; }
 
+        int RetryTimesSapaSportDangerLevelForCheckingDataReady { get; }
+
+        int RetryTimesSapaSportDangerLevelForUpdateDangerLevel { get; }
+
     }
     public class AppSettings : IAppSettings
     {
@@ -81,6 +85,10 @@
 
         private readonly int mailingListIdToSPU;
 
+        private readonly int retryTimesSapaSportDangerLevelForCheckingDataReady;
+
+        private readonly int retryTimesSapaSportDangerLevelForUpdateDangerLevel;
+
         public AppSettings(IConfiguration configuration)
         {
             this.configuration = configuration;
@@ -118,6 +126,10 @@
             adjust3MMailingListId = GetValue<int>(nameof(Adjust3MMailingListId));
 
             mailingListIdToSPU = GetValue<int>(nameof(MailingListIdToSPU));
+
+            retryTimesSapaSportDangerLevelForCheckingDataReady = GetValue<int>("SapaSportDangerLevel:RetryTimesForCheckingDataReady");
+
+            retryTimesSapaSportDangerLevelForUpdateDangerLevel = GetValue<int>("SapaSportDangerLevel:RetryTimesForUpdateDangerLevel");
         }
 
         public int Environment
@@ -175,6 +187,10 @@
         public int Adjust3MMailingListId => adjust3MMailingListId;
 
         public int MailingListIdToSPU => mailingListIdToSPU;
+
+        public int RetryTimesSapaSportDangerLevelForCheckingDataReady => retryTimesSapaSportDangerLevelForCheckingDataReady;
+
+        public int RetryTimesSapaSportDangerLevelForUpdateDangerLevel => retryTimesSapaSportDangerLevelForUpdateDangerLevel;
 
         public T GetValue<T>(string key)
         {

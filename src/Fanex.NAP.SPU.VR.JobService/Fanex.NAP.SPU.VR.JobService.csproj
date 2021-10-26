@@ -53,6 +53,9 @@
     <None Update="App_Data\LOCAL\SPNames.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="App_Data\UAT\SPNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

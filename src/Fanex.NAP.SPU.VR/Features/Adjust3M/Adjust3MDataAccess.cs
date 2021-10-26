@@ -205,56 +205,56 @@
             }
         }
 
-        #region Data Test
-        private IEnumerable<PunterEntity> GetWinningPunterSoccerListDataTest()
-        {
-            var punters = new List<PunterEntity>();
+        //#region Data Test
+        //private IEnumerable<PunterEntity> GetWinningPunterSoccerListDataTest()
+        //{
+        //    var punters = new List<PunterEntity>();
 
-            for (int i = 0; i < 10; i++)
-            {
-                var punter = new PunterEntity
-                {
-                    CustID = 1234 + i,
-                    IsBA = false,
-                    IsSuperProPunters = i % 2 == 0 ? true : false,
-                    MRecommend = 0,
-                    SiteID = i % 2 == 0 ? 1 : 2,
-                    OldVirtualRate = 1.1,
-                    SportType = i % 2 == 0 ? 1 : 2,
-                    ReportDate = DateTime.Now
-                };
+        //    for (int i = 0; i < 10; i++)
+        //    {
+        //        var punter = new PunterEntity
+        //        {
+        //            CustID = 1234 + i,
+        //            IsBA = false,
+        //            IsSuperProPunters = i % 2 == 0 ? true : false,
+        //            MRecommend = 0,
+        //            SiteID = i % 2 == 0 ? 1 : 2,
+        //            OldVirtualRate = 1.1,
+        //            SportType = i % 2 == 0 ? 1 : 2,
+        //            ReportDate = DateTime.Now
+        //        };
 
-                punters.Add(punter);
-            }
+        //        punters.Add(punter);
+        //    }
 
-            return punters;
-        }
+        //    return punters;
+        //}
 
-        private IEnumerable<PunterEntity> GetWinningPunterListDataTest()
-        {
-            var punters = new List<PunterEntity>();
+        //private IEnumerable<PunterEntity> GetWinningPunterListDataTest()
+        //{
+        //    var punters = new List<PunterEntity>();
 
-            for (int i = 0; i < 7; i++)
-            {
-                var punter = new PunterEntity
-                {
-                    CustID = 4567 + i,
-                    IsBA = false,
-                    IsSuperProPunters = i % 2 == 0 ? true : false,
-                    MRecommend = 0,
-                    SiteID = i % 2 == 0 ? 1 : 2,
-                    OldVirtualRate = 1.1,
-                    SportType = i % 2 == 0 ? 1 : 2,
-                    ReportDate = DateTime.Now
-                };
+        //    for (int i = 0; i < 7; i++)
+        //    {
+        //        var punter = new PunterEntity
+        //        {
+        //            CustID = 4567 + i,
+        //            IsBA = false,
+        //            IsSuperProPunters = i % 2 == 0 ? true : false,
+        //            MRecommend = 0,
+        //            SiteID = i % 2 == 0 ? 1 : 2,
+        //            OldVirtualRate = 1.1,
+        //            SportType = i % 2 == 0 ? 1 : 2,
+        //            ReportDate = DateTime.Now
+        //        };
 
-                punters.Add(punter);
-            }
+        //        punters.Add(punter);
+        //    }
 
-            return punters;
-        }
+        //    return punters;
+        //}
 
-        #endregion
+        //#endregion
 
     }
 }

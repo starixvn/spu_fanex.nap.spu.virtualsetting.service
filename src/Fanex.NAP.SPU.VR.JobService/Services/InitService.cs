@@ -4,6 +4,7 @@
     using Fanex.NAP.SPU.VR.Features.Agent;
     using Fanex.NAP.SPU.VR.Features.BetLimit;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake;
+    using Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel;
     using Fanex.NAP.SPU.VR.Features.SpecialLicensee;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +21,8 @@
             RegisterMemberBigStakeService(services);
 
             RegisterSpecialLicenseeService(services);
+
+            RegisterSapsSportDangerLevelService(services);
         }
 
         private static void RegisterBetLimitService(this IServiceCollection services)
@@ -56,6 +59,13 @@
             services.AddSingleton<ISpecialLicenseeDataAccess, SpecialLicenseeDataAccess>();
             services.AddSingleton<ISpecialLicenseeService, SpecialLicenseeService>();            
             services.AddSingleton<ISpecialLicenseeJobService, SpecialLicenseeJobService>();
+        }
+
+        private static void RegisterSapsSportDangerLevelService(this IServiceCollection services)
+        {
+            services.AddSingleton<IDangerLevelSapaSportDataAccess, DangerLevelSapaSportDataAccess>();
+            services.AddSingleton<IDangerLevelSapaSportService, DangerLevelSapaSportService>();
+            services.AddSingleton<ISapaSportDangerLevelJobService, SapaSportDangerLevelJobService>();
         }
     }
 }
