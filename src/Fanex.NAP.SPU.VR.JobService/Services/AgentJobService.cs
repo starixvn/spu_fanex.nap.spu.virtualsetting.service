@@ -8,7 +8,9 @@
     using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.Agent;
+    using Fanex.NAP.SPU.VR.Features.Agent.Entities;
     using Fanex.NAP.SPU.VR.Features.Agent.Model;
+    using Newtonsoft.Json;
     using Sentry;    
     using System;
     using System.Collections.Generic;
@@ -82,14 +84,39 @@
             return Task.FromResult(true);
         }
 
-        private void UpdateUnflagAbnormalAgent(IEnumerable<int> customerList, int type)
+        private void UpdateUnflagAbnormalAgent(IEnumerable<UnflagAbnormalAgentEntity> customerList, int type)
         {
             var customerChunks = Utilities.ChunkList(customerList, this.appSettings.PunterChunkSize).ToList();
 
             for (int i = 0; i < customerChunks.Count(); i++)
             {
-                agentService.UpdateUnflagAbnormalAgent(string.Join(",", customerChunks[i]), type);
+                var custList = customerChunks[i].Select(x => new UnflagAbnormalAgentModel
+                {
+                    CustID = x.AgentID,
+                    TotalWL = x.MemberWinloss
+                });
+
+                var custXml = string.Empty;
+
+                foreach (var item in custList)
+                {
+                    object[] objParams =
+                    {
+                        item.CustID,
+                        item.TotalWL
+                    };
+
+                    custXml += Utilities.GenerateXmlForAbnormalAgentUnflag(objParams);
+                }
+
+                custXml = Utilities.GenerateXmlForVRRoot(custXml);                
+
+                agentService.UpdateUnflagAbnormalAgent(custXml, type);
             }
+
+            var customerListString = string.Join(",", customerList.Select(x => x.AgentID));
+
+            LogService.Info("VR - Agent - List Cust Update Unflag Abnormal Agent: " + customerListString);
         }
 
         private void NotifyMessage()

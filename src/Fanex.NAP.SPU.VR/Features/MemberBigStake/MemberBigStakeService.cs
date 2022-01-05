@@ -1,6 +1,8 @@
 ﻿namespace Fanex.NAP.SPU.VR.Features.MemberBigStake
 {
+    using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Model;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
 
@@ -12,7 +14,7 @@
 
         void UpdateMemberBigStakeFirstBetDate(IEnumerable<long> customerList, int type, DateTime betDate);
 
-        void UpdateWhitelistMemberBigStake(IEnumerable<long> customerList, int type);
+        void UpdateWhitelistMemberBigStake(IEnumerable<MemberBigStakePerformanceStatusModel> customerList, int type);
 
         AutoMailBigCreditMemberModel GetBigCreditMemberForAutomail();
     }
@@ -43,11 +45,24 @@
             this.memberBigStakeDataAccess.UpdateMemeberBigStakeFirstBetDate(custIdList, type, betDate);
         }
 
-        public void UpdateWhitelistMemberBigStake(IEnumerable<long> customerList, int type)
+        public void UpdateWhitelistMemberBigStake(IEnumerable<MemberBigStakePerformanceStatusModel> customerList, int type)
         {
-            var custIdList = string.Join(",", customerList);
+            var custXml = string.Empty;
 
-            this.memberBigStakeDataAccess.UpdateWhitelistMemberBigStake(custIdList, type);
+            foreach (var item in customerList)
+            {
+                object[] objParams =
+                {
+                    item.CustID,
+                    item.WL
+                };
+
+                custXml += Utilities.GenerateXmlForMemberBigStakeWhiteListUpd(objParams);
+            }
+
+            custXml = Utilities.GenerateXmlForVRRoot(custXml);
+
+            this.memberBigStakeDataAccess.UpdateWhitelistMemberBigStake(custXml, type);
         }
 
         public AutoMailBigCreditMemberModel GetBigCreditMemberForAutomail()

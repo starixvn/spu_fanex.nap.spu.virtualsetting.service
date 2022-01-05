@@ -59,6 +59,26 @@
             return string.Format(Consts.VSXmlForCustomerMarginHistory, objParams);
         }
 
+        public static string GenerateXmlForVRRoot(string param)
+        {
+            return string.Format(Consts.VSXmlVRRoot, param);
+        }
+
+        public static string GenerateXmlForCustomerUpdFollowParent(params object[] objParams)
+        {
+            return string.Format(Consts.VSXmlForCustomerUpdFollowParent, objParams);
+        }
+
+        public static string GenerateXmlForAbnormalAgentUnflag(params object[] objParams)
+        {
+            return string.Format(Consts.VSXmlForAbnormalAgentUnflag, objParams);
+        }
+
+        public static string GenerateXmlForMemberBigStakeWhiteListUpd(params object[] objParams)
+        {
+            return string.Format(Consts.VSXmlForMemberBigStakeWhiteListUpd, objParams);
+        }
+
         public static void WriteLog(string filename, string content)
         {
             var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);

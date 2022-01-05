@@ -142,10 +142,17 @@
                 {
                     if (memberBigStakePerformance != null && memberBigStakePerformance.StatusList != null && memberBigStakePerformance.StatusList.Any())
                     {
-                        var custIdByStatus = memberBigStakePerformance.StatusList.Select(x => x.CustId);
+                        var custByStatus = memberBigStakePerformance.StatusList.Select(x => new MemberBigStakePerformanceStatusModel
+                        {
+                            CustID = x.CustID,
+                            WL = x.MemberWinloss
+                        });
 
-                        custIdByStatus.ChunkList(500).ToList().ForEach(x => {
-                            this.memberBigStakeServices.UpdateWhitelistMemberBigStake(custIdByStatus, 1);
+                        var custByStatusChunk = custByStatus.ChunkList(500).ToList();
+
+                        custByStatusChunk.ForEach(x =>
+                        {
+                            this.memberBigStakeServices.UpdateWhitelistMemberBigStake(x, 1);
                         });
 
                         var json = JsonConvert.SerializeObject(memberBigStakePerformance.StatusList);

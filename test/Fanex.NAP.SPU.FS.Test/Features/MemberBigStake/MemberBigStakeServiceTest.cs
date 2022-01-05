@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.SPU.VR.Tests.Features.MemberBigStake
 {
     using Fanex.NAP.SPU.VR.Features.MemberBigStake;
+    using Fanex.NAP.SPU.VR.Features.MemberBigStake.Model;
     using FluentAssertions;
     using NSubstitute;
     using System;
@@ -46,7 +47,7 @@
 
         [Theory]
         [MemberData(nameof(MemberBigStakeExpectedData.ExpectedUpdateWhitelistMemberBigStake), MemberType = typeof(MemberBigStakeExpectedData))]
-        public void UpdateWhitelistMemberBigStake_WhenSuccess(IEnumerable<long> customerList, int type)
+        public void UpdateWhitelistMemberBigStake_WhenSuccess(IEnumerable<MemberBigStakePerformanceStatusModel> customerList, int type)
         {
             service.UpdateWhitelistMemberBigStake(customerList, type);
         }

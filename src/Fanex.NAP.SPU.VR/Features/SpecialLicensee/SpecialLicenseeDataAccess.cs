@@ -3,13 +3,14 @@
     using Fanex.Data;
     using Fanex.Data.Repository;
     using Fanex.NAP.SPU.VR.Features.SpecialLicensee.Criteria;
+    using Fanex.NAP.SPU.VR.Features.SpecialLicensee.Entities;
     using System.Collections.Generic;
 
     public interface ISpecialLicenseeDataAccess
     {
         IEnumerable<int> GetSpecialSportBookVRAdjustmentCustomers(int sportType);
 
-        (IEnumerable<int>, IEnumerable<int>) VerifyVRAdjustmentCustomers(string customerList);
+        (IEnumerable<PassedPerfCheckCustomerEntity>, IEnumerable<int>) VerifyVRAdjustmentCustomers(string customerList);
 
         void UpdateVRFollowUpline(string customerList, int sportType);
 
@@ -35,14 +36,14 @@
             return this._repository.Fetch<int>(criteria);
         }
 
-        public (IEnumerable<int>, IEnumerable<int>) VerifyVRAdjustmentCustomers(string customerList)
+        public (IEnumerable<PassedPerfCheckCustomerEntity>, IEnumerable<int>) VerifyVRAdjustmentCustomers(string customerList)
         {
             var criteria = new VerifyVRCustomerCriteria
             {
                 ListCustID = customerList
             };
 
-            return this._repository.FetchMultiple<int, int>(criteria);
+            return this._repository.FetchMultiple<PassedPerfCheckCustomerEntity, int>(criteria);
         }
 
         public void UpdateVRFollowUpline(string customerList, int sportType)

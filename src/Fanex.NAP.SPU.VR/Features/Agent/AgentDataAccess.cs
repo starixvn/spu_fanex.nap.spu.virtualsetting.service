@@ -3,6 +3,7 @@
     using Fanex.Data;
     using Fanex.Data.Repository;
     using Fanex.NAP.SPU.VR.Features.Agent.Criteria;
+    using Fanex.NAP.SPU.VR.Features.Agent.Entities;
     using Fanex.NAP.SPU.VR.Features.Agent.Model;
     using System;
     using System.Collections.Generic;
@@ -14,7 +15,7 @@
     {
         void InsertNewAgentAdjust();
 
-        IEnumerable<int> VerifySportsAgentPerformance();
+        IEnumerable<UnflagAbnormalAgentEntity> VerifySportsAgentPerformance();
 
         void UpdateFlagAbnormalAgent(int type);
 
@@ -42,11 +43,11 @@
             }
         }
 
-        public IEnumerable<int> VerifySportsAgentPerformance()
+        public IEnumerable<UnflagAbnormalAgentEntity> VerifySportsAgentPerformance()
         {
             var criteria = new VerifySportsAgentPerformanceCriteria();
 
-            return this.repository.Fetch<int>(criteria);
+            return this.repository.Fetch<UnflagAbnormalAgentEntity>(criteria);
         }
 
         public void UpdateFlagAbnormalAgent(int type)

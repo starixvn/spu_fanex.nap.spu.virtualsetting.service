@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.SPU.VR.Features.Agent
 {
+    using Fanex.NAP.SPU.VR.Features.Agent.Entities;
     using Fanex.NAP.SPU.VR.Features.Agent.Model;
     using System.Collections.Generic;
 
@@ -7,7 +8,7 @@
     {
         void InsertNewAgentAdjust();
 
-        IEnumerable<int> VerifySportsAgentPerformance();
+        IEnumerable<UnflagAbnormalAgentEntity> VerifySportsAgentPerformance();
 
         void UpdateFlagAbnormalAgent(int type);
 
@@ -30,7 +31,7 @@
             agentDataAccess.InsertNewAgentAdjust();
         }
 
-        public IEnumerable<int> VerifySportsAgentPerformance()
+        public IEnumerable<UnflagAbnormalAgentEntity> VerifySportsAgentPerformance()
         {
             return agentDataAccess.VerifySportsAgentPerformance();
         }
