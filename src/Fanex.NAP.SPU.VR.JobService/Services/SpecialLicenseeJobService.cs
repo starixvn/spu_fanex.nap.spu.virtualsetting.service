@@ -47,7 +47,7 @@
 
                     LogService.Info(message);
 
-                    NotifyMessage();
+                    //NotifyMessage();
                 }
                 catch (Exception ex)
                 {
