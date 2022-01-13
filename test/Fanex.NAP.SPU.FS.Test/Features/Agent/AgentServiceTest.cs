@@ -22,7 +22,7 @@
         [Fact]
         public void InsertNewAgentAdjust_WhenSuccess() 
         {
-            service.InsertNewAgentAdjust();            
+            service.InsertNewAgentAdjust(false);            
         }
 
         [Fact]
@@ -30,9 +30,9 @@
         {
             var expectedResult = AgentExpectedData.ExpectedVerifySportsAgentPerformance;
 
-            dataAccess.VerifySportsAgentPerformance().Returns(expectedResult);
+            dataAccess.VerifySportsAgentPerformance(false).Returns(expectedResult);
 
-            var result = service.VerifySportsAgentPerformance();
+            var result = service.VerifySportsAgentPerformance(false);
 
             result.Should().BeEquivalentTo(expectedResult);
         }
@@ -41,14 +41,14 @@
         [InlineData(1)]
         public void UpdateFlagAbnormalAgent_WhenSuccess(int type)
         {
-            service.UpdateFlagAbnormalAgent(type);
+            service.UpdateFlagAbnormalAgent(type, false);
         }
 
         [Theory]
-        [InlineData("788945, 456642, 43352", 1)]
-        public void UpdateUnflagAbnormalAgent_WhenSuccess(string customerList, int type)
+        [InlineData("788945, 456642, 43352", 1, false)]
+        public void UpdateUnflagAbnormalAgent_WhenSuccess(string customerList, int type, bool isTest)
         {
-            service.UpdateUnflagAbnormalAgent(customerList, type);
+            service.UpdateUnflagAbnormalAgent(customerList, type, isTest);
         }
 
         [Fact]

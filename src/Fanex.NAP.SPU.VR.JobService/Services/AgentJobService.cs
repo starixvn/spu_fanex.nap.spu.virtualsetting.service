@@ -40,17 +40,17 @@
 
         public Task<bool> Execute()
         {
-            var countRetry = 0;
+            var countRetry = 0;           
 
             while (countRetry < appSettings.RetryTime)
             {
                 try
                 {
-                    agentService.InsertNewAgentAdjust();
+                    agentService.InsertNewAgentAdjust(appSettings.IsTest);
 
-                    var updateUnflagAbnormalAgents = agentService.VerifySportsAgentPerformance();
+                    var updateUnflagAbnormalAgents = agentService.VerifySportsAgentPerformance(appSettings.IsTest);
 
-                    agentService.UpdateFlagAbnormalAgent(1);
+                    agentService.UpdateFlagAbnormalAgent(1, appSettings.IsTest);
 
                     UpdateUnflagAbnormalAgent(updateUnflagAbnormalAgents, 1);
 
@@ -87,6 +87,7 @@
         private void UpdateUnflagAbnormalAgent(IEnumerable<UnflagAbnormalAgentEntity> customerList, int type)
         {
             var customerChunks = Utilities.ChunkList(customerList, this.appSettings.PunterChunkSize).ToList();
+            var isTest = appSettings.IsTest;
 
             for (int i = 0; i < customerChunks.Count(); i++)
             {
@@ -111,7 +112,7 @@
 
                 custXml = Utilities.GenerateXmlForVRRoot(custXml);                
 
-                agentService.UpdateUnflagAbnormalAgent(custXml, type);
+                agentService.UpdateUnflagAbnormalAgent(custXml, type, isTest);
             }
 
             var customerListString = string.Join(",", customerList.Select(x => x.AgentID));

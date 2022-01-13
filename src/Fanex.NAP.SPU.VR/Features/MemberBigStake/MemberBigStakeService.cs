@@ -1,20 +1,19 @@
 ﻿namespace Fanex.NAP.SPU.VR.Features.MemberBigStake
 {
     using Fanex.NAP.SPU.CTS.Shares;
-    using Fanex.NAP.SPU.VR.Features.MemberBigStake.Model;
-    using Newtonsoft.Json;
+    using Fanex.NAP.SPU.VR.Features.MemberBigStake.Model;    
     using System;
     using System.Collections.Generic;
 
     public interface IMemberBigStakeService
     {
-        void InsertMemberBigStake();
+        void InsertMemberBigStake(bool isTest);
 
-        MemberBigStakePerformanceModel GetMemberBigStakePerformance();
+        MemberBigStakePerformanceModel GetMemberBigStakePerformance(bool isTest);
 
-        void UpdateMemberBigStakeFirstBetDate(IEnumerable<long> customerList, int type, DateTime betDate);
+        void UpdateMemberBigStakeFirstBetDate(IEnumerable<long> customerList, int type, DateTime betDate, bool isTest);
 
-        void UpdateWhitelistMemberBigStake(IEnumerable<MemberBigStakePerformanceStatusModel> customerList, int type);
+        void UpdateWhitelistMemberBigStake(IEnumerable<MemberBigStakePerformanceStatusModel> customerList, int type, bool isTest);
 
         AutoMailBigCreditMemberModel GetBigCreditMemberForAutomail();
     }
@@ -28,24 +27,24 @@
             this.memberBigStakeDataAccess = memberBigStakeDataAccess;
         }
 
-        public MemberBigStakePerformanceModel GetMemberBigStakePerformance()
+        public MemberBigStakePerformanceModel GetMemberBigStakePerformance(bool isTest)
         {
-            return this.memberBigStakeDataAccess.GetMemberBigStakePerformance(); 
+            return this.memberBigStakeDataAccess.GetMemberBigStakePerformance(isTest); 
         }
 
-        public void InsertMemberBigStake()
+        public void InsertMemberBigStake(bool isTest)
         {
-            this.memberBigStakeDataAccess.InsertMemberBigStake();
+            this.memberBigStakeDataAccess.InsertMemberBigStake(isTest);
         }
 
-        public void UpdateMemberBigStakeFirstBetDate(IEnumerable<long> customerList, int type, DateTime betDate)
+        public void UpdateMemberBigStakeFirstBetDate(IEnumerable<long> customerList, int type, DateTime betDate, bool isTest)
         {
             var custIdList = string.Join(",", customerList);
 
-            this.memberBigStakeDataAccess.UpdateMemeberBigStakeFirstBetDate(custIdList, type, betDate);
+            this.memberBigStakeDataAccess.UpdateMemeberBigStakeFirstBetDate(custIdList, type, betDate, isTest);
         }
 
-        public void UpdateWhitelistMemberBigStake(IEnumerable<MemberBigStakePerformanceStatusModel> customerList, int type)
+        public void UpdateWhitelistMemberBigStake(IEnumerable<MemberBigStakePerformanceStatusModel> customerList, int type, bool isTest)
         {
             var custXml = string.Empty;
 
@@ -62,7 +61,7 @@
 
             custXml = Utilities.GenerateXmlForVRRoot(custXml);
 
-            this.memberBigStakeDataAccess.UpdateWhitelistMemberBigStake(custXml, type);
+            this.memberBigStakeDataAccess.UpdateWhitelistMemberBigStake(custXml, type, isTest);
         }
 
         public AutoMailBigCreditMemberModel GetBigCreditMemberForAutomail()

@@ -13,9 +13,9 @@
 
         int PunterSportsbookUpdated { get; }
 
-        ISpecialLicenseeService AutoAdjustForBasketball(int punterChunkSize);
+        ISpecialLicenseeService AutoAdjustForBasketball(int punterChunkSize, bool isTest);
 
-        ISpecialLicenseeService AutoAdjustForSpecialSportsbook(int punterChunkSize);
+        ISpecialLicenseeService AutoAdjustForSpecialSportsbook(int punterChunkSize, bool isTest);
         
     }
 
@@ -34,16 +34,16 @@
             this.specialLicenseeDataAccess = specialLicenseeDataAccess;
         }
 
-        public ISpecialLicenseeService AutoAdjustForBasketball(int punterChunkSize)
+        public ISpecialLicenseeService AutoAdjustForBasketball(int punterChunkSize, bool isTest)
         {
             var passedPerfCheckCustomerList = Enumerable.Empty<PassedPerfCheckCustomerModel>();
-            var customerList = this.specialLicenseeDataAccess.GetSpecialSportBookVRAdjustmentCustomers(99).ToList();
+            var customerList = this.specialLicenseeDataAccess.GetSpecialSportBookVRAdjustmentCustomers(99, isTest).ToList();
 
             if (customerList.Any())
             {
                 var customerListString = string.Join(",", customerList);
 
-                var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString);
+                var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString, isTest);
 
                 if (passedPerfCheckCustomers != null && passedPerfCheckCustomers.Any())
                 {
@@ -55,22 +55,22 @@
                         AIOTO = x.MemberAIOTurnover
                     });
 
-                    AdjustVRPassedCustomers(passedPerfCheckCustomerList, 99, punterChunkSize);
+                    AdjustVRPassedCustomers(passedPerfCheckCustomerList, 99, punterChunkSize, isTest);
                 }
 
                 this.punterBasketballUpdated = passedPerfCheckCustomerList.Count();
 
-                UpdateStatusUnpassedCustomers(unpassedPerfCheckCustomers, 99, punterChunkSize);
+                UpdateStatusUnpassedCustomers(unpassedPerfCheckCustomers, 99, punterChunkSize, isTest);
             }
 
             return this;
         }
 
-        public ISpecialLicenseeService AutoAdjustForSpecialSportsbook(int punterChunkSize)
+        public ISpecialLicenseeService AutoAdjustForSpecialSportsbook(int punterChunkSize, bool isTest)
         {
             var passedPerfCheckCustomerList = Enumerable.Empty<PassedPerfCheckCustomerModel>();
 
-            var customerList = this.specialLicenseeDataAccess.GetSpecialSportBookVRAdjustmentCustomers(100).ToList();
+            var customerList = this.specialLicenseeDataAccess.GetSpecialSportBookVRAdjustmentCustomers(100, isTest).ToList();
 
             if (customerList.Any())
             {
@@ -78,7 +78,7 @@
 
                 LogService.Info("VR - Special Licensee SportBook - Raw Customer list: " + customerListString);
 
-                var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString);
+                var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString, isTest);
 
                 if (passedPerfCheckCustomers != null && passedPerfCheckCustomers.Any())
                 {
@@ -90,18 +90,18 @@
                         AIOTO = x.MemberAIOTurnover
                     });
 
-                    AdjustVRPassedCustomers(passedPerfCheckCustomerList, 100, punterChunkSize);
+                    AdjustVRPassedCustomers(passedPerfCheckCustomerList, 100, punterChunkSize, isTest);
                 }
 
                 this.punterSportsbookUpdated = passedPerfCheckCustomerList.Count();
 
-                UpdateStatusUnpassedCustomers(unpassedPerfCheckCustomers, 100, punterChunkSize);
+                UpdateStatusUnpassedCustomers(unpassedPerfCheckCustomers, 100, punterChunkSize, isTest);
             }
 
             return this;
         }
 
-        private void AdjustVRPassedCustomers(IEnumerable<PassedPerfCheckCustomerModel> customerList, int sportType, int punterChunkSize)
+        private void AdjustVRPassedCustomers(IEnumerable<PassedPerfCheckCustomerModel> customerList, int sportType, int punterChunkSize, bool isTest)
         {
             var customerListString = string.Join(",", customerList.Select(x => x.CustID));
 
@@ -131,11 +131,11 @@
 
                 custXml = Utilities.GenerateXmlForVRRoot(custXml);
 
-                this.specialLicenseeDataAccess.UpdateVRFollowUpline(custXml, sportType);
+                this.specialLicenseeDataAccess.UpdateVRFollowUpline(custXml, sportType, isTest);
             }
         }
 
-        private void UpdateStatusUnpassedCustomers(IEnumerable<int> customerList, int sportType, int punterChunkSize)
+        private void UpdateStatusUnpassedCustomers(IEnumerable<int> customerList, int sportType, int punterChunkSize, bool isTest)
         {
             var customerListString = string.Join(",", customerList);
 
@@ -148,7 +148,7 @@
 
             for (int i = 0; i < customerChunks.Count(); i++)
             {
-                this.specialLicenseeDataAccess.UpdateVRAutoAdjustmentStatus(string.Join(",", customerChunks[i]), sportType);
+                this.specialLicenseeDataAccess.UpdateVRAutoAdjustmentStatus(string.Join(",", customerChunks[i]), sportType, isTest);
             }
         }
        

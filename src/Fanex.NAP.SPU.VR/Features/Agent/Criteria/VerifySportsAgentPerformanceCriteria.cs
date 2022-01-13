@@ -4,6 +4,8 @@
 
     public class VerifySportsAgentPerformanceCriteria : CriteriaBase
     {
+        public bool IsTest { get; set; }
+
         public override string GetSettingKey()
         {
             return "Task_VRSetting_CheckAllSportsAgentPerformance";

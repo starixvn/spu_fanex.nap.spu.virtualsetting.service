@@ -23,7 +23,7 @@
         [Fact]
         public void InsertMemberBigStake_WhenSuccess()
         {
-            service.InsertMemberBigStake();
+            service.InsertMemberBigStake(false);
         }
 
         [Fact]
@@ -31,25 +31,25 @@
         {
             var expectedResult = MemberBigStakeExpectedData.ExpectedMemberBigStakeModel;
 
-            dataAccess.GetMemberBigStakePerformance().Returns(expectedResult);
+            dataAccess.GetMemberBigStakePerformance(false).Returns(expectedResult);
 
-            var result = service.GetMemberBigStakePerformance();
+            var result = service.GetMemberBigStakePerformance(false);
 
             result.Should().BeEquivalentTo(expectedResult);
         }
 
         [Theory]
         [MemberData(nameof(MemberBigStakeExpectedData.ExpectedUpdateMemberBigStakeFirstBetDate), MemberType = typeof(MemberBigStakeExpectedData))]
-        public void UpdateMemberBigStakeFirstBetDate_WhenSuccess(IEnumerable<long> customerList, int type, DateTime betDate)
+        public void UpdateMemberBigStakeFirstBetDate_WhenSuccess(IEnumerable<long> customerList, int type, DateTime betDate, bool isTest)
         {
-            service.UpdateMemberBigStakeFirstBetDate(customerList, type, betDate);
+            service.UpdateMemberBigStakeFirstBetDate(customerList, type, betDate, isTest);
         }
 
         [Theory]
         [MemberData(nameof(MemberBigStakeExpectedData.ExpectedUpdateWhitelistMemberBigStake), MemberType = typeof(MemberBigStakeExpectedData))]
         public void UpdateWhitelistMemberBigStake_WhenSuccess(IEnumerable<MemberBigStakePerformanceStatusModel> customerList, int type)
         {
-            service.UpdateWhitelistMemberBigStake(customerList, type);
+            service.UpdateWhitelistMemberBigStake(customerList, type, false);
         }
 
         [Fact]

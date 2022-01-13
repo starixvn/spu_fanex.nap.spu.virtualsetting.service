@@ -4,22 +4,18 @@
     using Fanex.Data.Repository;
     using Fanex.NAP.SPU.VR.Features.Agent.Criteria;
     using Fanex.NAP.SPU.VR.Features.Agent.Entities;
-    using Fanex.NAP.SPU.VR.Features.Agent.Model;
-    using System;
+    using Fanex.NAP.SPU.VR.Features.Agent.Model;    
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     public interface IAgentDataAccess
     {
-        void InsertNewAgentAdjust();
+        void InsertNewAgentAdjust(bool isTest);
 
-        IEnumerable<UnflagAbnormalAgentEntity> VerifySportsAgentPerformance();
+        IEnumerable<UnflagAbnormalAgentEntity> VerifySportsAgentPerformance(bool isTest);
 
-        void UpdateFlagAbnormalAgent(int type);
+        void UpdateFlagAbnormalAgent(int type, bool isTest);
 
-        void UpdateUnflagAbnormalAgent(string customerList, int type);
+        void UpdateUnflagAbnormalAgent(string customerList, int type, bool isTest);
 
         (IEnumerable<VRAgentUpdatedToZeroModel>, IEnumerable<VRAgentUpdatedToFollowSuperModel>) GetVRAgentUpdated();
     }
@@ -33,9 +29,9 @@
             this.repository = new DynamicRepository();
         }
 
-        public void InsertNewAgentAdjust()
+        public void InsertNewAgentAdjust(bool isTest)
         {
-            var criteria = new InsertNewAgentAdjustCriteria();
+            var criteria = new InsertNewAgentAdjustCriteria { IsTest = isTest };
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
@@ -43,18 +39,19 @@
             }
         }
 
-        public IEnumerable<UnflagAbnormalAgentEntity> VerifySportsAgentPerformance()
+        public IEnumerable<UnflagAbnormalAgentEntity> VerifySportsAgentPerformance(bool isTest)
         {
-            var criteria = new VerifySportsAgentPerformanceCriteria();
+            var criteria = new VerifySportsAgentPerformanceCriteria { IsTest = isTest };
 
             return this.repository.Fetch<UnflagAbnormalAgentEntity>(criteria);
         }
 
-        public void UpdateFlagAbnormalAgent(int type)
+        public void UpdateFlagAbnormalAgent(int type, bool isTest)
         {
             var criteria = new UpdateFlagAbnormalAgentCriteria
             {
-                Type = type
+                Type = type,
+                IsTest = isTest
             };
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
@@ -63,12 +60,13 @@
             }
         }
 
-        public void UpdateUnflagAbnormalAgent(string customerList, int type)
+        public void UpdateUnflagAbnormalAgent(string customerList, int type, bool isTest)
         {
             var criteria = new UpdateUnflagAbnormalAgentCriteria
             {
                 CustIDList = customerList,
-                Type = type
+                Type = type,
+                IsTest = isTest
             };
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))

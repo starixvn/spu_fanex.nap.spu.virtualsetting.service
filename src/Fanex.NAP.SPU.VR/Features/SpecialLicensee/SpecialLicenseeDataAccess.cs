@@ -8,13 +8,13 @@
 
     public interface ISpecialLicenseeDataAccess
     {
-        IEnumerable<int> GetSpecialSportBookVRAdjustmentCustomers(int sportType);
+        IEnumerable<int> GetSpecialSportBookVRAdjustmentCustomers(int sportType, bool isTest);
 
-        (IEnumerable<PassedPerfCheckCustomerEntity>, IEnumerable<int>) VerifyVRAdjustmentCustomers(string customerList);
+        (IEnumerable<PassedPerfCheckCustomerEntity>, IEnumerable<int>) VerifyVRAdjustmentCustomers(string customerList, bool isTest);
 
-        void UpdateVRFollowUpline(string customerList, int sportType);
+        void UpdateVRFollowUpline(string customerList, int sportType, bool isTest);
 
-        void UpdateVRAutoAdjustmentStatus(string customerList, int sportType);
+        void UpdateVRAutoAdjustmentStatus(string customerList, int sportType, bool isTest);
     }
 
     public class SpecialLicenseeDataAccess : ISpecialLicenseeDataAccess
@@ -26,32 +26,35 @@
             this._repository = new DynamicRepository();
         }
 
-        public IEnumerable<int> GetSpecialSportBookVRAdjustmentCustomers(int sportType)
+        public IEnumerable<int> GetSpecialSportBookVRAdjustmentCustomers(int sportType, bool isTest)
         {
             var criteria = new GetSpecialSportBookVRCustomerCriteria
             {
-                Sporttype = sportType
+                Sporttype = sportType,
+                IsTest = isTest
             };
 
             return this._repository.Fetch<int>(criteria);
         }
 
-        public (IEnumerable<PassedPerfCheckCustomerEntity>, IEnumerable<int>) VerifyVRAdjustmentCustomers(string customerList)
+        public (IEnumerable<PassedPerfCheckCustomerEntity>, IEnumerable<int>) VerifyVRAdjustmentCustomers(string customerList, bool isTest)
         {
             var criteria = new VerifyVRCustomerCriteria
             {
-                ListCustID = customerList
+                ListCustID = customerList,
+                IsTest = isTest
             };
 
             return this._repository.FetchMultiple<PassedPerfCheckCustomerEntity, int>(criteria);
         }
 
-        public void UpdateVRFollowUpline(string customerList, int sportType)
+        public void UpdateVRFollowUpline(string customerList, int sportType, bool isTest)
         {
             var criteria = new UpdateVRFollowUplineCriteria
             {
                 CustIDList = customerList,
-                Sporttype = sportType
+                Sporttype = sportType,
+                IsTest = isTest
             };
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
@@ -60,12 +63,13 @@
             }
         }
 
-        public void UpdateVRAutoAdjustmentStatus(string customerList, int sportType)
+        public void UpdateVRAutoAdjustmentStatus(string customerList, int sportType, bool isTest)
         {
             var criteria = new UpdateVRAutoAdjustmentStatusCriteria
             {
                 CustIDList = customerList,
-                Sporttype = sportType
+                Sporttype = sportType,
+                IsTest = isTest
             };
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
