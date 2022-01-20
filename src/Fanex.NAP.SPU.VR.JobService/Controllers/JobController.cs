@@ -84,6 +84,13 @@
 
         }
 
+        [HttpPost("WriteLog2")]
+        public void WriteLog2(string jobName)
+        {
+            sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
+
+        }
+
         [HttpPost("SapaSportDangerLevel")]
         public async Task<bool> SapaSportDangerLevel([FromForm] int batchSize)
         {
