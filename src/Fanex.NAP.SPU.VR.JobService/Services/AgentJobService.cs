@@ -54,7 +54,7 @@
 
                     UpdateUnflagAbnormalAgent(updateUnflagAbnormalAgents, 1);
 
-                    SendMail(this.appSettings.MailingListIdAgentAjust);
+                    //SendMail(this.appSettings.MailingListIdAgentAjust);
 
                     LogService.Info($"VR - Agent job Execute COMPLETED");
 

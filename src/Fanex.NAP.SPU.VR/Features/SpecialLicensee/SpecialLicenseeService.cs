@@ -76,9 +76,9 @@
             {
                 var customerListString = string.Join(",", customerList);
 
-                LogService.Info("VR - Special Licensee SportBook - Raw Customer list: " + customerListString);
+                LogService.Info($"VR - Special Licensee SportBook - IsTest { isTest }, Raw Customer list: {customerListString}");
 
-                var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString, isTest);
+                var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString, isTest);               
 
                 if (passedPerfCheckCustomers != null && passedPerfCheckCustomers.Any())
                 {
@@ -91,6 +91,10 @@
                     });
 
                     AdjustVRPassedCustomers(passedPerfCheckCustomerList, 100, punterChunkSize, isTest);
+                }
+                else
+                {
+                    LogService.Info($"VR - Special Licensee SportBook - passedPerfCheckCustomers empty");
                 }
 
                 this.punterSportsbookUpdated = passedPerfCheckCustomerList.Count();
@@ -132,6 +136,8 @@
                 custXml = Utilities.GenerateXmlForVRRoot(custXml);
 
                 this.specialLicenseeDataAccess.UpdateVRFollowUpline(custXml, sportType, isTest);
+
+                LogService.Info($"VR - Special Licensee - Other Sports - UpdateVRFollowUpline: {custXml}");
             }
         }
 
@@ -149,6 +155,8 @@
             for (int i = 0; i < customerChunks.Count(); i++)
             {
                 this.specialLicenseeDataAccess.UpdateVRAutoAdjustmentStatus(string.Join(",", customerChunks[i]), sportType, isTest);
+
+                LogService.Info($"VR - Special Licensee - Other Sports - UpdateStatusUnpassedCustomers: {string.Join(",", customerChunks[i])}");
             }
         }
        
