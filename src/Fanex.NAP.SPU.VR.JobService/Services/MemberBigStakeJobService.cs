@@ -63,7 +63,7 @@
 
                     countRetry = appSettings.RetryTime + 1;                  
 
-                    //NotifyMessage();
+                    NotifyMessage();
                 }
                 catch (Exception ex)
                 {
@@ -324,11 +324,11 @@
 
         private void SendMail(Mail mail)
         {
-            //MailClientHandler.Start();
+            MailClientHandler.Start();
 
-            //MailClientHandler.SendFunctionMail(mail);
+            MailClientHandler.SendFunctionMail(mail);
 
-            //MailClientHandler.Stop();
+            MailClientHandler.Stop();
         }
 
         private void NotifyMessage()

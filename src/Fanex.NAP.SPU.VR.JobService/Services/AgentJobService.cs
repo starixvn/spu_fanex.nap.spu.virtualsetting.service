@@ -54,13 +54,13 @@
 
                     UpdateUnflagAbnormalAgent(updateUnflagAbnormalAgents, 1);
 
-                    //SendMail(this.appSettings.MailingListIdAgentAjust);
+                    SendMail(this.appSettings.MailingListIdAgentAjust);
 
                     LogService.Info($"VR - Agent job Execute COMPLETED");
 
                     countRetry = appSettings.RetryTime + 1;                    
 
-                    //NotifyMessage();
+                    NotifyMessage();
                 }
                 catch (Exception ex)
                 {
@@ -290,11 +290,11 @@
 
         private void SendMail(Mail mail)
         {
-            //MailClientHandler.Start();
+            MailClientHandler.Start();
 
-            //MailClientHandler.SendFunctionMail(mail);
+            MailClientHandler.SendFunctionMail(mail);
 
-            //MailClientHandler.Stop();
+            MailClientHandler.Stop();
         }
     }
 }
