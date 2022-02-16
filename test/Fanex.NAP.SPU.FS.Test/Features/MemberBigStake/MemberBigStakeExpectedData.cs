@@ -36,8 +36,8 @@
             {
                 return new List<object[]>
                 {
-                    new object[] { new List<long> { 178, 546 }, 1 },
-                    new object[] { new List<long> { 7863, 45696}, 2 }
+                    new object[] { new List<MemberBigStakePerformanceStatusModel> { new MemberBigStakePerformanceStatusModel {  CustID = 123, WL = new decimal(4)} }, 1 },
+                    new object[] { new List<MemberBigStakePerformanceStatusModel> { new MemberBigStakePerformanceStatusModel { CustID = 789, WL = new decimal(5) } }, 2 }
                 };
             }
         }

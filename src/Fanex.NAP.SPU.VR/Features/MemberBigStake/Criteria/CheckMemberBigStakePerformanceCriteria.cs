@@ -4,6 +4,8 @@
 
     public class CheckMemberBigStakePerformanceCriteria : CriteriaBase
     {
+        public bool IsTest { get; set; }
+
         public override string GetSettingKey()
         {
             return "Task_VRSetting_CheckMemberBigStakePerformance";

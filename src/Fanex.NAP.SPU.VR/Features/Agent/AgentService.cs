@@ -1,17 +1,18 @@
 ﻿namespace Fanex.NAP.SPU.VR.Features.Agent
 {
+    using Fanex.NAP.SPU.VR.Features.Agent.Entities;
     using Fanex.NAP.SPU.VR.Features.Agent.Model;
     using System.Collections.Generic;
 
     public interface IAgentService
     {
-        void InsertNewAgentAdjust();
+        void InsertNewAgentAdjust(bool isTest);
 
-        IEnumerable<int> VerifySportsAgentPerformance();
+        IEnumerable<UnflagAbnormalAgentEntity> VerifySportsAgentPerformance(bool isTest);
 
-        void UpdateFlagAbnormalAgent(int type);
+        void UpdateFlagAbnormalAgent(int type, bool isTest);
 
-        void UpdateUnflagAbnormalAgent(string customerList, int type);
+        void UpdateUnflagAbnormalAgent(string customerList, int type, bool isTest);
 
         (IEnumerable<VRAgentUpdatedToZeroModel>, IEnumerable<VRAgentUpdatedToFollowSuperModel>) GetVRAgentUpdated();
     }
@@ -25,26 +26,26 @@
             this.agentDataAccess = agentDataAccess;
         }
 
-        public void InsertNewAgentAdjust()
+        public void InsertNewAgentAdjust(bool isTest)
         {
-            agentDataAccess.InsertNewAgentAdjust();
+            agentDataAccess.InsertNewAgentAdjust(isTest);
         }
 
-        public IEnumerable<int> VerifySportsAgentPerformance()
+        public IEnumerable<UnflagAbnormalAgentEntity> VerifySportsAgentPerformance(bool isTest)
         {
-            return agentDataAccess.VerifySportsAgentPerformance();
+            return agentDataAccess.VerifySportsAgentPerformance(isTest);
         }
 
-        public void UpdateFlagAbnormalAgent(int type)
+        public void UpdateFlagAbnormalAgent(int type, bool isTest)
         {
-            agentDataAccess.UpdateFlagAbnormalAgent(type);
+            agentDataAccess.UpdateFlagAbnormalAgent(type, isTest);
         }
 
-        public void UpdateUnflagAbnormalAgent(string customerList, int type)
+        public void UpdateUnflagAbnormalAgent(string customerList, int type, bool isTest)
         {
             if (!string.IsNullOrEmpty(customerList))
             {
-                agentDataAccess.UpdateUnflagAbnormalAgent(customerList, type);
+                agentDataAccess.UpdateUnflagAbnormalAgent(customerList, type, isTest);
             }            
         }
 

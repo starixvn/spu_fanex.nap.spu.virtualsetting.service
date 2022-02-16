@@ -11,6 +11,8 @@ namespace Fanex.NAP.SPU.VR.Features.MemberBigStake.Criteria
 
         public DateTime BetDate { get; set; }
 
+        public bool IsTest { get; set; }
+
         public override string GetSettingKey()
         {
             return "Acc_VR_MemberBigStake_FirstBetDate_Upd";

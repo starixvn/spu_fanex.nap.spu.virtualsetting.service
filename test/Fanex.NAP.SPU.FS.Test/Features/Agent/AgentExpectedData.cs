@@ -1,15 +1,20 @@
 ﻿namespace Fanex.NAP.SPU.VR.Tests.Features.Agent
 {
+    using Fanex.NAP.SPU.VR.Features.Agent.Entities;
     using Fanex.NAP.SPU.VR.Features.Agent.Model;    
     using System.Collections.Generic;
 
     public static class AgentExpectedData
     {
-        public static IEnumerable<int> ExpectedVerifySportsAgentPerformance
+        public static IEnumerable<UnflagAbnormalAgentEntity> ExpectedVerifySportsAgentPerformance
         {
             get
             {
-                return new List<int> { 461185, 898415, 58314 };
+                return new List<UnflagAbnormalAgentEntity> 
+                { 
+                    new UnflagAbnormalAgentEntity {  AgentID = 123, MemberWinloss = new decimal(4.1)},
+                    new UnflagAbnormalAgentEntity {  AgentID = 456, MemberWinloss = new decimal(5.6)}
+                };
             }
         }
 

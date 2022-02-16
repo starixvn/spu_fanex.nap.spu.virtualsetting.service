@@ -6,6 +6,8 @@
     {
         public int Sporttype { get; set; }
 
+        public bool IsTest { get; set; }
+
         public override string GetSettingKey()
         {
             return "Acc_VR_GetAdjustmentCustomerList";

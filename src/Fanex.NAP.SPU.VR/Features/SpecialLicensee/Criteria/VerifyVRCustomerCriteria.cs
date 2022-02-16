@@ -6,6 +6,8 @@
     {
         public string ListCustID { get; set; }
 
+        public bool IsTest { get; set; }
+
         public override string GetSettingKey()
         {
             return "Task_VRSetting_CheckAllSportsCustPerformance";

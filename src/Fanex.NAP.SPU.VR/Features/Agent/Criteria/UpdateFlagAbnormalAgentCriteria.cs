@@ -6,6 +6,8 @@
     {
         public int Type { get; set; }
 
+        public bool IsTest { get; set; }
+
         public override string GetSettingKey()
         {
             return "Acc_VR_AbnormalAgent_Flag";

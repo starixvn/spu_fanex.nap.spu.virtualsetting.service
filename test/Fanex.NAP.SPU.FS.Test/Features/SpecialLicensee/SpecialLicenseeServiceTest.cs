@@ -20,17 +20,17 @@
         }
 
         [Theory]
-        [InlineData(500)]
-        public void AutoAdjustForBasketball_WhenSuccess(int punterChunkSize)
+        [InlineData(500, false)]
+        public void AutoAdjustForBasketball_WhenSuccess(int punterChunkSize, bool isTest)
         {
-            service.AutoAdjustForBasketball(punterChunkSize);
+            service.AutoAdjustForBasketball(punterChunkSize, isTest);
         }
 
         [Theory]
-        [InlineData(500)]
-        public void AutoAdjustForSpecialSportsbook_WhenSuccess(int punterChunkSize)
+        [InlineData(500, false)]
+        public void AutoAdjustForSpecialSportsbook_WhenSuccess(int punterChunkSize, bool isTest)
         {
-            service.AutoAdjustForSpecialSportsbook(punterChunkSize);
+            service.AutoAdjustForSpecialSportsbook(punterChunkSize, isTest);
         }
     }
 }

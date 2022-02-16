@@ -9,13 +9,13 @@
 
     public interface IMemberBigStakeDataAccess
     {
-        MemberBigStakePerformanceModel GetMemberBigStakePerformance();
+        MemberBigStakePerformanceModel GetMemberBigStakePerformance(bool isTest);
 
-        void UpdateMemeberBigStakeFirstBetDate(string custIdList, int type, DateTime betDate);
+        void UpdateMemeberBigStakeFirstBetDate(string custIdList, int type, DateTime betDate, bool isTest);
 
-        void InsertMemberBigStake();
+        void InsertMemberBigStake(bool isTest);
 
-        void UpdateWhitelistMemberBigStake(string custIdList, int type);
+        void UpdateWhitelistMemberBigStake(string custIdList, int type, bool isTest);
 
         AutoMailBigCreditMemberModel GetBigCreditMemberForAutomail();
     }
@@ -29,9 +29,9 @@
             _repository = new DynamicRepository();
         }       
 
-        public MemberBigStakePerformanceModel GetMemberBigStakePerformance()
+        public MemberBigStakePerformanceModel GetMemberBigStakePerformance(bool isTest)
         {
-            var criteria = new CheckMemberBigStakePerformanceCriteria();
+            var criteria = new CheckMemberBigStakePerformanceCriteria { IsTest = isTest };
 
             var result = _repository.FetchMultiple<MemberBigStakePerformanceFirstDayEntity, MemberBigStakePerformanceStatusEntity>(criteria);
 
@@ -42,9 +42,9 @@
             };
         }
 
-        public void InsertMemberBigStake()
+        public void InsertMemberBigStake(bool isTest)
         {
-            var criteria = new InsertMemberBigStakeCriteria();
+            var criteria = new InsertMemberBigStakeCriteria { IsTest = isTest };
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
@@ -52,13 +52,14 @@
             }
         }
 
-        public void UpdateMemeberBigStakeFirstBetDate(string custIdList, int type, DateTime betDate)
+        public void UpdateMemeberBigStakeFirstBetDate(string custIdList, int type, DateTime betDate, bool isTest)
         {
             var criteria = new UpdateFirstBetDateVRMemberBigStakeCriteria
             {
                 CustIdList = custIdList,
                 Type = type,
-                BetDate = betDate
+                BetDate = betDate,
+                IsTest = isTest
             };
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
@@ -67,12 +68,13 @@
             }
         }
 
-        public void UpdateWhitelistMemberBigStake(string custIdList, int type)
+        public void UpdateWhitelistMemberBigStake(string custIdList, int type, bool isTest)
         {
             var criteria = new UpdateWhitelistVRMemberBigStakeCriteria
             {
                 CustIdList = custIdList,
                 Type = type,
+                IsTest = isTest
             };
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))

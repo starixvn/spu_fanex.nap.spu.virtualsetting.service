@@ -12,6 +12,14 @@
         public const string VSXmlForCustomerMarginHistory = "<Rate CustID=\"{0}\" ReportMonth=\"{1}\" ReportYear=\"{2}\" Turnover=\"{3}\"" +
                                                         " Winloss=\"{4}\" BetCount=\"{5}\" ServiceName=\"{6}\" />";
 
+        public const string VSXmlVRRoot = "<Root>{0}</Root>";
+
+        public const string VSXmlForCustomerUpdFollowParent = "<Row CustID=\"{0}\" WL=\"{1}\" TotalTO=\"{2}\" AIOTO=\"{3}\" />";
+
+        public const string VSXmlForAbnormalAgentUnflag = "<Row CustID=\"{0}\" TotalWL=\"{1}\" />";
+
+        public const string VSXmlForMemberBigStakeWhiteListUpd = "<Row CustID=\"{0}\" WL=\"{1}\" />";
+
         public const string VSNormalPunter = "Normal Punter(s)";
 
         public const string VSProPunter = "Pro Punter(s)";

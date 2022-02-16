@@ -46,6 +46,8 @@
 
         int RetryTimesSapaSportDangerLevelForUpdateDangerLevel { get; }
 
+        bool IsTest { get; }
+
     }
     public class AppSettings : IAppSettings
     {
@@ -89,6 +91,8 @@
 
         private readonly int retryTimesSapaSportDangerLevelForUpdateDangerLevel;
 
+        private readonly bool isTest;
+
         public AppSettings(IConfiguration configuration)
         {
             this.configuration = configuration;
@@ -130,6 +134,8 @@
             retryTimesSapaSportDangerLevelForCheckingDataReady = GetValue<int>("SapaSportDangerLevel:RetryTimesForCheckingDataReady");
 
             retryTimesSapaSportDangerLevelForUpdateDangerLevel = GetValue<int>("SapaSportDangerLevel:RetryTimesForUpdateDangerLevel");
+
+            isTest = GetValue<bool>(nameof(IsTest));
         }
 
         public int Environment
@@ -191,6 +197,8 @@
         public int RetryTimesSapaSportDangerLevelForCheckingDataReady => retryTimesSapaSportDangerLevelForCheckingDataReady;
 
         public int RetryTimesSapaSportDangerLevelForUpdateDangerLevel => retryTimesSapaSportDangerLevelForUpdateDangerLevel;
+
+        public bool IsTest => isTest;
 
         public T GetValue<T>(string key)
         {

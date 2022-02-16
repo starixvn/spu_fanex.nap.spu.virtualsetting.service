@@ -49,9 +49,9 @@
             {
                 try
                 {
-                    memberBigStakeServices.InsertMemberBigStake();
+                    memberBigStakeServices.InsertMemberBigStake(appSettings.IsTest);
 
-                    var memberBigStakePerformance = memberBigStakeServices.GetMemberBigStakePerformance();
+                    var memberBigStakePerformance = memberBigStakeServices.GetMemberBigStakePerformance(appSettings.IsTest);
 
                     UpdateMemberBigStakeFirstBetDate(memberBigStakePerformance);
 
@@ -90,6 +90,7 @@
         private void UpdateMemberBigStakeFirstBetDate(MemberBigStakePerformanceModel memberBigStakePerformance)
         {
             var countRetry = 0;
+            var isTest = appSettings.IsTest;
 
             while (countRetry < this.appSettings.RetryTime)
             {
@@ -103,7 +104,7 @@
 
                             custIds.ChunkList(500).ToList().ForEach(x =>
                             {
-                                memberBigStakeServices.UpdateMemberBigStakeFirstBetDate(x, 1, r.Key);
+                                memberBigStakeServices.UpdateMemberBigStakeFirstBetDate(x, 1, r.Key, isTest);
                             });
                         });
 
@@ -135,6 +136,7 @@
         private void UpdateMemberBigStakeStatus(MemberBigStakePerformanceModel memberBigStakePerformance)
         {
             var countRetry = 0;
+            var isTest = appSettings.IsTest;
 
             while (countRetry < this.appSettings.RetryTime)
             {
@@ -142,10 +144,17 @@
                 {
                     if (memberBigStakePerformance != null && memberBigStakePerformance.StatusList != null && memberBigStakePerformance.StatusList.Any())
                     {
-                        var custIdByStatus = memberBigStakePerformance.StatusList.Select(x => x.CustId);
+                        var custByStatus = memberBigStakePerformance.StatusList.Select(x => new MemberBigStakePerformanceStatusModel
+                        {
+                            CustID = x.CustID,
+                            WL = x.MemberWinloss
+                        });
 
-                        custIdByStatus.ChunkList(500).ToList().ForEach(x => {
-                            this.memberBigStakeServices.UpdateWhitelistMemberBigStake(custIdByStatus, 1);
+                        var custByStatusChunk = custByStatus.ChunkList(500).ToList();
+
+                        custByStatusChunk.ForEach(x =>
+                        {
+                            this.memberBigStakeServices.UpdateWhitelistMemberBigStake(x, 1, isTest);
                         });
 
                         var json = JsonConvert.SerializeObject(memberBigStakePerformance.StatusList);

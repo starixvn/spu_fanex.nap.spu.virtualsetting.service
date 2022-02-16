@@ -4,6 +4,8 @@
 
     public class InsertNewAgentAdjustCriteria : CriteriaBase
     {
+        public bool IsTest { get; set; }
+
         public override string GetSettingKey()
         {
             return "Acc_VR_AgentAutoAdjustment_Ins";

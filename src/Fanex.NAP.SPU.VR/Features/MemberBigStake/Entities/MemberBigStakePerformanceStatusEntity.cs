@@ -2,8 +2,10 @@
 {
     public class MemberBigStakePerformanceStatusEntity
     {
-        public long CustId { get; set; }
+        public long CustID { get; set; }
 
         public int Status { get; set; }
+
+        public decimal MemberWinloss { get; set; }
     }
 }
