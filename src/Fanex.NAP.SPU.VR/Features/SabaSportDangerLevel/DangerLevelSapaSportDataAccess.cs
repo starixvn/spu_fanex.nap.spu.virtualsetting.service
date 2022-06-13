@@ -36,15 +36,17 @@
         {
             var criteria = new SabaSportDangerLevelGetCriteria();
 
-            if (environment == (int)Environment.PRO)
-            {
-                criteria.IncludeUUS = 1;
-            }
+            //if (environment == (int)Environment.PRO)
+            //{
+            //    criteria.IncludeUUS = 1;
+            //}
 
-            if (environment == (int)Environment.UAT)
-            {
-                criteria.IncludeUUS = 0;
-            }
+            //if (environment == (int)Environment.UAT)
+            //{
+            //    criteria.IncludeUUS = 0;
+            //}
+
+            criteria.IncludeUUS = 1;
 
             return _repository.Fetch<SapaSportDangerLevelEntity>(criteria);
         }
@@ -56,17 +58,20 @@
                 CustsToXML = winLossSapaSportInfo.ToXmlString()
             };
 
-            if (environtment == (int)Environment.PRO)
-            {
-                criteria.Enviroment = "PRO";
-                criteria.IncludeUUS = 1;
-            }
+            //if (environtment == (int)Environment.PRO)
+            //{
+            //    criteria.Enviroment = "PRO";
+            //    criteria.IncludeUUS = 1;
+            //}
             
-            if (environtment == (int)Environment.UAT)
-            {
-                criteria.Enviroment = "UAT";
-                criteria.IncludeUUS = 0;
-            }    
+            //if (environtment == (int)Environment.UAT)
+            //{
+            //    criteria.Enviroment = "UAT";
+            //    criteria.IncludeUUS = 0;
+            //}
+
+            criteria.Enviroment = "LOCAL";
+            criteria.IncludeUUS = 1;
 
             _repository.Execute(criteria);
 
