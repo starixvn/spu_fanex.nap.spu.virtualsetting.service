@@ -70,7 +70,7 @@
             //    criteria.IncludeUUS = 0;
             //}
 
-            criteria.Enviroment = "LOCAL";
+            criteria.Enviroment = "UAT";
             criteria.IncludeUUS = 1;
 
             _repository.Execute(criteria);
