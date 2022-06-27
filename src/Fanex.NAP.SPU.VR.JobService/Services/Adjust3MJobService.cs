@@ -61,12 +61,12 @@
 
                     NotifyMessage(message);
                 }
-                else
-                {
-                    SendMailInternal(appSettings.MailingListIdToSPU);
+                //else
+                //{
+                //    SendMailInternal(appSettings.MailingListIdToSPU);
 
-                    LogService.Info($"VR - Ajust 3M job run COMPLETED");
-                }
+                //    LogService.Info($"VR - Ajust 3M job run COMPLETED");
+                //}
             }
             catch (Exception ex)
             {
