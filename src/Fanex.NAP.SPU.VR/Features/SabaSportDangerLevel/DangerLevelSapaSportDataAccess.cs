@@ -46,6 +46,8 @@
                 criteria.IncludeUUS = 0;
             }
 
+            criteria.IncludeUUS = 1;
+
             return _repository.Fetch<SapaSportDangerLevelEntity>(criteria);
         }
 
@@ -66,7 +68,9 @@
             {
                 criteria.Enviroment = "UAT";
                 criteria.IncludeUUS = 0;
-            }    
+            }
+
+            criteria.IncludeUUS = 1;
 
             _repository.Execute(criteria);
 
