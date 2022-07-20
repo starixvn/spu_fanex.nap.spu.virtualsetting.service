@@ -10,18 +10,18 @@ using System.Threading;
 
 namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
 {
-    public interface IDangerLevelSapaSportService
+    public interface IDangerLevelSabaSportService
     {
         bool IsDataSabaSportDangerLevelReady(int retryTimesCheckDataReady);
 
-        IDangerLevelSapaSportService Start();
+        IDangerLevelSabaSportService Start();
 
-        IDangerLevelSapaSportService GetSapaSportDangerLevel(int environtment);
+        IDangerLevelSabaSportService GetSapaSportDangerLevel(int environtment);
 
         UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize, ISentryClient sentryClient, int environtment);
     }
 
-    public class DangerLevelSapaSportService : IDangerLevelSapaSportService
+    public class DangerLevelSapaSportService : IDangerLevelSabaSportService
     {
         private readonly IDangerLevelSapaSportDataAccess dataAccess;
         private IEnumerable<SapaSportDangerLevelEntity> winlossSapaSportInfo;
@@ -31,7 +31,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
             this.dataAccess = dangerLevelSapaSportDataAccess;
         }
 
-        public IDangerLevelSapaSportService Start()
+        public IDangerLevelSabaSportService Start()
         {
             winlossSapaSportInfo = new List<SapaSportDangerLevelEntity>();
 
@@ -59,7 +59,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
             return false;
         }
 
-        public IDangerLevelSapaSportService GetSapaSportDangerLevel(int environtment)
+        public IDangerLevelSabaSportService GetSapaSportDangerLevel(int environtment)
         {
             winlossSapaSportInfo = dataAccess.GetSapaSportDangerLevel(environtment);
 

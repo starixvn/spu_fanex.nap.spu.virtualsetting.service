@@ -56,7 +56,7 @@
                 CustsToXML = winLossSapaSportInfo.ToXmlString()
             };
 
-            if (environtment == (int)Environment.PRO)
+            if (environtment == (int)Environment.PRO || environtment == (int)Environment.LOCAL)
             {
                 criteria.Enviroment = "PRO";
                 criteria.IncludeUUS = 1;

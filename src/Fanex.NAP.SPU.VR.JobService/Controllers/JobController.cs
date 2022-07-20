@@ -16,7 +16,7 @@
         private readonly IAgentJobService agentJobService;
         private readonly IMemberBigStakeJobService memberBigStakeJobService;
         private readonly IAdjust3MJobService adjust3MJobService;
-        private readonly ISapaSportDangerLevelJobService sapaSportDangerLevelJobService;
+        private readonly ISabaSportDangerLevelJobService sapaSportDangerLevelJobService;
 
         public JobController(ISentryClient sentryClient,
             ICustomerBetLimitJobService customerBetLimitJobService,
@@ -24,7 +24,7 @@
             IAgentJobService agentJobService,
             IMemberBigStakeJobService memberBigStakeJobService,
             IAdjust3MJobService adjust3MJobService,
-            ISapaSportDangerLevelJobService sapaSportDangerLevelJobService)
+            ISabaSportDangerLevelJobService sapaSportDangerLevelJobService)
         {
             this.sentryClient = sentryClient;
             this.customerBetLimitJobService = customerBetLimitJobService;
@@ -93,7 +93,7 @@
 
         [HttpPost("SapaSportDangerLevel")]
         public async Task<bool> SapaSportDangerLevel([FromForm] int batchSize)
-        {
+        { 
             return await this.sapaSportDangerLevelJobService.Execute(batchSize);
         }
     }

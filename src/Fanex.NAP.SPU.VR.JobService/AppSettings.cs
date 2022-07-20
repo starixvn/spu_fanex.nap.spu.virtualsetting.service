@@ -42,9 +42,9 @@
 
         int MailingListIdToSPU { get; }
 
-        int RetryTimesSapaSportDangerLevelForCheckingDataReady { get; }
+        int RetryTimesSabaSportDangerLevelForCheckingDataReady { get; }
 
-        int RetryTimesSapaSportDangerLevelForUpdateDangerLevel { get; }
+        int RetryTimesSabaSportDangerLevelForUpdateDangerLevel { get; }
 
         bool IsTest { get; }
 
@@ -194,9 +194,9 @@
 
         public int MailingListIdToSPU => mailingListIdToSPU;
 
-        public int RetryTimesSapaSportDangerLevelForCheckingDataReady => retryTimesSapaSportDangerLevelForCheckingDataReady;
+        public int RetryTimesSabaSportDangerLevelForCheckingDataReady => retryTimesSapaSportDangerLevelForCheckingDataReady;
 
-        public int RetryTimesSapaSportDangerLevelForUpdateDangerLevel => retryTimesSapaSportDangerLevelForUpdateDangerLevel;
+        public int RetryTimesSabaSportDangerLevelForUpdateDangerLevel => retryTimesSapaSportDangerLevelForUpdateDangerLevel;
 
         public bool IsTest => isTest;
 

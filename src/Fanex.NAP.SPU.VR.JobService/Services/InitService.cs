@@ -64,8 +64,8 @@
         private static void RegisterSapsSportDangerLevelService(this IServiceCollection services)
         {
             services.AddSingleton<IDangerLevelSapaSportDataAccess, DangerLevelSapaSportDataAccess>();
-            services.AddSingleton<IDangerLevelSapaSportService, DangerLevelSapaSportService>();
-            services.AddSingleton<ISapaSportDangerLevelJobService, SapaSportDangerLevelJobService>();
+            services.AddSingleton<IDangerLevelSabaSportService, DangerLevelSapaSportService>();
+            services.AddSingleton<ISabaSportDangerLevelJobService, SabaSportDangerLevelJobService>();
         }
     }
 }
