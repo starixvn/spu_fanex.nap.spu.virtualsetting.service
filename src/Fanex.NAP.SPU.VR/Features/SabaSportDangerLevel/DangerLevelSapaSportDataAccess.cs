@@ -36,7 +36,7 @@
         {
             var criteria = new SabaSportDangerLevelGetCriteria();
 
-            if (environment == (int)Environment.PRO)
+            if (environment == (int)Environment.PRO || environment == (int)Environment.LOCAL)
             {
                 criteria.IncludeUUS = 1;
             }
@@ -49,20 +49,20 @@
             return _repository.Fetch<SapaSportDangerLevelEntity>(criteria);
         }
 
-        public UpdateDangerResultEntity UpdateDangerLevelToMainDB(IEnumerable<SapaSportDangerLevelEntity> winLossSapaSportInfo, int environtment)
+        public UpdateDangerResultEntity UpdateDangerLevelToMainDB(IEnumerable<SapaSportDangerLevelEntity> winLossSapaSportInfo, int environment)
         {
             var criteria = new SabaSportDangerLevelUpdateCriteria
             {
                 CustsToXML = winLossSapaSportInfo.ToXmlString()
             };
 
-            if (environtment == (int)Environment.PRO || environtment == (int)Environment.LOCAL)
+            if (environment == (int)Environment.PRO || environment == (int)Environment.LOCAL)
             {
                 criteria.Enviroment = "PRO";
                 criteria.IncludeUUS = 1;
             }
             
-            if (environtment == (int)Environment.UAT)
+            if (environment == (int)Environment.UAT)
             {
                 criteria.Enviroment = "UAT";
                 criteria.IncludeUUS = 0;
