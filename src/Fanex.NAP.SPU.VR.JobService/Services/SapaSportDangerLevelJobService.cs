@@ -19,7 +19,7 @@
         private readonly ISentryClient sentryClient;
         private readonly IAppSettings appSettings;
         private readonly IDangerLevelSapaSportService service;
-        private string notifiedMessage = string.Empty;
+        private string notifiedMessage;
 
         public SapaSportDangerLevelJobService(ISentryClient sentryClient, IAppSettings appSettings, IDangerLevelSapaSportService service)
         {
@@ -30,7 +30,8 @@
 
         public Task<bool> Execute(int batchSize)
         {
-            var result = false;
+            bool result;
+            notifiedMessage = string.Empty;
 
             try
             {
@@ -47,6 +48,8 @@
                   $"\n\r - {ex.Message}";
 
                 sentryClient.CaptureMessage(logMessage, Sentry.Protocol.SentryLevel.Error);
+
+                result = false;
             }
 
             NotifyMessage();
