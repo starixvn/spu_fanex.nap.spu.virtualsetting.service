@@ -85,7 +85,7 @@
 
         private void NotifyMessage()
         {
-            if (!string.IsNullOrWhiteSpace(notifiedMessage))
+            if (!string.IsNullOrEmpty(notifiedMessage))
             {
                 var telegramService = new NotificationService();
                 telegramService
