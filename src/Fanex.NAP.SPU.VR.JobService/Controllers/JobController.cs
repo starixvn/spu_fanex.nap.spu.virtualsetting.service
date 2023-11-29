@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.SPU.VR.JobService.Controllers
 {
+    using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.VR.JobService.Services;
     using Microsoft.AspNetCore.Mvc;
     using Sentry;
@@ -80,7 +81,9 @@
         [HttpPost("WriteLog")]
         public void WriteLog(string jobName)
         {
-            sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");                    
+            sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
+
+            Utilities.NotifyMessage("TEST", "Please, this is TEST!", "PRO", "-1001400862084");
 
         }
 

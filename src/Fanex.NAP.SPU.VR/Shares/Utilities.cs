@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.SPU.CTS.Shares
 {
+    using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Shares;
     using System;
     using System.Collections.Generic;
@@ -84,6 +85,16 @@
             var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
 
             File.AppendAllText(filePath, string.Format("{0}{1}", content, System.Environment.NewLine));
+        }
+
+        public static void NotifyMessage(string message, string systemName, string environment, string groupId)
+        {
+            var telegramService = new NotificationService();
+            string proxy = environment == "PRO" ? "lisasqd.nebula.prod:8801" : null;
+            telegramService
+               .Config("0A40aOc7CtpzjbBSJu8KNWQRoXyjRvf9", groupId, "https://bot.nexdev.net/skynex/api/messages/forwardwithtoken", proxy)
+               .Message(new MessageModel(systemName, DateTime.Now, environment, message))
+               .SendWithoutDelay(isInfo: true);
         }
     }
 }

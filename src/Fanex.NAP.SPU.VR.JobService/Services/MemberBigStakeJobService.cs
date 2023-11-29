@@ -334,12 +334,8 @@
         private void NotifyMessage()
         {
             if (!string.IsNullOrWhiteSpace(notifiedMessage))
-            {
-                var telegramService = new NotificationService();
-                telegramService
-                   .Config("0A40aOc7CtpzjbBSJu8KNWQRoXyjRvf9", "-1001400862084")
-                   .Message(new MessageModel("VR - Member Big Stake", DateTime.Now, appSettings.EnvironmentString, notifiedMessage))
-                   .SendWithoutDelay(isInfo: true);
+            {                
+                Utilities.NotifyMessage(notifiedMessage, "VR - Member Big Stake", appSettings.EnvironmentString, "-1001400862084");
             }
         }
     }

@@ -143,12 +143,8 @@
         }
 
         private void NotifyMessage(string message)
-        {            
-            var telegramService = new NotificationService();
-            telegramService
-               .Config("0A40aOc7CtpzjbBSJu8KNWQRoXyjRvf9", "-1001400862084")
-               .Message(new MessageModel("VR - Adjust 3M", DateTime.Now, appSettings.EnvironmentString, message))
-               .SendWithoutDelay(isInfo: true);
+        {                        
+            Utilities.NotifyMessage(message, "VR - Adjust 3M", appSettings.EnvironmentString, "-1001400862084");
         }
 
         private void SendMailInternal(int mailingListId)

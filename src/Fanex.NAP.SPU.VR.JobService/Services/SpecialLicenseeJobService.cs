@@ -3,6 +3,7 @@
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
+    using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.SpecialLicensee;
     using Sentry;
@@ -73,15 +74,11 @@
 
         private void NotifyMessage()
         {
-            this.notifiedMessage = $"Auto special licensee job run COMPLETED." +
+            notifiedMessage = $"Auto special licensee job run COMPLETED." +
                  $"\n\r - OtherSports - Customers have passed Performance Check: {this.specialLicenseeService.PunterBasketballUpdated}" +
                  $"\n\r - Special SportBook - Customers have passed Performance Check: {this.specialLicenseeService.PunterSportsbookUpdated}";
-
-            var telegramService = new NotificationService();
-            telegramService
-               .Config("0A40aOc7CtpzjbBSJu8KNWQRoXyjRvf9", "-1001400862084")
-               .Message(new MessageModel("VR - Auto Update Special Licensee", DateTime.Now, appSettings.EnvironmentString, notifiedMessage))
-               .SendWithoutDelay(isInfo: true);
+           
+            Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Special Licensee", appSettings.EnvironmentString, "-1001400862084");
         }
 
     }
