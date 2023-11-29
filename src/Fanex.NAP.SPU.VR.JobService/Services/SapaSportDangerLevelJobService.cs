@@ -3,6 +3,7 @@
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
+    using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel;
     using Sentry;
@@ -86,12 +87,8 @@
         private void NotifyMessage()
         {
             if (!string.IsNullOrEmpty(notifiedMessage))
-            {
-                var telegramService = new NotificationService();
-                telegramService
-                   .Config("0A40aOc7CtpzjbBSJu8KNWQRoXyjRvf9", "-1001400862084")
-                   .Message(new MessageModel("VR - Auto Update Sapa Sport DangerLevel", DateTime.Now, appSettings.EnvironmentString, notifiedMessage))
-                   .SendWithoutDelay(isInfo: true);
+            {               
+                Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Sapa Sport DangerLevel", appSettings.EnvironmentString, "-1001400862084");
             }
         }
     }
