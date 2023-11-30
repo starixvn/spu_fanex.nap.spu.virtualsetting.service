@@ -46,7 +46,7 @@
                  
                     LogService.Info(this.notifiedMessage);
 
-                    this.NotifyMessage();
+                    this.NotifyMessage(this.notifiedMessage, true);
                 }
                 catch (System.Exception ex)
                 {
@@ -57,6 +57,8 @@
                     LogService.Error($"VR - Bet Limit job Execute exception message:  {logMessage}");
 
                     sentryClient.CaptureException(ex);
+
+                    this.NotifyMessage($"VR - Bet Limit job Execute exception message:  {ex.Message}", false);
 
                     countRetry += 1;
 
@@ -70,11 +72,11 @@
             return Task.FromResult(true);
         }
 
-        private void NotifyMessage()
+        private void NotifyMessage(string message, bool isInfo)
         {
-            if(!string.IsNullOrWhiteSpace(notifiedMessage))
+            if(!string.IsNullOrWhiteSpace(message))
             {                
-                Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Bet Limit", appSettings.EnvironmentString, "-1001400862084");
+                Utilities.NotifyMessage(message, "VR - Auto Update Bet Limit", appSettings.EnvironmentString, "-1001400862084", isInfo);
             }            
         }
 

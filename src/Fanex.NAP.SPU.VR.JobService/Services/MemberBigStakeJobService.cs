@@ -63,7 +63,7 @@
 
                     countRetry = appSettings.RetryTime + 1;                  
 
-                    NotifyMessage();
+                    NotifyMessage(this.notifiedMessage, true);
                 }
                 catch (Exception ex)
                 {
@@ -74,6 +74,8 @@
                         .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                     LogService.Error($"VR - Member Big Stake job Execute exeption message:  {logMessage}");
+
+                    NotifyMessage($"VR - Member Big Stake job Execute exeption message:  {ex.Message}", false);
 
                     countRetry += 1;
 
@@ -122,6 +124,8 @@
                      .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                     LogService.Error($"VR - Update First Bet Date Member Big Stake - Retry: {countRetry} message:  {logMessage}");
+
+                    NotifyMessage($"VR - Update First Bet Date Member Big Stake - Retry: {countRetry} message:  {ex.Message}", false);
 
                     countRetry += 1;
 
@@ -172,6 +176,8 @@
 
                     LogService.Error($"VR - Update White list Member Big Stake Status - Retry: {countRetry} message:  {logMessage}");
 
+                    NotifyMessage($"VR - Update White list Member Big Stake Status - Retry: {countRetry} message:  {ex.Message}", false);
+
                     countRetry += 1;
 
                     if (countRetry == this.appSettings.RetryTime)
@@ -213,6 +219,8 @@
                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error($"MemberBigStake - send mail exception: message:  {logMessage}");
+
+                NotifyMessage($"MemberBigStake - send mail exception: message:  {ex.Message}", false);
             }
         }
 
@@ -331,11 +339,11 @@
             MailClientHandler.Stop();
         }
 
-        private void NotifyMessage()
+        private void NotifyMessage(string message, bool isInfo)
         {
-            if (!string.IsNullOrWhiteSpace(notifiedMessage))
+            if (!string.IsNullOrWhiteSpace(message))
             {                
-                Utilities.NotifyMessage(notifiedMessage, "VR - Member Big Stake", appSettings.EnvironmentString, "-1001400862084");
+                Utilities.NotifyMessage(message, "VR - Member Big Stake", appSettings.EnvironmentString, "-1001400862084", isInfo);
             }
         }
     }

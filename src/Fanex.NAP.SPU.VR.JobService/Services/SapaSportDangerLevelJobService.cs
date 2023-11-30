@@ -48,12 +48,12 @@
                 this.notifiedMessage = $"Update Sapa Sport Danger Level job FAIL." +
                   $"\n\r - {ex.Message}";
 
-                sentryClient.CaptureMessage(logMessage, Sentry.Protocol.SentryLevel.Error);
+                sentryClient.CaptureMessage(logMessage, Sentry.Protocol.SentryLevel.Error);                
 
                 result = false;
             }
 
-            NotifyMessage();
+            NotifyMessage(this.notifiedMessage, false);
 
             return Task.FromResult(result);
         }
@@ -84,11 +84,11 @@
             return result.ErrorCode == 0;
         }
 
-        private void NotifyMessage()
+        private void NotifyMessage(string message, bool isInfo)
         {
-            if (!string.IsNullOrEmpty(notifiedMessage))
+            if (!string.IsNullOrEmpty(message))
             {               
-                Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Sapa Sport DangerLevel", appSettings.EnvironmentString, "-1001400862084");
+                Utilities.NotifyMessage(message, "VR - Auto Update Sapa Sport DangerLevel", appSettings.EnvironmentString, "-1001400862084", isInfo);
             }
         }
     }

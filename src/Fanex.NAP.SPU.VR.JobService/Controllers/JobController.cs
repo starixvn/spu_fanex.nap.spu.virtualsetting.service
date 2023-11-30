@@ -79,12 +79,11 @@
         }
 
         [HttpPost("WriteLog")]
-        public void WriteLog(string jobName)
+        public void WriteLog(string jobName, bool isInfo)
         {
             sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
 
-            Utilities.NotifyMessage("TEST", "Please, this is TEST!", "PRO", "-1001400862084");
-
+            Utilities.NotifyMessage("TEST", "Please, this is TEST!", "PRO", "-1001400862084", isInfo);
         }
 
         [HttpPost("WriteLog2")]

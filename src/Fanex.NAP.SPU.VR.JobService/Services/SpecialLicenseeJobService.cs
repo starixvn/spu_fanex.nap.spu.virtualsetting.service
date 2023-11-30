@@ -20,7 +20,6 @@
         private readonly ISentryClient sentryClient;
         private readonly IAppSettings appSettings;
         private readonly ISpecialLicenseeService specialLicenseeService;
-        private string notifiedMessage = string.Empty;
 
         public SpecialLicenseeJobService(ISentryClient sentryClient, IAppSettings appSettings, ISpecialLicenseeService specialLicenseeService)
         {
@@ -47,8 +46,8 @@
                     $"\n\r - Special SportBook - Customers have passed Performance Check: {this.specialLicenseeService.PunterSportsbookUpdated}";
 
                     LogService.Info(message);
-
-                    NotifyMessage();
+                   
+                    NotifyMessage(message, true);
                 }
                 catch (Exception ex)
                 {
@@ -59,6 +58,8 @@
                      .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                     LogService.Error($"VR - Special Licensee job Execute exception: message:  {logMessage}");
+
+                    NotifyMessage($"VR - Special Licensee job Execute exception: message:  {ex.Message}", false);
 
                     countRetry += 1;
 
@@ -72,13 +73,9 @@
             return Task.FromResult(true);
         }
 
-        private void NotifyMessage()
-        {
-            notifiedMessage = $"Auto special licensee job run COMPLETED." +
-                 $"\n\r - OtherSports - Customers have passed Performance Check: {this.specialLicenseeService.PunterBasketballUpdated}" +
-                 $"\n\r - Special SportBook - Customers have passed Performance Check: {this.specialLicenseeService.PunterSportsbookUpdated}";
-           
-            Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Special Licensee", appSettings.EnvironmentString, "-1001400862084");
+        private void NotifyMessage(string message, bool isInfo)
+        {           
+            Utilities.NotifyMessage(message, "VR - Auto Update Special Licensee", appSettings.EnvironmentString, "-1001400862084", isInfo);
         }
 
     }

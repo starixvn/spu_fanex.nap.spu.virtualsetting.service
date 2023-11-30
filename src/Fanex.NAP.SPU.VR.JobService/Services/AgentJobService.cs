@@ -60,7 +60,7 @@
 
                     countRetry = appSettings.RetryTime + 1;                    
 
-                    NotifyMessage();
+                    NotifyMessage($"VR - Agent job Execute COMPLETED", true);
                 }
                 catch (Exception ex)
                 {
@@ -69,6 +69,8 @@
                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                     LogService.Error($"VR - Agent job Execute exception message:  {logMessage}");
+
+                    NotifyMessage($"VR - Agent job Execute exception message:  {ex.Message}", false);
 
                     sentryClient.CaptureException(ex);
 
@@ -120,11 +122,11 @@
             LogService.Info("VR - Agent - List Cust Update Unflag Abnormal Agent: " + customerListString);
         }
 
-        private void NotifyMessage()
+        private void NotifyMessage(string message, bool isInfo)
         {
-            if (!string.IsNullOrWhiteSpace(notifiedMessage))
+            if (!string.IsNullOrWhiteSpace(message))
             {               
-                Utilities.NotifyMessage(notifiedMessage, "VR - Auto Agent Ajust", appSettings.EnvironmentString, "-1001400862084");
+                Utilities.NotifyMessage(notifiedMessage, "VR - Auto Agent Ajust", appSettings.EnvironmentString, "-1001400862084", isInfo);
             }
         }
 
@@ -154,6 +156,8 @@
                 var message = $"VR - Auto Agent Adjustment service - SendMailExternal exception: { ex.Message } with body content: { body }";
 
                 LogService.Error(message, ex);
+
+                NotifyMessage($"VR - Auto Agent Adjustment service - SendMailExternal exception:  {ex.Message}", false);
             }
         }
 
@@ -192,6 +196,8 @@
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();           
 
                 LogService.Error($"VR - Auto Agent Adjustment service - GenerateMailBody exception: message:  {logMessage}");
+
+                NotifyMessage($"VR - Auto Agent Adjustment service - GenerateMailBody exception: message:  {ex.Message}", false);
             }
 
             return body;

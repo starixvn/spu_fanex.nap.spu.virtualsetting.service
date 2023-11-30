@@ -87,14 +87,14 @@
             File.AppendAllText(filePath, string.Format("{0}{1}", content, System.Environment.NewLine));
         }
 
-        public static void NotifyMessage(string message, string systemName, string environment, string groupId)
+        public static void NotifyMessage(string message, string systemName, string environment, string groupId, bool isInfo)
         {
             var telegramService = new NotificationService();
             string proxy = environment == "PRO" ? "lisasqd.nebula.prod:8801" : null;
             telegramService
                .Config("0A40aOc7CtpzjbBSJu8KNWQRoXyjRvf9", groupId, "https://bot.nexdev.net/skynex/api/messages/forwardwithtoken", proxy)
                .Message(new MessageModel(systemName, DateTime.Now, environment, message))
-               .SendWithoutDelay(isInfo: true);
+               .SendWithoutDelay(isInfo: isInfo);
         }
     }
 }

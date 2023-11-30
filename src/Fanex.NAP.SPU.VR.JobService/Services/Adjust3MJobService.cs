@@ -59,7 +59,7 @@
 
                     LogService.Info(message);
 
-                    NotifyMessage(message);
+                    NotifyMessage(message, true);
                 }
                 //else
                 //{
@@ -77,6 +77,8 @@
                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error($"VR - Ajust 3M job Execute exception message:  {logMessage}");
+
+                NotifyMessage($"VR - Ajust 3M job Execute exception message:  {ex.Message}", false);
             }
 
             return Task.FromResult(true);
@@ -142,9 +144,9 @@
             return countAffected;
         }
 
-        private void NotifyMessage(string message)
+        private void NotifyMessage(string message, bool isInfo)
         {                        
-            Utilities.NotifyMessage(message, "VR - Adjust 3M", appSettings.EnvironmentString, "-1001400862084");
+            Utilities.NotifyMessage(message, "VR - Adjust 3M", appSettings.EnvironmentString, "-1001400862084", isInfo);
         }
 
         private void SendMailInternal(int mailingListId)
@@ -168,6 +170,8 @@
                   .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error($"VR - Ajust 3M job SendMailInternal exception message:  {logMessage}");
+
+                NotifyMessage($"VR - Ajust 3M job SendMailInternal exception message:  {ex.Message}", false);
 
                 throw;
             }
@@ -200,6 +204,8 @@
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error($"VR - Adjust 3M job SendMail exeption TotalAffectedMembers: {puntersUpdated} at start time { startTime } message:  {logMessage}");
+
+                NotifyMessage($"VR - Adjust 3M job SendMail exeption TotalAffectedMembers: {puntersUpdated} at start time { startTime } message:  {ex.Message}", false);
 
                 throw;
             }
