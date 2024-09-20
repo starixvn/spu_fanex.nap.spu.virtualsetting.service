@@ -40,6 +40,7 @@
 		<Setting Key="NAP_Report_CustMngt_GetCustomerMarginHistory" SpName="NAP_Report_CustMngt_GetCustomerMarginHistory" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="600" />
 		<Setting Key="NAP_UserLog_InsertCustomerMarginHistory" SpName="NAP_UserLog_InsertCustomerMarginHistory" DbName="DBLOG.bodb_CustomerLog.bodbAdminNet" TimeOut="600" />
 		<Setting Key="Acc_CustomerVirtualRateSelectBA" SpName="Acc_CustomerVirtualRateSelectBA" DbName="DBLIC.bodb_Licensee.bodbAdminNet" TimeOut="600" />
+    <Setting Key="Acc_CustVRGetLicenseeBA" SpName="Acc_CustVRGetLicenseeBA" DbName="DBLIC.bodb_Licensee.bodbAdminNet" TimeOut="600" />
 	</Function>
 
 	<Function Name="SapaSportDangerLevel">

@@ -19,11 +19,13 @@
 
         IEnumerable<PunterEntity> GetWinningPunterList(string siteIds, string superIds, double virtualRateThreshold);
 
-        DataResult UpdatePunterVirtualSetting(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip, short sportType);
+        DataResult UpdatePunterVirtualSetting(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip, short sportType, string jsonBACust);
 
         DataResult LogPunterVirtualSetting(string serviceName, IEnumerable<PunterEntity> punters, int userId, DateTime adjustDate);
 
         DataResult InsertCustomerMarginHistory(IEnumerable<PunterEntity> punters, byte sportGroupID, int numOfMonth, string serviceName, DateTime adjustDate);
+
+        IEnumerable<LicenseeBAEntity> GetLicenseeBACusts();
     }
 
     public class Adjust3MDataAccess : IAdjust3MDataAccess
@@ -79,7 +81,7 @@
             return this.repository.Fetch<PunterEntity>(criteria);            
         }
 
-        public DataResult UpdatePunterVirtualSetting(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip, short sportType)
+        public DataResult UpdatePunterVirtualSetting(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip, short sportType, string jsonBACust)
         {
             var cusIds = string.Join(",", punters.Select(x => x.CustID));
 
@@ -88,7 +90,8 @@
                 VirtualMultiplier = Utilities.GenerateVirtualSettingXmlForUpdating(cusIds, virtualMultiplier),
                 UserId = userId,
                 IP = ip,
-                SportType = sportType
+                SportType = sportType,
+                JsonBACust = jsonBACust
             };
 
             using (var objectDb = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
@@ -203,6 +206,13 @@
                     ErrorMessage = criteria.ErrMsg
                 };
             }
+        }
+
+        public IEnumerable<LicenseeBAEntity> GetLicenseeBACusts()
+        {
+            var criteria = new GetLicenseeBACriteria();
+
+            return this.repository.Fetch<LicenseeBAEntity>(criteria);
         }
 
         //#region Data Test
