@@ -9,6 +9,7 @@
     using Fanex.NAP.SPU.VR.Features.Adjust3M;
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Entities;
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Model;
+    using Fanex.NAP.SPU.VR.Shares;
     using Sentry;
     using System;
     using System.Linq;
@@ -44,14 +45,19 @@
                 {
                     var startTime = DateTime.Now;
 
-                    var puntersUpdatedSoccer = UpdateVRForSoccer();
+                    var jsonLicenseeBACusts = this.soccerService.GetLicenseeBACusts();
 
-                    var puntersUpdatedSportbooks = UpdateForSportbooks();
+                    var puntersUpdatedSoccer = UpdateVRForSoccer(jsonLicenseeBACusts);
 
-                    SendMail(appSettings.Adjust3MMailingListId
+                    var puntersUpdatedSportbooks = UpdateForSportbooks(jsonLicenseeBACusts);
+
+                    if (appSettings.Environment == (int)Consts.Environment.PRO)
+                    {
+                        SendMail(appSettings.Adjust3MMailingListId
                         , startTime
                         , stopTime
                         , (puntersUpdatedSoccer + puntersUpdatedSportbooks));
+                    }                    
 
                     var message = $"VR - Auto adjust 3M job run COMPLETED." +
                       $"\n\r - Members updated for soccer: {puntersUpdatedSoccer}" +
@@ -60,13 +66,7 @@
                     LogService.Info(message);
 
                     NotifyMessage(message);
-                }
-                //else
-                //{
-                //    SendMailInternal(appSettings.MailingListIdToSPU);
-
-                //    LogService.Info($"VR - Ajust 3M job run COMPLETED");
-                //}
+                }              
             }
             catch (Exception ex)
             {
@@ -91,20 +91,21 @@
             return adjust3MExecutedDate.Contains(currentDate.Day);
         }
 
-        private int UpdateVRForSoccer()
+        private int UpdateVRForSoccer(string jsonLicenseeBACusts)
         {
             var updateVirtualSettingEntity = new UpdateVirtualSettingEntity
             {
                 DummyUser = appSettings.Adjust3MDummyUser,
                 IP = appSettings.Adjust3MIP,
                 PunterChunkSize = appSettings.Adjust3MPunterChunkSize
-            };
+            };            
 
             var countAffected = this.soccerService
                     .InitModel(appSettings.Adjust3MSiteIds
                             , appSettings.Adjust3MSuperIds
                             , DateTime.Now
-                            , appSettings.Adjust3MVirtualRateThresholdForWinning)
+                            , appSettings.Adjust3MVirtualRateThresholdForWinning
+                            , jsonLicenseeBACusts)
                     .AutoAdjust(updateVirtualSettingEntity
                             , appSettings.Adjust3MNewVirtualMultiplierForSuperProPunter
                             , appSettings.Adjust3MNewVirtualMultiplierForWinning)
@@ -117,7 +118,7 @@
             return countAffected;
         }
 
-        public int UpdateForSportbooks()
+        public int UpdateForSportbooks(string jsonLicenseeBACusts)
         {
             var updateVirtualSettingEntity = new UpdateVirtualSettingEntity
             {
@@ -130,7 +131,8 @@
                      .InitModel(appSettings.Adjust3MSiteIds
                              , appSettings.Adjust3MSuperIds
                              , DateTime.Now
-                             , appSettings.Adjust3MVirtualRateThresholdForWinning)
+                             , appSettings.Adjust3MVirtualRateThresholdForWinning
+                             , jsonLicenseeBACusts)
                      .AutoAdjust(updateVirtualSettingEntity
                              , appSettings.Adjust3MNewVirtualMultiplierForWinning)
                      .GetCountAffected();

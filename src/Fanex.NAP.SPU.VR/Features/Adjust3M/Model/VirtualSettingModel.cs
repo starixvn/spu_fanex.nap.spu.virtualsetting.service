@@ -20,7 +20,9 @@
 
         public int DummyUser { get; set; }
 
-        public double VirtualRateThreshold { get; set; }        
+        public double VirtualRateThreshold { get; set; }
+
+        public string JsonLicenseeBACusts { get; set; }
 
         public List<PunterEntity> FailedUpdatePunterList { get; set; }
 

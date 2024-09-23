@@ -24,6 +24,8 @@
 
         IPunterService AdjustVirtualSettingForNormal(UpdateVirtualSettingEntity updateVirtualSetting, double newVirtualRate);
 
+        string GetLicenseeBACusts();
+
         int CountAffected();
     }
 
@@ -35,7 +37,7 @@
         private IEnumerable<PunterEntity> _punters { get; set; }
         private Dictionary<int, PunterEntity> _puntersDict;
         private IEnumerable<PunterEntity> _proPuntersUpdated;
-        private IEnumerable<PunterEntity> _normalPuntersUpdated;
+        private IEnumerable<PunterEntity> _normalPuntersUpdated;       
 
         public PunterService(IAdjust3MDataAccess dataAccess, VirtualSettingModel model, bool soccer = false)
         {
@@ -170,6 +172,13 @@
             return this;
         }
 
+        public string GetLicenseeBACusts()
+        {
+            var licenseeBACusts = _dataAccess.GetLicenseeBACusts();
+
+            return JsonConvert.SerializeObject(licenseeBACusts);
+        }
+
         public int CountAffected()
         {
             if (_proPuntersUpdated != null && _normalPuntersUpdated != null)
@@ -189,25 +198,21 @@
                 return 0;
             }            
         }
-
+       
         public IEnumerable<PunterEntity> UpdateVirtualSetting(IEnumerable<PunterEntity> punters, UpdateVirtualSettingEntity updateVirtualSetting, double newVirtualRate)
         {
             var userId = updateVirtualSetting.DummyUser;
             var ip = updateVirtualSetting.IP;
             var chunkSize = updateVirtualSetting.PunterChunkSize;
             var chunkPunters = punters.Partition(chunkSize);
-
-            var licenseeBACusts = _dataAccess.GetLicenseeBACusts();
-
-            var jsonBACusts = JsonConvert.SerializeObject(licenseeBACusts);
-
+           
             foreach (var selectedPunters in chunkPunters)
             {
                 try
                 {
                     DetectBAAccounts(newVirtualRate, selectedPunters);
 
-                    var updateResult = UpdatePunterVirtualSetting(selectedPunters, newVirtualRate, userId, ip, jsonBACusts);
+                    var updateResult = UpdatePunterVirtualSetting(selectedPunters, newVirtualRate, userId, ip, this._model.JsonLicenseeBACusts);
 
                     if (!updateResult)
                     {

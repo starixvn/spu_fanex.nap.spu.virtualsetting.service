@@ -6,7 +6,7 @@
     {
         public override string GetSettingKey()
         {
-            return "Acc_CustomerVirtualRateSelectBA";
+            return "Acc_CustVRGetLicenseeBA";
         }
 
         public override bool IsValid()
