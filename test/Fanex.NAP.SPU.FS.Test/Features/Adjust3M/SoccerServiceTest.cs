@@ -25,7 +25,7 @@
         public void InitModel_WhenSuccess(string siteIds, string superIds, DateTime adjustDate, double virtualRateThresholdForWinning)
         {
             // Act
-            var result = service.InitModel(siteIds, superIds, adjustDate, virtualRateThresholdForWinning);
+            var result = service.InitModel(siteIds, superIds, adjustDate, virtualRateThresholdForWinning, string.Empty);
 
             // Assert
             Assert.IsAssignableFrom<ISoccerService>(result);
@@ -44,7 +44,7 @@
             };
 
             // Act
-            service.InitModel(siteIds, superIds, adjustDate, virtualRateThresholdForWinning);
+            service.InitModel(siteIds, superIds, adjustDate, virtualRateThresholdForWinning, string.Empty);
 
             var result = service.AutoAdjust(updateVirtualSettingEntity, 1, 1);
 

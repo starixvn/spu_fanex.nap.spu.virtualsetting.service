@@ -12,6 +12,8 @@
 
         public short SportType { get; set; }
 
+        public string JsonBACust { get; set; }
+
         public int ErrCode { get; set; }
 
         public string ErrMsg { get; set; }

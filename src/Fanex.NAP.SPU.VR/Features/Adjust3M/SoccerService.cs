@@ -2,16 +2,19 @@
 {
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Entities;
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Model;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
 
     public interface ISoccerService
     {        
-        ISoccerService InitModel(string siteIds, string superIds, DateTime adjustDate, double virtualRateThresholdForWinning);
+        ISoccerService InitModel(string siteIds, string superIds, DateTime adjustDate, double virtualRateThresholdForWinning, string jsonLicenseeBACusts);
 
         ISoccerService AutoAdjust(UpdateVirtualSettingEntity updateVirtualSetting
            , double newVirtualMultiplierForSuperProPunter
            , double NewVirtualMultiplierForWinning);
+
+        string GetLicenseeBACusts();
 
         int GetCountAffected();
     }
@@ -26,7 +29,7 @@
             this.dataAccess = dataAccess;
         }
 
-        public ISoccerService InitModel(string siteIds, string superIds, DateTime adjustDate, double virtualRateThresholdForWinning)
+        public ISoccerService InitModel(string siteIds, string superIds, DateTime adjustDate, double virtualRateThresholdForWinning, string jsonLicenseeBACusts)
         {
             var model = new VirtualSettingModel
             {
@@ -36,13 +39,14 @@
                 SiteIds = siteIds,
                 SuperIds = superIds,
                 VirtualRateThreshold = virtualRateThresholdForWinning,
+                JsonLicenseeBACusts = jsonLicenseeBACusts,
                 FailedUpdatePunterList = new List<PunterEntity>()
             };
 
             this.punterService = new PunterService(this.dataAccess, model, true);
 
             return this;
-        }
+        }        
 
         public ISoccerService AutoAdjust(UpdateVirtualSettingEntity updateVirtualSetting
             , double newVirtualMultiplierForSuperProPunter
@@ -58,6 +62,13 @@
 
             return this;
         }
+
+        public string GetLicenseeBACusts()
+        {
+            var licenseeBACusts = this.dataAccess.GetLicenseeBACusts();
+
+            return JsonConvert.SerializeObject(licenseeBACusts);
+        }        
 
         public int GetCountAffected()
         {

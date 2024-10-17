@@ -23,6 +23,18 @@
 		<Setting Key="Acc_VR_MemberBigStake_FirstBetDate_Upd" SpName="Acc_VR_MemberBigStake_FirstBetDate_Upd_xtest" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
 		<Setting Key="Acc_VR_MemberBigStake_WhiteList_Upd" SpName="Acc_VR_MemberBigStake_WhiteList_Upd_xtest" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
 	</Function>
+
+  <Function Name="Adjust3M">
+    <Setting Key="NAP_Report_CustMngt_GetProPunters" SpName="NAP_Report_CustMngt_GetProPunters_xtest" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="300" />
+    <Setting Key="NAP_Report_CustMngt_GetProPunters_Soccer" SpName="NAP_Report_CustMngt_GetProPunters_Soccer_xtest" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="300" />
+    <Setting Key="Acc_CustomerUpdVirtualMultiplier_Multiple" SpName="Acc_CustomerUpdVirtualMultiplier_Multiple_xtest" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
+    <Setting Key="NAP_UserLog_UpdateVirtualRateSettings" SpName="NAP_UserLog_UpdateVirtualRateSettings_xtest" DbName="DBLOG.bodb_CustomerLog.bodbAdminNet" TimeOut="300" />
+    <Setting Key="NAP_Report_CustMngt_GetCustomersVirtualRate" SpName="NAP_Report_CustMngt_GetCustomersVirtualRate_xtest" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
+    <Setting Key="NAP_Report_CustMngt_GetCustomerMarginHistory" SpName="NAP_Report_CustMngt_GetCustomerMarginHistory_xtest" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="300" />
+    <Setting Key="NAP_UserLog_InsertCustomerMarginHistory" SpName="NAP_UserLog_InsertCustomerMarginHistory_xtest" DbName="DBLOG.bodb_CustomerLog.bodbAdminNet" TimeOut="300" />
+    <Setting Key="Acc_CustomerVirtualRateSelectBA" SpName="Acc_CustomerVirtualRateSelectBA_xtest" DbName="DBLIC.bodb_Licensee.bodbAdminNet" TimeOut="300" />
+    <Setting Key="Acc_CustVRGetLicenseeBA" SpName="Acc_CustVRGetLicenseeBA_xtest" DbName="DBLIC.bodb_Licensee.bodbAdminNet" TimeOut="600" />
+  </Function>
 	
 	<Function Name="SapaSportDangerLevel">
 		<Setting Key="Acc_Rpt_SABASportsDangerLevel_CheckDataReady" SpName="Acc_Rpt_SABASportsDangerLevel_CheckDataReady_xtest" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="600" />

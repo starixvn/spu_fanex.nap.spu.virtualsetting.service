@@ -24,6 +24,8 @@
 
         IPunterService AdjustVirtualSettingForNormal(UpdateVirtualSettingEntity updateVirtualSetting, double newVirtualRate);
 
+        string GetLicenseeBACusts();
+
         int CountAffected();
     }
 
@@ -35,7 +37,7 @@
         private IEnumerable<PunterEntity> _punters { get; set; }
         private Dictionary<int, PunterEntity> _puntersDict;
         private IEnumerable<PunterEntity> _proPuntersUpdated;
-        private IEnumerable<PunterEntity> _normalPuntersUpdated;
+        private IEnumerable<PunterEntity> _normalPuntersUpdated;       
 
         public PunterService(IAdjust3MDataAccess dataAccess, VirtualSettingModel model, bool soccer = false)
         {
@@ -170,6 +172,13 @@
             return this;
         }
 
+        public string GetLicenseeBACusts()
+        {
+            var licenseeBACusts = _dataAccess.GetLicenseeBACusts();
+
+            return JsonConvert.SerializeObject(licenseeBACusts);
+        }
+
         public int CountAffected()
         {
             if (_proPuntersUpdated != null && _normalPuntersUpdated != null)
@@ -189,21 +198,21 @@
                 return 0;
             }            
         }
-
+       
         public IEnumerable<PunterEntity> UpdateVirtualSetting(IEnumerable<PunterEntity> punters, UpdateVirtualSettingEntity updateVirtualSetting, double newVirtualRate)
         {
             var userId = updateVirtualSetting.DummyUser;
             var ip = updateVirtualSetting.IP;
             var chunkSize = updateVirtualSetting.PunterChunkSize;
             var chunkPunters = punters.Partition(chunkSize);
-
+           
             foreach (var selectedPunters in chunkPunters)
             {
                 try
                 {
                     DetectBAAccounts(newVirtualRate, selectedPunters);
 
-                    var updateResult = UpdatePunterVirtualSetting(selectedPunters, newVirtualRate, userId, ip);
+                    var updateResult = UpdatePunterVirtualSetting(selectedPunters, newVirtualRate, userId, ip, this._model.JsonLicenseeBACusts);
 
                     if (!updateResult)
                     {
@@ -287,29 +296,29 @@
             return new List<CustomerVirtualRateEntity>();
         }
 
-        private bool UpdatePunterVirtualSetting(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip)
+        private bool UpdatePunterVirtualSetting(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip, string jsonBACust)
         {
 
             if (_soccer)
             {
-                var result = _dataAccess.UpdatePunterVirtualSetting(punters, virtualMultiplier, userId, ip, 1);
+                var result = _dataAccess.UpdatePunterVirtualSetting(punters, virtualMultiplier, userId, ip, 1, jsonBACust);
 
                 return string.IsNullOrEmpty(result.ErrorMessage);
             }
             else
             {
-                return UpdatePunterVirtualSettingForAllSports(punters, virtualMultiplier, userId, ip) &&
-                            UpdatePunterVirtualSettingForOtherSports(punters, virtualMultiplier, userId, ip);
+                return UpdatePunterVirtualSettingForAllSports(punters, virtualMultiplier, userId, ip, jsonBACust) &&
+                            UpdatePunterVirtualSettingForOtherSports(punters, virtualMultiplier, userId, ip, jsonBACust);
             }
         }
 
-        private bool UpdatePunterVirtualSettingForAllSports(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip)
+        private bool UpdatePunterVirtualSettingForAllSports(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip, string jsonBACust)
         {
             var puntersForAllSports = punters.Where(p => p.SportType == 0);
 
             if (puntersForAllSports != null && puntersForAllSports.Any())
             {
-                var result = _dataAccess.UpdatePunterVirtualSetting(puntersForAllSports, virtualMultiplier, userId, ip, 0);
+                var result = _dataAccess.UpdatePunterVirtualSetting(puntersForAllSports, virtualMultiplier, userId, ip, 0, jsonBACust);
 
                 var isSuccessful = string.IsNullOrEmpty(result.ErrorMessage);
 
@@ -324,13 +333,13 @@
             return true;
         }
 
-        private bool UpdatePunterVirtualSettingForOtherSports(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip)
+        private bool UpdatePunterVirtualSettingForOtherSports(IEnumerable<PunterEntity> punters, double virtualMultiplier, int userId, string ip, string jsonBACust)
         {
             var puntersForOtherSports = punters.Where(p => p.SportType == 2);
 
             if (puntersForOtherSports != null && puntersForOtherSports.Any())
             {
-                var result = _dataAccess.UpdatePunterVirtualSetting(puntersForOtherSports, virtualMultiplier, userId, ip, 2);
+                var result = _dataAccess.UpdatePunterVirtualSetting(puntersForOtherSports, virtualMultiplier, userId, ip, 2, jsonBACust);
 
                 var isSuccessful = string.IsNullOrEmpty(result.ErrorMessage);
 

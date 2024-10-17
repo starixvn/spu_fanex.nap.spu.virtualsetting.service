@@ -9,7 +9,7 @@
     {
         int GetCountAffected();
 
-        ISportsbookService InitModel(string siteIds, string superIds, DateTime adjustDate, double virtualRateThresholdForWinning);
+        ISportsbookService InitModel(string siteIds, string superIds, DateTime adjustDate, double virtualRateThresholdForWinning, string jsonLicenseeBACusts);
 
         ISportsbookService AutoAdjust(UpdateVirtualSettingEntity updateVirtualSetting, double NewVirtualMultiplierForWinning);
     }
@@ -24,7 +24,7 @@
             this.dataAccess = dataAccess;
         }
 
-        public ISportsbookService InitModel(string siteIds, string superIds, DateTime adjustDate, double virtualRateThresholdForWinning)
+        public ISportsbookService InitModel(string siteIds, string superIds, DateTime adjustDate, double virtualRateThresholdForWinning, string jsonLicenseeBACusts)
         {
             var model = new VirtualSettingModel
             {
@@ -34,6 +34,7 @@
                 SiteIds = siteIds,
                 SuperIds = superIds,
                 VirtualRateThreshold = virtualRateThresholdForWinning,
+                JsonLicenseeBACusts = jsonLicenseeBACusts,
                 FailedUpdatePunterList = new List<PunterEntity>(),
             };
             
