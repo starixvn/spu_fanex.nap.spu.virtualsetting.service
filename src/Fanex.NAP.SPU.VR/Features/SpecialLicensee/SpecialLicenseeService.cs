@@ -38,7 +38,7 @@
         {
             var passedPerfCheckCustomerList = Enumerable.Empty<PassedPerfCheckCustomerModel>();
             var customerList = this.specialLicenseeDataAccess.GetSpecialSportBookVRAdjustmentCustomers(99, isTest).ToList();
-
+            
             if (customerList.Any())
             {
                 var customerListString = string.Join(",", customerList);
@@ -46,7 +46,7 @@
                 var (custUpdFirstBetDateSportsbook,
                     custUpdFirstBetDateBasketball,
                     passedPerfCheckCustomers, 
-                    unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString, isTest);
+                    unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString, isTest);            
 
                 if (custUpdFirstBetDateBasketball != null && custUpdFirstBetDateBasketball.Any())
                 {
@@ -79,10 +79,7 @@
             var passedPerfCheckCustomerList = Enumerable.Empty<PassedPerfCheckCustomerModel>();
 
             var customerList = this.specialLicenseeDataAccess.GetSpecialSportBookVRAdjustmentCustomers(100, isTest).ToList();
-
-            // hard code for test
-            customerList = new List<int>() { 44673531, 44673532 }.ToList();
-
+          
             if (customerList.Any())
             {
                 var customerListString = string.Join(",", customerList);
