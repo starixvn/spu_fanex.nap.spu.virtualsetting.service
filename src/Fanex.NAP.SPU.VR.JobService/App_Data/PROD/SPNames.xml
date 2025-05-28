@@ -13,6 +13,7 @@
 		<Setting Key="Acc_VR_CustomerUpdFollowParent" SpName="Acc_VR_CustomerUpdFollowParent" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="600" />
 		<Setting Key="Acc_VR_CustomerUpdAutoAdjustmentStatus" SpName="Acc_VR_CustomerUpdAutoAdjustmentStatus" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
 		<Setting Key="Task_VRSetting_CheckAllSportsCustPerformance" SpName="Task_VRSetting_CheckAllSportsCustPerformance" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="600" />
+    <Setting Key="Acc_VR_CustomerUpdFirstBetDate" SpName="Acc_VR_CustomerUpdFirstBetDate" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
 	</Function>
 
 	<Function Name="Agent">

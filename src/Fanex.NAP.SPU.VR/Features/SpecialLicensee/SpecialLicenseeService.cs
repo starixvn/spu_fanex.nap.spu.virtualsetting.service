@@ -43,7 +43,15 @@
             {
                 var customerListString = string.Join(",", customerList);
 
-                var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString, isTest);
+                var (custUpdFirstBetDateSportsbook,
+                    custUpdFirstBetDateBasketball,
+                    passedPerfCheckCustomers, 
+                    unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString, isTest);
+
+                if (custUpdFirstBetDateBasketball != null && custUpdFirstBetDateBasketball.Any())
+                {
+                    specialLicenseeDataAccess.UpdateFirstBetDateCustomers(custUpdFirstBetDateBasketball, isTest);
+                }
 
                 if (passedPerfCheckCustomers != null && passedPerfCheckCustomers.Any())
                 {
@@ -72,13 +80,24 @@
 
             var customerList = this.specialLicenseeDataAccess.GetSpecialSportBookVRAdjustmentCustomers(100, isTest).ToList();
 
+            // hard code for test
+            customerList = new List<int>() { 44673531, 44673532 }.ToList();
+
             if (customerList.Any())
             {
                 var customerListString = string.Join(",", customerList);
 
                 LogService.Info($"VR - Special Licensee SportBook - IsTest { isTest }, Raw Customer list: {customerListString}");
 
-                var (passedPerfCheckCustomers, unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString, isTest);               
+                var (custUpdFirstBetDateSportsbook,
+                    custUpdFirstBetDateBasketball,
+                    passedPerfCheckCustomers, 
+                    unpassedPerfCheckCustomers) = this.specialLicenseeDataAccess.VerifyVRAdjustmentCustomers(customerListString, isTest);
+
+                if (custUpdFirstBetDateSportsbook !=null && custUpdFirstBetDateSportsbook.Any())
+                {
+                    specialLicenseeDataAccess.UpdateFirstBetDateCustomers(custUpdFirstBetDateSportsbook, isTest);
+                }
 
                 if (passedPerfCheckCustomers != null && passedPerfCheckCustomers.Any())
                 {

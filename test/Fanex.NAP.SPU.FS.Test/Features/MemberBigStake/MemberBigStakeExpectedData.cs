@@ -24,8 +24,8 @@
             get
             {
                 return new List<object[]> {
-                    new object[] { new List<long> { 123, 456 }, 1, DateTime.Now },
-                    new object[] { new List<long> { 789 }, 2, new DateTime(2021, 05, 01) }
+                    new object[] { new List<long> { 123, 456 }, 1, DateTime.Now, true },
+                    new object[] { new List<long> { 789 }, 2, new DateTime(2021, 05, 01), false }
                 };
             }
         }
