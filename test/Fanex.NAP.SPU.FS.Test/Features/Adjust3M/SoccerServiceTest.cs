@@ -1,11 +1,10 @@
 ﻿namespace Fanex.NAP.SPU.VR.Tests.Features.Adjust3M
 {
+    using Fanex.Logging;
     using Fanex.NAP.SPU.VR.Features.Adjust3M;
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Entities;
-    using FluentAssertions;
     using NSubstitute;
     using System;
-    using System.Collections.Generic;
     using Xunit;
 
     public class SoccerServiceTest
@@ -15,6 +14,13 @@
 
         public SoccerServiceTest()
         {
+            // Setup test logging          
+            var logEngine = Substitute.For<ILogEngine>();
+
+            LogManager
+                .SetDefaultLogCategory("")
+                .Use(logEngine);
+
             dataAccess = Substitute.For<IAdjust3MDataAccess>();
 
             service = new SoccerService(dataAccess);
