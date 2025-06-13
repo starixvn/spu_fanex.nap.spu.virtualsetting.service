@@ -37,8 +37,8 @@
 
             return new MemberBigStakePerformanceModel
             {
-                FirstBetDateList = result.firstResultSet,
-                StatusList = result.secondResultSet
+                FirstBetDateList = result.FirstResultSet,
+                StatusList = result.SecondResultSet
             };
         }
 
@@ -87,12 +87,12 @@
         {
             var criteria = new AutoMailBigCreditMemberCriteria();
 
-            var result = _repository.FetchMultiple<AutomailBigCreditMemberEntity, AutomailBigCreditMemberEntity>(criteria);
+            var result = _repository.FetchMultiple<AutomailBigCreditMemberEntity, AutomailBigCreditMemberEntity>(criteria,"");
 
             return new AutoMailBigCreditMemberModel
             {
-                BigCreditMemberList = result.firstResultSet,
-                BigCreditMemberWithBigLossList = result.secondResultSet
+                BigCreditMemberList = result.FirstResultSet,
+                BigCreditMemberWithBigLossList = result.SecondResultSet
             };
         }
     }

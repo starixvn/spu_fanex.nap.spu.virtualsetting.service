@@ -2,51 +2,51 @@
 
 <Functions>
 	<Function Name="BetLimit">
-		<Setting Key="Task_BetLimit_CheckCustPerformance" SpName="Task_BetLimit_CheckCustPerformance" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="300" />
-		<Setting Key="NAP_BLControl_GetPerformanceCheckList" SpName="NAP_BLControl_GetPerformanceCheckList" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
-		<Setting Key="NAP_BLControl_PerformanceChecking_ReduceBetLimit" SpName="NAP_BLControl_PerformanceChecking_ReduceBetLimit" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
-		<Setting Key="NAP_BLControl_PerformanceChecking_RemoveBetLimit" SpName="NAP_BLControl_PerformanceChecking_RemoveBetLimit" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
+		<Setting Key="Task_BetLimit_CheckCustPerformance" SpName="Task_BetLimit_CheckCustPerformance" DbName="DBDW.bodb_dwrs.wsv_nap" TimeOut="300" />
+		<Setting Key="NAP_BLControl_GetPerformanceCheckList" SpName="NAP_BLControl_GetPerformanceCheckList" DbName="DBCust.CustDB.wsv_nap" TimeOut="300" />
+		<Setting Key="NAP_BLControl_PerformanceChecking_ReduceBetLimit" SpName="NAP_BLControl_PerformanceChecking_ReduceBetLimit" DbName="DBCust.CustDB.wsv_nap" TimeOut="300" />
+		<Setting Key="NAP_BLControl_PerformanceChecking_RemoveBetLimit" SpName="NAP_BLControl_PerformanceChecking_RemoveBetLimit" DbName="DBCust.CustDB.wsv_nap" TimeOut="300" />
 	</Function>
 
 	<Function Name="SpecialLicensee">
-		<Setting Key="Acc_VR_GetAdjustmentCustomerList" SpName="Acc_VR_GetAdjustmentCustomerList" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="600" />
-		<Setting Key="Acc_VR_CustomerUpdFollowParent" SpName="Acc_VR_CustomerUpdFollowParent" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="600" />
-		<Setting Key="Acc_VR_CustomerUpdAutoAdjustmentStatus" SpName="Acc_VR_CustomerUpdAutoAdjustmentStatus" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
-		<Setting Key="Task_VRSetting_CheckAllSportsCustPerformance" SpName="Task_VRSetting_CheckAllSportsCustPerformance" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="600" />
-    <Setting Key="Acc_VR_CustomerUpdFirstBetDate" SpName="Acc_VR_CustomerUpdFirstBetDate" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
+		<Setting Key="Acc_VR_GetAdjustmentCustomerList" SpName="Acc_VR_GetAdjustmentCustomerList" DbName="DBCust.CustDB.wsv_nap" TimeOut="600" />
+		<Setting Key="Acc_VR_CustomerUpdFollowParent" SpName="Acc_VR_CustomerUpdFollowParent" DbName="DBCust.CustDB.wsv_nap" TimeOut="600" />
+		<Setting Key="Acc_VR_CustomerUpdAutoAdjustmentStatus" SpName="Acc_VR_CustomerUpdAutoAdjustmentStatus" DbName="DBCust.CustDB.wsv_nap" TimeOut="300" />
+		<Setting Key="Task_VRSetting_CheckAllSportsCustPerformance" SpName="Task_VRSetting_CheckAllSportsCustPerformance" DbName="DBDW.bodb_dwrs.wsv_nap" TimeOut="600" />
+    <Setting Key="Acc_VR_CustomerUpdFirstBetDate" SpName="Acc_VR_CustomerUpdFirstBetDate" DbName="DBCust.CustDB.wsv_nap" TimeOut="300" />
 	</Function>
 
 	<Function Name="Agent">
-		<Setting Key="Task_VRSetting_CheckAllSportsAgentPerformance" SpName="Task_VRSetting_CheckAllSportsAgentPerformance" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="300" />
-		<Setting Key="Acc_Rpt_Automail_AgentsGotVRUpdated" SpName="Acc_Rpt_Automail_AgentsGotVRUpdated" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="300" />
-		<Setting Key="Acc_VR_AgentAutoAdjustment_Ins" SpName="Acc_VR_AgentAutoAdjustment_Ins" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="600" />
-		<Setting Key="Acc_VR_AbnormalAgent_Flag" SpName="Acc_VR_AbnormalAgent_Flag" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
-		<Setting Key="Acc_VR_AbnormalAgent_Unflag" SpName="Acc_VR_AbnormalAgent_Unflag" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
+		<Setting Key="Task_VRSetting_CheckAllSportsAgentPerformance" SpName="Task_VRSetting_CheckAllSportsAgentPerformance" DbName="DBDW.bodb_dwrs.wsv_nap" TimeOut="300" />
+		<Setting Key="Acc_Rpt_Automail_AgentsGotVRUpdated" SpName="Acc_Rpt_Automail_AgentsGotVRUpdated" DbName="DBDW.bodb_dwrs.wsv_nap" TimeOut="300" />
+		<Setting Key="Acc_VR_AgentAutoAdjustment_Ins" SpName="Acc_VR_AgentAutoAdjustment_Ins" DbName="DBCust.CustDB.wsv_nap" TimeOut="600" />
+		<Setting Key="Acc_VR_AbnormalAgent_Flag" SpName="Acc_VR_AbnormalAgent_Flag" DbName="DBCust.CustDB.wsv_nap" TimeOut="300" />
+		<Setting Key="Acc_VR_AbnormalAgent_Unflag" SpName="Acc_VR_AbnormalAgent_Unflag" DbName="DBCust.CustDB.wsv_nap" TimeOut="300" />
 	</Function>
 
 	<Function Name="MemberBigStake">
-		<Setting Key="Task_VRSetting_CheckMemberBigStakePerformance" SpName="Task_VRSetting_CheckMemberBigStakePerformance" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="600" />
-		<Setting Key="Acc_Rpt_Automail_BigCreditMembers" SpName="Acc_Rpt_Automail_BigCreditMembers" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="300" />
-		<Setting Key="Acc_VR_MemberBigStake_Ins" SpName="Acc_VR_MemberBigStake_Ins" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
-		<Setting Key="Acc_VR_MemberBigStake_FirstBetDate_Upd" SpName="Acc_VR_MemberBigStake_FirstBetDate_Upd" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
-		<Setting Key="Acc_VR_MemberBigStake_WhiteList_Upd" SpName="Acc_VR_MemberBigStake_WhiteList_Upd" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="300" />
+		<Setting Key="Task_VRSetting_CheckMemberBigStakePerformance" SpName="Task_VRSetting_CheckMemberBigStakePerformance" DbName="DBDW.bodb_dwrs.wsv_nap" TimeOut="600" />
+		<Setting Key="Acc_Rpt_Automail_BigCreditMembers" SpName="Acc_Rpt_Automail_BigCreditMembers" DbName="DBDW.bodb_dwrs.wsv_nap" TimeOut="300" />
+		<Setting Key="Acc_VR_MemberBigStake_Ins" SpName="Acc_VR_MemberBigStake_Ins" DbName="DBCust.CustDB.wsv_nap" TimeOut="300" />
+		<Setting Key="Acc_VR_MemberBigStake_FirstBetDate_Upd" SpName="Acc_VR_MemberBigStake_FirstBetDate_Upd" DbName="DBCust.CustDB.wsv_nap" TimeOut="300" />
+		<Setting Key="Acc_VR_MemberBigStake_WhiteList_Upd" SpName="Acc_VR_MemberBigStake_WhiteList_Upd" DbName="DBCust.CustDB.wsv_nap" TimeOut="300" />
 	</Function>
 
 	<Function Name="Adjust3M">
-		<Setting Key="NAP_Report_CustMngt_GetProPunters" SpName="NAP_Report_CustMngt_GetProPunters" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="600" />
-		<Setting Key="NAP_Report_CustMngt_GetProPunters_Soccer" SpName="NAP_Report_CustMngt_GetProPunters_Soccer" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="600" />
-		<Setting Key="Acc_CustomerUpdVirtualMultiplier_Multiple" SpName="Acc_CustomerUpdVirtualMultiplier_Multiple" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="600" />
-		<Setting Key="NAP_UserLog_UpdateVirtualRateSettings" SpName="NAP_UserLog_UpdateVirtualRateSettings" DbName="DBLOG.bodb_CustomerLog.bodbAdminNet" TimeOut="600" />
-		<Setting Key="NAP_Report_CustMngt_GetCustomersVirtualRate" SpName="NAP_Report_CustMngt_GetCustomersVirtualRate" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="600" />
-		<Setting Key="NAP_Report_CustMngt_GetCustomerMarginHistory" SpName="NAP_Report_CustMngt_GetCustomerMarginHistory" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="600" />
-		<Setting Key="NAP_UserLog_InsertCustomerMarginHistory" SpName="NAP_UserLog_InsertCustomerMarginHistory" DbName="DBLOG.bodb_CustomerLog.bodbAdminNet" TimeOut="600" />
-		<Setting Key="Acc_CustomerVirtualRateSelectBA" SpName="Acc_CustomerVirtualRateSelectBA" DbName="DBLIC.bodb_Licensee.bodbAdminNet" TimeOut="600" />
-    <Setting Key="Acc_CustVRGetLicenseeBA" SpName="Acc_CustVRGetLicenseeBA" DbName="DBLIC.bodb_Licensee.bodbAdminNet" TimeOut="600" />
+		<Setting Key="NAP_Report_CustMngt_GetProPunters" SpName="NAP_Report_CustMngt_GetProPunters" DbName="DBDW.bodb_dwrs.wsv_nap" TimeOut="600" />
+		<Setting Key="NAP_Report_CustMngt_GetProPunters_Soccer" SpName="NAP_Report_CustMngt_GetProPunters_Soccer" DbName="DBDW.bodb_dwrs.wsv_nap" TimeOut="600" />
+		<Setting Key="Acc_CustomerUpdVirtualMultiplier_Multiple" SpName="Acc_CustomerUpdVirtualMultiplier_Multiple" DbName="DBCust.CustDB.wsv_nap" TimeOut="600" />
+		<Setting Key="NAP_UserLog_UpdateVirtualRateSettings" SpName="NAP_UserLog_UpdateVirtualRateSettings" DbName="DBLOG.bodb_CustomerLog.wsv_nap" TimeOut="600" />
+		<Setting Key="NAP_Report_CustMngt_GetCustomersVirtualRate" SpName="NAP_Report_CustMngt_GetCustomersVirtualRate" DbName="DBCust.CustDB.wsv_nap" TimeOut="600" />
+		<Setting Key="NAP_Report_CustMngt_GetCustomerMarginHistory" SpName="NAP_Report_CustMngt_GetCustomerMarginHistory" DbName="DBDW.bodb_dwrs.wsv_nap" TimeOut="600" />
+		<Setting Key="NAP_UserLog_InsertCustomerMarginHistory" SpName="NAP_UserLog_InsertCustomerMarginHistory" DbName="DBLOG.bodb_CustomerLog.wsv_nap" TimeOut="600" />
+		<Setting Key="Acc_CustomerVirtualRateSelectBA" SpName="Acc_CustomerVirtualRateSelectBA" DbName="DBLIC.bodb_Licensee.wsv_nap" TimeOut="600" />
+    <Setting Key="Acc_CustVRGetLicenseeBA" SpName="Acc_CustVRGetLicenseeBA" DbName="DBLIC.bodb_Licensee.wsv_nap" TimeOut="600" />
 	</Function>
 
 	<Function Name="SapaSportDangerLevel">
-		<Setting Key="Acc_Rpt_SABASportsDangerLevel_CheckDataReady" SpName="Acc_Rpt_SABASportsDangerLevel_CheckDataReady" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="600" />
-		<Setting Key="Acc_Rpt_SABASportsDangerLevel_GetData" SpName="Acc_Rpt_SABASportsDangerLevel_GetData" DbName="DBDW.bodb_dwrs.bodbAdminNet" TimeOut="600" />
-		<Setting Key="Acc_CustomerUpdDangerLevel" SpName="Acc_CustomerUpdDangerLevel" DbName="DBCust.CustDB.bodbAdminNet" TimeOut="600" />
+		<Setting Key="Acc_Rpt_SABASportsDangerLevel_CheckDataReady" SpName="Acc_Rpt_SABASportsDangerLevel_CheckDataReady" DbName="DBDW.bodb_dwrs.wsv_nap" TimeOut="600" />
+		<Setting Key="Acc_Rpt_SABASportsDangerLevel_GetData" SpName="Acc_Rpt_SABASportsDangerLevel_GetData" DbName="DBDW.bodb_dwrs.wsv_nap" TimeOut="600" />
+		<Setting Key="Acc_CustomerUpdDangerLevel" SpName="Acc_CustomerUpdDangerLevel" DbName="DBCust.CustDB.wsv_nap" TimeOut="600" />
 	</Function>
 </Functions>
