@@ -2,9 +2,11 @@
 {
     using Fanex.Data;
     using Fanex.Data.Repository;
+    using Fanex.Logging;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Criteria;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Entities;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Model;
+    using Newtonsoft.Json;
     using System;
 
     public interface IMemberBigStakeDataAccess
@@ -34,7 +36,7 @@
             var criteria = new CheckMemberBigStakePerformanceCriteria { IsTest = isTest };
 
             var result = _repository.FetchMultiple<MemberBigStakePerformanceFirstDayEntity, MemberBigStakePerformanceStatusEntity>(criteria);
-
+           
             return new MemberBigStakePerformanceModel
             {
                 FirstBetDateList = result.FirstResultSet,
