@@ -57,7 +57,7 @@
 
                     UpdateMemberBigStakeStatus(memberBigStakePerformance);
 
-                    //SendMail(this.appSettings.MailingListIdAgentAjust);
+                    SendMail(this.appSettings.MailingListIdAgentAjust);
 
                     LogService.Info($"VR - Member Big Stake job run COMPLETED");
 
