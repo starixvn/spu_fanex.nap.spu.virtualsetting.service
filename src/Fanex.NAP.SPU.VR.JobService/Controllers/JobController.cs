@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.SPU.VR.JobService.Controllers
 {
+    using Fanex.Logging;
     using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.VR.JobService.Services;
     using Microsoft.AspNetCore.Mvc;
@@ -90,8 +91,9 @@
         [HttpPost("WriteLog2")]
         public void WriteLog2(string jobName)
         {
-            sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
+            LogService.Error($"{jobName} is running at {DateTime.Now}");
 
+            sentryClient.CaptureException(new Exception($"{jobName} is running at {DateTime.Now}"));
         }
 
         [HttpPost("SapaSportDangerLevel")]
