@@ -49,7 +49,8 @@
 
                     var puntersUpdatedSportbooks = UpdateForSportbooks(jsonLicenseeBACusts);
 
-                    if (appSettings.Environment == (int)Consts.Environment.PRO)
+                    if (appSettings.Environment == (int)Consts.Environment.PRO 
+                        || appSettings.Environment == (int)Consts.Environment.KLDR)
                     {
                         SendMail(appSettings.Adjust3MMailingListId
                         , startTime

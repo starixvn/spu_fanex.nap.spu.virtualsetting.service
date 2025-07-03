@@ -30,7 +30,7 @@
 
         public const string VSSportbook = "Sport book";
 
-        public const int SleepTime_SapaSportCheckDangerLevel = 1200;
+        public const int SleepTime_SapaSportCheckDangerLevel = 120000;
 
         public const int SleepTime_SapaSportUpdateDangerLevel = 60000;
 
@@ -38,7 +38,8 @@
         {
             LOCAL = 1,
             UAT = 2,
-            PRO = 3
+            PRO = 3,
+            KLDR = 4
         }
 
     }
