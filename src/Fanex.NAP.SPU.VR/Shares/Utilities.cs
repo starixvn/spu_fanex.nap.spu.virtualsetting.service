@@ -89,12 +89,12 @@
 
         public static void NotifyMessage(string message, string systemName, string environment, string groupId)
         {
-            var telegramService = new NotificationService();
-            string proxy = environment == "PRO" ? "lisasqd.nebula.prod:8801" : null;
-            telegramService
+            var notificationService = new NotificationService();
+            string proxy = new HashSet<string> { "PRO", "KLDR" }.Contains(environment) ? "iusqd.gamora.prod:8801" : null;
+            notificationService
                .Config("0A40aOc7CtpzjbBSJu8KNWQRoXyjRvf9", groupId, "https://bot.nexdev.net/skynex/api/messages/forwardwithtoken", proxy)
                .Message(new MessageModel(systemName, DateTime.Now, environment, message))
-               .SendWithoutDelay(isInfo: true);
+               .SendWithoutDelay();
         }
     }
 }

@@ -6,12 +6,9 @@
     using Fanex.MailDelivery.Client;
     using Fanex.MailDelivery.Core.Models;
     using Fanex.NAP.SPU.CTS.Shares;
-    using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.Agent;
     using Fanex.NAP.SPU.VR.Features.Agent.Entities;
-    using Fanex.NAP.SPU.VR.Features.Agent.Model;
-    using Newtonsoft.Json;
-    using Sentry;    
+    using Fanex.NAP.SPU.VR.Features.Agent.Model;  
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -25,15 +22,13 @@
     public class AgentJobService : IAgentJobService
     {
         private const string VSMailInformNoAgentAffectTemplate = @"MailTemplate/Agent/MailInformNoAgentAffectTemplate.cshtml";
-        private const string VSMailInformTemplate = @"MailTemplate/Agent/MailInformTemplate.cshtml";
-        private readonly ISentryClient sentryClient;
+        private const string VSMailInformTemplate = @"MailTemplate/Agent/MailInformTemplate.cshtml";        
         private readonly IAppSettings appSettings;
         private readonly IAgentService agentService;           
         private string notifiedMessage = string.Empty;       
 
-        public AgentJobService(ISentryClient sentryClient, IAppSettings appSettings, IAgentService agentService)
+        public AgentJobService(IAppSettings appSettings, IAgentService agentService)
         {
-            this.sentryClient = sentryClient;
             this.appSettings = appSettings;
             this.agentService = agentService;           
         }
@@ -68,9 +63,7 @@
                        .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                    LogService.Error($"VR - Agent job Execute exception message:  {logMessage}");
-
-                    sentryClient.CaptureException(ex);
+                    LogService.Error($"VR - Agent job Execute exception message:  {logMessage}");  
 
                     countRetry += 1;
 
@@ -124,7 +117,7 @@
         {
             if (!string.IsNullOrWhiteSpace(notifiedMessage))
             {               
-                Utilities.NotifyMessage(notifiedMessage, "VR - Auto Agent Ajust", appSettings.EnvironmentString, "-1001400862084");
+                Utilities.NotifyMessage(notifiedMessage, "VR - Auto Agent Ajust", appSettings.EnvironmentString, appSettings.LogGroupID);
             }
         }
 
@@ -181,7 +174,7 @@
 
                 body = string.Format(body, html);
 
-                this.notifiedMessage = $"Auto update member big stake job run COMPLETED." +
+                this.notifiedMessage = $"✅ Auto update member big stake job run COMPLETED." +
                    $"\n\r - Member updated to zero: {updatedToZeroList.Count()}" +
                    $"\n\r - Member updated to follow supper: {updatedToFollowSupperList.Count()}";
             }

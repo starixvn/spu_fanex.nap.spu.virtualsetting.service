@@ -1,7 +1,6 @@
 ﻿namespace Fanex.NAP.SPU.VR.JobService.Controllers
 {
     using Fanex.Logging;
-    using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.VR.JobService.Services;
     using Microsoft.AspNetCore.Mvc;
     using Sentry;
@@ -11,8 +10,7 @@
     [ApiController]
     [Route("api/job")]
     public class JobController : ControllerBase
-    {
-        private readonly ISentryClient sentryClient;
+    {        
         private readonly ICustomerBetLimitJobService customerBetLimitJobService;
         private readonly ISpecialLicenseeJobService specialLicenseeJobService;
         private readonly IAgentJobService agentJobService;
@@ -20,15 +18,13 @@
         private readonly IAdjust3MJobService adjust3MJobService;
         private readonly ISapaSportDangerLevelJobService sapaSportDangerLevelJobService;
 
-        public JobController(ISentryClient sentryClient,
-            ICustomerBetLimitJobService customerBetLimitJobService,
+        public JobController(ICustomerBetLimitJobService customerBetLimitJobService,
             ISpecialLicenseeJobService specialLicenseeJobService,
             IAgentJobService agentJobService,
             IMemberBigStakeJobService memberBigStakeJobService,
             IAdjust3MJobService adjust3MJobService,
             ISapaSportDangerLevelJobService sapaSportDangerLevelJobService)
-        {
-            this.sentryClient = sentryClient;
+        {          
             this.customerBetLimitJobService = customerBetLimitJobService;
             this.specialLicenseeJobService = specialLicenseeJobService;
             this.agentJobService = agentJobService;
@@ -40,7 +36,7 @@
         [HttpPost("betlimit")]
         public async Task<bool> BetLimit(string jobName)
         {
-            sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
+            LogService.Info($"{jobName} is running at {DateTime.Now}");
 
             return await this.customerBetLimitJobService.Execute();
 
@@ -49,7 +45,7 @@
         [HttpPost("memberbigstake")]
         public async Task<bool> MemberBigStake(string jobName)
         {
-            sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
+            LogService.Info($"{jobName} is running at {DateTime.Now}");
 
             return await this.memberBigStakeJobService.Execute();
         }
@@ -57,7 +53,7 @@
         [HttpPost("spaciallicensee")]
         public async Task<bool> SpecialLicensee(string jobName)
         {
-            sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
+            LogService.Info($"{jobName} is running at {DateTime.Now}");
 
             return await this.specialLicenseeJobService.Execute();
         }
@@ -65,7 +61,7 @@
         [HttpPost("agent")]
         public async Task<bool> Agent(string jobName)
         {
-            sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
+            LogService.Info($"{jobName} is running at {DateTime.Now}");
 
             return await this.agentJobService.Execute();
         }
@@ -73,28 +69,19 @@
         [HttpPost("adjustvrsetting")]
         public async Task<bool>AdjustVRSetting (string jobName)
         {
-            sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
+            LogService.Info($"{jobName} is running at {DateTime.Now}");
 
             return await this.adjust3MJobService.Execute();
 
         }
 
         [HttpPost("WriteLog")]
-        public void WriteLog(string jobName)
+        public void WriteLog(string message)
         {
-            sentryClient.CaptureMessage($"{jobName} is running at {DateTime.Now}");
+            LogService.Error($"✅ {message} is test error at {DateTime.Now}");
 
-            Utilities.NotifyMessage("TEST", "Please, this is TEST!", "PRO", "-1001400862084");
-
-        }
-
-        [HttpPost("WriteLog2")]
-        public void WriteLog2(string jobName)
-        {
-            LogService.Error($"{jobName} is running at {DateTime.Now}");
-
-            sentryClient.CaptureException(new Exception($"{jobName} is running at {DateTime.Now}"));
-        }
+            LogService.Info($"✅ {message} is test info at {DateTime.Now}");
+        }       
 
         [HttpPost("SapaSportDangerLevel")]
         public async Task<bool> SapaSportDangerLevel([FromForm] int batchSize)

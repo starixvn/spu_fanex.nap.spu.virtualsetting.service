@@ -48,6 +48,8 @@
 
         bool IsTest { get; }
 
+        string LogGroupID { get; }
+
     }
     public class AppSettings : IAppSettings
     {
@@ -93,6 +95,8 @@
 
         private readonly bool isTest;
 
+        private readonly string logGroupID;
+
         public AppSettings(IConfiguration configuration)
         {
             this.configuration = configuration;
@@ -136,6 +140,8 @@
             retryTimesSapaSportDangerLevelForUpdateDangerLevel = GetValue<int>("SapaSportDangerLevel:RetryTimesForUpdateDangerLevel");
 
             isTest = GetValue<bool>(nameof(IsTest));
+
+            logGroupID = GetValue<string>(nameof(LogGroupID));
         }
 
         public int Environment
@@ -199,6 +205,8 @@
         public int RetryTimesSapaSportDangerLevelForUpdateDangerLevel => retryTimesSapaSportDangerLevelForUpdateDangerLevel;
 
         public bool IsTest => isTest;
+
+        public string LogGroupID => logGroupID;
 
         public T GetValue<T>(string key)
         {

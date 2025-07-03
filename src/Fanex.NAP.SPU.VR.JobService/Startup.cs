@@ -1,11 +1,9 @@
 namespace Fanex.NAP.SPU.VR.JobService
 {
     using Fanex.Data;
-    using Fanex.Data.MySql;
     using Fanex.Data.SqlServer;
     using Fanex.Logging;
-    using Fanex.Logging.Sentry;
-    using Fanex.MailDelivery.Client;
+    using Fanex.Logging.Sentry.RavenClient;
     using Fanex.NAP.SPU.VR.JobService.Services;
     using HealthChecks.UI.Client;
     using Microsoft.AspNetCore.Builder;
@@ -18,7 +16,6 @@ namespace Fanex.NAP.SPU.VR.JobService
     using Sentry;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
 
     public class Startup
     {
@@ -34,6 +31,7 @@ namespace Fanex.NAP.SPU.VR.JobService
         {
             var appSettings = new AppSettings(this.Configuration);
 
+            services.AddFanexLogSentry(Configuration);
             services.AddSingleton<IAppSettings>(appSettings);
 
             services.AddControllers();
@@ -47,9 +45,7 @@ namespace Fanex.NAP.SPU.VR.JobService
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Fanex.NAP.SPU.VR.JobService", Version = "v1" });
             });
 
-            services.RegisterService();
-
-            RegisterLogging(appSettings);
+            services.RegisterService();            
 
             FanexDataConfig(appSettings);
         }
@@ -88,20 +84,6 @@ namespace Fanex.NAP.SPU.VR.JobService
               .WithSqlServer(Configuration)
               .UseDefaultDbSettingProvider(resourcePath: appSettings.SPName)
               .Run();
-        }
-
-        private void RegisterLogging(IAppSettings appSettings)
-        {
-            LogManager
-                .SetDefaultLogCategory("")
-                .Use(new List<ILogEngine>
-                {
-                     new SentryLogging(new SentryEngineOptions {
-                        Dsn = new Dsn(appSettings.SentryDsn),
-                        Environment = "DEV"
-                     })
-                });
-        }
-      
+        }       
     }
 }

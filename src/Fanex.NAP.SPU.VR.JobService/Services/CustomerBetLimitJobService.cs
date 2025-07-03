@@ -17,15 +17,13 @@
     }
 
     public class CustomerBetLimitJobService: ICustomerBetLimitJobService
-    {
-        private readonly ISentryClient sentryClient;
+    {       
         private readonly IAppSettings appSettings;
         private readonly IBetLimitService betLimitService;
         private string notifiedMessage = string.Empty;
         
-        public CustomerBetLimitJobService(ISentryClient sentryClient, IAppSettings appSettings, IBetLimitService betLimitService)
-        {
-            this.sentryClient = sentryClient;           
+        public CustomerBetLimitJobService(IAppSettings appSettings, IBetLimitService betLimitService)
+        {          
             this.appSettings = appSettings;
             this.betLimitService = betLimitService;
         }
@@ -55,9 +53,7 @@
                       .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                     LogService.Error($"VR - Bet Limit job Execute exception message:  {logMessage}");
-
-                    sentryClient.CaptureException(ex);
-
+                    
                     countRetry += 1;
 
                     if (countRetry == appSettings.RetryTime)
@@ -74,13 +70,13 @@
         {
             if(!string.IsNullOrWhiteSpace(notifiedMessage))
             {                
-                Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Bet Limit", appSettings.EnvironmentString, "-1001400862084");
+                Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Bet Limit", appSettings.EnvironmentString, appSettings.LogGroupID);
             }            
         }
 
         private void StartTime()
         {
-            this.sentryClient.CaptureMessage("Start executing for Auto Update Bet Limit.");
+            LogService.Info("Start executing for Auto Update Bet Limit.");          
         }
 
         private void UpdateBetLimit()
@@ -96,7 +92,7 @@
                 betLimitService.RemoveBetLimit(removeBetLimitCustomers, appSettings.PunterChunkSize);
                 betLimitService.UpdateBetLimit(updateBetLimitCustomer, appSettings.PunterChunkSize);
 
-                this.notifiedMessage = $"Auto update Bet Limit job run COMPLETED." +
+                this.notifiedMessage = $"✅ Auto update Bet Limit job run COMPLETED." +
                     $"\n\r - Affected customers: {betLimitService.PuntersUpdated}" +
                     $"\n\r - Raw customers: {betLimitService.RawCustomer}"+
                     $"\n\r - Passed customers: {betLimitService.UpdateCustomers}" +
@@ -104,7 +100,7 @@
             }
             else
             {
-                this.notifiedMessage = $"Auto update Bet Limit job run COMPLETED." +                    
+                this.notifiedMessage = $"✅ Auto update Bet Limit job run COMPLETED." +                    
                     $"\n\r - Raw customers: 0";                
             }
         }

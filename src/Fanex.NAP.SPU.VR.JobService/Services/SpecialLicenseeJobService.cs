@@ -16,15 +16,13 @@
     }
 
     public class SpecialLicenseeJobService : ISpecialLicenseeJobService
-    {
-        private readonly ISentryClient sentryClient;
+    {   
         private readonly IAppSettings appSettings;
         private readonly ISpecialLicenseeService specialLicenseeService;
         private string notifiedMessage = string.Empty;
 
-        public SpecialLicenseeJobService(ISentryClient sentryClient, IAppSettings appSettings, ISpecialLicenseeService specialLicenseeService)
-        {
-            this.sentryClient = sentryClient;
+        public SpecialLicenseeJobService(IAppSettings appSettings, ISpecialLicenseeService specialLicenseeService)
+        {           
             this.appSettings = appSettings;
             this.specialLicenseeService = specialLicenseeService;
         }
@@ -51,9 +49,7 @@
                     NotifyMessage();
                 }
                 catch (Exception ex)
-                {
-                    sentryClient.CaptureException(ex);
-
+                {                    
                     var logMessage = new LogMessage(ex.Message)
                      .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                      .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
@@ -74,11 +70,11 @@
 
         private void NotifyMessage()
         {
-            notifiedMessage = $"Auto special licensee job run COMPLETED." +
+            notifiedMessage = $"✅ Auto special licensee job run COMPLETED." +
                  $"\n\r - OtherSports - Customers have passed Performance Check: {this.specialLicenseeService.PunterBasketballUpdated}" +
                  $"\n\r - Special SportBook - Customers have passed Performance Check: {this.specialLicenseeService.PunterSportsbookUpdated}";
            
-            Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Special Licensee", appSettings.EnvironmentString, "-1001400862084");
+            Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Special Licensee", appSettings.EnvironmentString, appSettings.LogGroupID);
         }
 
     }

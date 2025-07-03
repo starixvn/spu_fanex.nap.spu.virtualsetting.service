@@ -6,12 +6,10 @@
     using Fanex.MailDelivery.Client;
     using Fanex.MailDelivery.Core.Models;
     using Fanex.NAP.SPU.CTS.Shares;
-    using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Entities;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Model;
     using Newtonsoft.Json;
-    using Sentry;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -28,15 +26,13 @@
         private const string MailInformBigCreditMemberTemplate = @"MailTemplate/MemberBigStake/MailInformBigCreditMemberTemplate.cshtml";
         private const string MailInformBigLossTemplate = @"MailTemplate/MemberBigStake/MailInformBigLossTemplate.cshtml";
         private const string MailInformBigCreditMemberAndBigLossTemplate = @"MailTemplate/MemberBigStake/MailInformBigCreditMemberAndBigLossTemplate.cshtml";
-        private const string FormatDecimalToString_Place = "#,##0.00";
-        private readonly ISentryClient sentryClient;
+        private const string FormatDecimalToString_Place = "#,##0.00";       
         private readonly IAppSettings appSettings;
         private readonly IMemberBigStakeService memberBigStakeServices;
         private string notifiedMessage = string.Empty;
 
-        public MemberBigStakeJobService(ISentryClient sentryClient, IAppSettings appSettings, IMemberBigStakeService memberBigStakeServices)
-        {
-            this.sentryClient = sentryClient;
+        public MemberBigStakeJobService(IAppSettings appSettings, IMemberBigStakeService memberBigStakeServices)
+        {          
             this.appSettings = appSettings;
             this.memberBigStakeServices = memberBigStakeServices;
         }
@@ -66,9 +62,7 @@
                     NotifyMessage();
                 }
                 catch (Exception ex)
-                {
-                    sentryClient.CaptureException(ex);
-
+                {                   
                     var logMessage = new LogMessage(ex.Message)
                         .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                         .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
@@ -255,7 +249,7 @@
 
             LogService.Info($"VR - List member(s) Big Stake for send mail: {json}");
 
-            this.notifiedMessage = $"Auto update member big stake job run COMPLETED." +
+            this.notifiedMessage = $"✅ Auto update member big stake job run COMPLETED." +
                $"\n\r - Big credit members: {creditMemberBigStake.BigCreditMemberList.Count()}" +
                $"\n\r - Big credit member with big loss: {creditMemberBigStake.BigCreditMemberWithBigLossList.Count()}";
 
@@ -335,7 +329,7 @@
         {
             if (!string.IsNullOrWhiteSpace(notifiedMessage))
             {                
-                Utilities.NotifyMessage(notifiedMessage, "VR - Member Big Stake", appSettings.EnvironmentString, "-1001400862084");
+                Utilities.NotifyMessage(notifiedMessage, "VR - Member Big Stake", appSettings.EnvironmentString, appSettings.LogGroupID);
             }
         }
     }

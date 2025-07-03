@@ -22,16 +22,14 @@
 
     public class Adjust3MJobService : IAdjust3MJobService
     {
-        private const string VSMailInformTemplate = @"MailTemplate/Adjust3M/MailInformTemplate.cshtml";
-        private readonly ISentryClient sentryClient;
+        private const string VSMailInformTemplate = @"MailTemplate/Adjust3M/MailInformTemplate.cshtml";      
         private readonly IAppSettings appSettings;
         private readonly ISoccerService soccerService;
         private readonly ISportsbookService sportsbookService;
         private DateTime stopTime;
 
-        public Adjust3MJobService(ISentryClient sentryClient, IAppSettings appSettings, ISoccerService soccerService, ISportsbookService sportsbookService)
-        {
-            this.sentryClient = sentryClient;
+        public Adjust3MJobService(IAppSettings appSettings, ISoccerService soccerService, ISportsbookService sportsbookService)
+        {        
             this.appSettings = appSettings;
             this.soccerService = soccerService;
             this.sportsbookService = sportsbookService;
@@ -59,7 +57,7 @@
                         , (puntersUpdatedSoccer + puntersUpdatedSportbooks));
                     }                    
 
-                    var message = $"VR - Auto adjust 3M job run COMPLETED." +
+                    var message = $"✅ VR - Auto adjust 3M job run COMPLETED." +
                       $"\n\r - Members updated for soccer: {puntersUpdatedSoccer}" +
                       $"\n\r - Members updated for sportbooks: {puntersUpdatedSportbooks}";
 
@@ -69,9 +67,7 @@
                 }              
             }
             catch (Exception ex)
-            {
-                sentryClient.CaptureException(ex);
-
+            {                
                 var logMessage = new LogMessage(ex.Message)
                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
@@ -146,7 +142,7 @@
 
         private void NotifyMessage(string message)
         {                        
-            Utilities.NotifyMessage(message, "VR - Adjust 3M", appSettings.EnvironmentString, "-1001400862084");
+            Utilities.NotifyMessage(message, "VR - Adjust 3M", appSettings.EnvironmentString, appSettings.LogGroupID);
         }
 
         private void SendMailInternal(int mailingListId)
