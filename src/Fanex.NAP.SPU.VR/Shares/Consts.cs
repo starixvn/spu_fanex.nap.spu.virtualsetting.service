@@ -38,7 +38,8 @@
         {
             LOCAL = 1,
             UAT = 2,
-            PRO = 3
+            PRO = 3,
+            KLDR = 4
         }
 
     }

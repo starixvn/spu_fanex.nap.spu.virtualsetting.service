@@ -2,9 +2,11 @@
 {
     using Fanex.Data;
     using Fanex.Data.Repository;
+    using Fanex.Logging;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Criteria;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Entities;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Model;
+    using Newtonsoft.Json;
     using System;
 
     public interface IMemberBigStakeDataAccess
@@ -34,11 +36,11 @@
             var criteria = new CheckMemberBigStakePerformanceCriteria { IsTest = isTest };
 
             var result = _repository.FetchMultiple<MemberBigStakePerformanceFirstDayEntity, MemberBigStakePerformanceStatusEntity>(criteria);
-
+           
             return new MemberBigStakePerformanceModel
             {
-                FirstBetDateList = result.firstResultSet,
-                StatusList = result.secondResultSet
+                FirstBetDateList = result.FirstResultSet,
+                StatusList = result.SecondResultSet
             };
         }
 
@@ -87,12 +89,12 @@
         {
             var criteria = new AutoMailBigCreditMemberCriteria();
 
-            var result = _repository.FetchMultiple<AutomailBigCreditMemberEntity, AutomailBigCreditMemberEntity>(criteria);
+            var result = _repository.FetchMultiple<AutomailBigCreditMemberEntity, AutomailBigCreditMemberEntity>(criteria,"");
 
             return new AutoMailBigCreditMemberModel
             {
-                BigCreditMemberList = result.firstResultSet,
-                BigCreditMemberWithBigLossList = result.secondResultSet
+                BigCreditMemberList = result.FirstResultSet,
+                BigCreditMemberWithBigLossList = result.SecondResultSet
             };
         }
     }

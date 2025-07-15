@@ -1,8 +1,9 @@
-﻿using Fanex.Logging.Extensions;
+﻿using Fanex.Logging;
+using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.Database;
+using Fanex.NAP.SPU.CTS.Shares;
 using Fanex.NAP.SPU.VR.Shares;
 using Newtonsoft.Json;
-using Sentry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
 
         IDangerLevelSapaSportService GetSapaSportDangerLevel(int environtment);
 
-        UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize, ISentryClient sentryClient, int environtment);
+        UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize, int environtment);
     }
 
     public class DangerLevelSapaSportService : IDangerLevelSapaSportService
@@ -66,7 +67,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
             return this;
         }
 
-        public UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize, ISentryClient sentryClient, int environtment)
+        public UpdateDangerResultEntity RetryUpdateDangerLevelToMainDB(int retryTimes, int batchSize, int environtment)
         {
             var errorLog = new UpdateDangerResultEntity { ErrorCode = 0, ErrorMsg = string.Empty };
 
@@ -86,8 +87,8 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
                                             .AddMessage($"Inner Exception: {result.ErrorMsg}")
                                             .AddMessage($"DateTime: {DateTime.Now}")
                                             .AddMessage($"Update DangerLevel To CustDB FAIL: {JsonConvert.SerializeObject(result.InPutParam)}").ToString();
-
-                        sentryClient.CaptureMessage(logMessage, Sentry.Protocol.SentryLevel.Error);
+                                               
+                        LogService.Error(logMessage);
                     }
                 }
             }

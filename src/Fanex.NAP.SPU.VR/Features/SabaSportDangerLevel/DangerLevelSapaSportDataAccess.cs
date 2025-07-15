@@ -36,7 +36,9 @@
         {
             var criteria = new SabaSportDangerLevelGetCriteria();
 
-            if (environment == (int)Environment.PRO || environment == (int)Environment.LOCAL)
+            if (environment == (int)Environment.PRO 
+                || environment == (int)Environment.KLDR
+                || environment == (int)Environment.LOCAL)
             {
                 criteria.IncludeUUS = 1;
             }
@@ -56,7 +58,9 @@
                 CustsToXML = winLossSapaSportInfo.ToXmlString()
             };
 
-            if (environment == (int)Environment.PRO || environment == (int)Environment.LOCAL)
+            if (environment == (int)Environment.PRO 
+                || environment == (int)Environment.KLDR
+                || environment == (int)Environment.LOCAL)
             {
                 criteria.Enviroment = "PRO";
                 criteria.IncludeUUS = 1;
