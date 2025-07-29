@@ -27,9 +27,9 @@
 	<Function Name="MemberBigStake">
 		<Setting Key="Task_VRSetting_CheckMemberBigStakePerformance" SpName="Task_VRSetting_CheckMemberBigStakePerformance_xtest" DbName="DBWH.bodb_dwrs.wsv_nap" TimeOut="300" />
 		<Setting Key="Acc_Rpt_Automail_BigCreditMembers" SpName="Acc_Rpt_Automail_BigCreditMembers" DbName="DBWH.bodb_dwrs.wsv_nap" TimeOut="300" />
-		<Setting Key="Acc_VR_MemberBigStake_Ins" SpName="Acc_VR_MemberBigStake_Ins_xtest" DbName="DBCUST.CustDB.wsv_nap" TimeOut="300" />
-		<Setting Key="Acc_VR_MemberBigStake_FirstBetDate_Upd" SpName="Acc_VR_MemberBigStake_FirstBetDate_Upd_xtest" DbName="DBCUST.CustDB.wsv_nap" TimeOut="300" />
-		<Setting Key="Acc_VR_MemberBigStake_WhiteList_Upd" SpName="Acc_VR_MemberBigStake_WhiteList_Upd_xtest" DbName="DBCUST.CustDB.wsv_nap" TimeOut="300" />
+		<Setting Key="Acc_VR_MemberBigStake_Ins" SpName="Acc_VR_MemberBigStake_Ins" DbName="DBCUST.CustDB.wsv_nap" TimeOut="300" />
+		<Setting Key="Acc_VR_MemberBigStake_FirstBetDate_Upd" SpName="Acc_VR_MemberBigStake_FirstBetDate_Upd" DbName="DBCUST.CustDB.wsv_nap" TimeOut="300" />
+		<Setting Key="Acc_VR_MemberBigStake_WhiteList_Upd" SpName="Acc_VR_MemberBigStake_WhiteList_Upd" DbName="DBCUST.CustDB.wsv_nap" TimeOut="300" />
 	</Function>
 
 	<Function Name="Adjust3M">
