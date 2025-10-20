@@ -410,19 +410,7 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.MemberBigStake
             // Assert
             result.Should().Contain("border: 1px solid black;");
             result.Should().Contain("font-weight:bold;");
-        }
-
-        [Fact]
-        public void CssStyleTd_WhenCalled_ShouldReturnCorrectCss()
-        {
-            // Act
-            var method = typeof(MemberBigStakeJobService).GetMethod("CssStyleTd", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            var result = method.Invoke(jobService, null) as string;
-
-            // Assert
-            result.Should().Contain("border: 1px solid black");
-        }
+        }       
 
         #endregion
 

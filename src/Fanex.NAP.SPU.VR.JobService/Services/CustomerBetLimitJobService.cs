@@ -4,10 +4,7 @@
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NAP.SPU.CTS.Shares;
-    using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.BetLimit;
-    using Sentry;
-    using System;
     using System.Linq;
     using System.Threading.Tasks;
 

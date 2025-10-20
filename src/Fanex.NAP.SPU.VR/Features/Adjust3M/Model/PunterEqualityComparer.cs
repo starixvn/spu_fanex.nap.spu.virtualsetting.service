@@ -11,7 +11,7 @@
             {
                 return true;
             }
-            else if (x == null | y == null)
+            else if (x == null || y == null)
             {
                 return false;
             }

@@ -265,20 +265,7 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.Agent
             result.Should().NotBeNullOrEmpty();
             result.Should().Contain("border: 1px solid black");
             result.Should().Contain("font-weight:bold");
-        }
-
-        [Fact]
-        public void CssStyleTd_ShouldReturnCssString()
-        {
-            // Act
-            var method = typeof(AgentJobService).GetMethod("CssStyleTd", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var result = method.Invoke(jobService, null) as string;
-
-            // Assert
-            result.Should().NotBeNullOrEmpty();
-            result.Should().Contain("border: 1px solid black");
-        }
+        }        
 
         #endregion
       

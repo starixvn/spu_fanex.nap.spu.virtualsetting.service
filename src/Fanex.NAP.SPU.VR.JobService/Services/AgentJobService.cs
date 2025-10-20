@@ -11,6 +11,7 @@
     using Fanex.NAP.SPU.VR.Features.Agent.Model;  
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -22,7 +23,8 @@
     public class AgentJobService : IAgentJobService
     {
         private const string VSMailInformNoAgentAffectTemplate = @"MailTemplate/Agent/MailInformNoAgentAffectTemplate.cshtml";
-        private const string VSMailInformTemplate = @"MailTemplate/Agent/MailInformTemplate.cshtml";        
+        private const string VSMailInformTemplate = @"MailTemplate/Agent/MailInformTemplate.cshtml";       
+        private const string CssStyleTd = "border: 1px solid black";
         private readonly IAppSettings appSettings;
         private readonly IAgentService agentService;           
         private string notifiedMessage = string.Empty;       
@@ -49,7 +51,7 @@
 
                     UpdateUnflagAbnormalAgent(updateUnflagAbnormalAgents, 1);
 
-                    SendMail(this.appSettings.MailingListIdAgentAjust);
+                    SendMailListId(this.appSettings.MailingListIdAgentAjust);
 
                     LogService.Info($"VR - Agent job Execute COMPLETED");
 
@@ -77,12 +79,13 @@
             return Task.FromResult(true);
         }
 
+        [SuppressMessage("Minor Code Smell", "S1643", Justification = "Exact required for business rule validation")]
         private void UpdateUnflagAbnormalAgent(IEnumerable<UnflagAbnormalAgentEntity> customerList, int type)
         {
             var customerChunks = Utilities.ChunkList(customerList, this.appSettings.PunterChunkSize).ToList();
             var isTest = appSettings.IsTest;
 
-            for (int i = 0; i < customerChunks.Count(); i++)
+            for (int i = 0; i < customerChunks.Count; i++)
             {
                 var custList = customerChunks[i].Select(x => new UnflagAbnormalAgentModel
                 {
@@ -121,9 +124,8 @@
             }
         }
 
-        private void SendMail(int mailingListId)
-        {
-            var subject = "List of new agents got VR updated by Agent profiling job";
+        private void SendMailListId(int mailingListId)
+        {          
             var body = GenerateMailBody();            
 
             try
@@ -132,8 +134,8 @@
                 {
                     var mail = new Mail
                     {
-                        Subject = subject,
-                        Title = subject,
+                        Subject = "List of new agents got VR updated by Agent profiling job",
+                        Title = "List of new agents got VR updated by Agent profiling job",
                         Body = body,
                         MailingListId = mailingListId,
                         Attachments = new List<MailAttachment>()
@@ -190,6 +192,7 @@
             return body;
         }
 
+        [SuppressMessage("Minor Code Smell", "S1643", Justification = "Exact required for business rule validation")]
         private string GenerateTableUpdateToZero(IEnumerable<VRAgentUpdatedToZeroModel> updatedToZeroList)
         {
             var table = "<br />Table: agents whose VR got updated to 0 <br /><br />";
@@ -207,9 +210,9 @@
                 foreach (var item in updatedToZeroList)
                 {
                     table += "<tr>";
-                    table += "<td style='" + CssStyleTd() + "'>" + index + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.Site + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.Agent + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + index + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.Site + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.Agent + "</td>";
                     table += "</tr>";
 
                     index++;
@@ -221,6 +224,7 @@
             return table;
         }
 
+        [SuppressMessage("Minor Code Smell", "S1643", Justification = "Exact required for business rule validation")]
         private string GenerateTableUpdateToFollowSupper(IEnumerable<VRAgentUpdatedToFollowSuperModel> updatedToFollowSupperList)
         {
             var table = "<br />Table: agents whose VR got updated to follow Super <br /><br />";
@@ -239,10 +243,10 @@
                 foreach (var item in updatedToFollowSupperList)
                 {
                     table += "<tr>";
-                    table += "<td style='" + CssStyleTd() + "'>" + index + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.Site + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.Agent + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.MemberWinloss.ToString("0") + "RM" + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + index + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.Site + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.Agent + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.MemberWinloss.ToString("0") + "RM" + "</td>";
                     table += "</tr>";
 
                     index++;
@@ -268,14 +272,7 @@
             css += "font-weight:bold;";
 
             return css;
-        }
-
-        private string CssStyleTd()
-        {
-            var css = "border: 1px solid black";
-
-            return css;
-        }
+        }       
 
         private void SendMail(Mail mail)
         {

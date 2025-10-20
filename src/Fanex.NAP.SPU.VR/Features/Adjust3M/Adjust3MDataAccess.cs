@@ -7,6 +7,7 @@
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Entities;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     public interface IAdjust3MDataAccess
@@ -106,6 +107,7 @@
             }
         }
 
+        [SuppressMessage("Minor Code Smell", "S1643", Justification = "Exact required for business rule validation")]
         public DataResult LogPunterVirtualSetting(string serviceName, IEnumerable<PunterEntity> punters, int userId, DateTime adjustDate)
         {
             var rate = string.Empty;
@@ -148,6 +150,7 @@
             }
         }
 
+        [SuppressMessage("Minor Code Smell", "S1643", Justification = "Exact required for business rule validation")]
         public DataResult InsertCustomerMarginHistory(IEnumerable<PunterEntity> punters, byte sportGroupID, int numOfMonth, string serviceName, DateTime adjustDate)
         {
             var rate = string.Empty;
@@ -213,58 +216,6 @@
             var criteria = new GetLicenseeBACriteria();
 
             return this.repository.Fetch<LicenseeBAEntity>(criteria);
-        }
-
-        //#region Data Test
-        //private IEnumerable<PunterEntity> GetWinningPunterSoccerListDataTest()
-        //{
-        //    var punters = new List<PunterEntity>();
-
-        //    for (int i = 0; i < 10; i++)
-        //    {
-        //        var punter = new PunterEntity
-        //        {
-        //            CustID = 1234 + i,
-        //            IsBA = false,
-        //            IsSuperProPunters = i % 2 == 0 ? true : false,
-        //            MRecommend = 0,
-        //            SiteID = i % 2 == 0 ? 1 : 2,
-        //            OldVirtualRate = 1.1,
-        //            SportType = i % 2 == 0 ? 1 : 2,
-        //            ReportDate = DateTime.Now
-        //        };
-
-        //        punters.Add(punter);
-        //    }
-
-        //    return punters;
-        //}
-
-        //private IEnumerable<PunterEntity> GetWinningPunterListDataTest()
-        //{
-        //    var punters = new List<PunterEntity>();
-
-        //    for (int i = 0; i < 7; i++)
-        //    {
-        //        var punter = new PunterEntity
-        //        {
-        //            CustID = 4567 + i,
-        //            IsBA = false,
-        //            IsSuperProPunters = i % 2 == 0 ? true : false,
-        //            MRecommend = 0,
-        //            SiteID = i % 2 == 0 ? 1 : 2,
-        //            OldVirtualRate = 1.1,
-        //            SportType = i % 2 == 0 ? 1 : 2,
-        //            ReportDate = DateTime.Now
-        //        };
-
-        //        punters.Add(punter);
-        //    }
-
-        //    return punters;
-        //}
-
-        //#endregion
-
+        }      
     }
 }

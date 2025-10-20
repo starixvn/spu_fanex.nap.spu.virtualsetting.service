@@ -3,7 +3,6 @@
     using Fanex.Logging;
     using Fanex.NAP.SPU.VR.JobService.Services;
     using Microsoft.AspNetCore.Mvc;
-    using Sentry;
     using System;
     using System.Threading.Tasks;
 
@@ -36,7 +35,7 @@
         [HttpPost("betlimit")]
         public async Task<bool> BetLimit(string jobName)
         {
-            LogService.Info($"{jobName} is running at {DateTime.Now}");
+            LogService.Info($"{jobName} is running at {DateTimeOffset.Now}");
 
             return await this.customerBetLimitJobService.Execute();
 
@@ -45,7 +44,7 @@
         [HttpPost("memberbigstake")]
         public async Task<bool> MemberBigStake(string jobName)
         {
-            LogService.Info($"{jobName} is running at {DateTime.Now}");
+            LogService.Info($"{jobName} is running at {DateTimeOffset.Now}");
 
             return await this.memberBigStakeJobService.Execute();
         }
@@ -53,7 +52,7 @@
         [HttpPost("spaciallicensee")]
         public async Task<bool> SpecialLicensee(string jobName)
         {
-            LogService.Info($"{jobName} is running at {DateTime.Now}");
+            LogService.Info($"{jobName} is running at {DateTimeOffset.Now}");
 
             return await this.specialLicenseeJobService.Execute();
         }
@@ -61,7 +60,7 @@
         [HttpPost("agent")]
         public async Task<bool> Agent(string jobName)
         {
-            LogService.Info($"{jobName} is running at {DateTime.Now}");
+            LogService.Info($"{jobName} is running at {DateTimeOffset.Now}");
 
             return await this.agentJobService.Execute();
         }
@@ -69,7 +68,7 @@
         [HttpPost("adjustvrsetting")]
         public async Task<bool>AdjustVRSetting (string jobName)
         {
-            LogService.Info($"{jobName} is running at {DateTime.Now}");
+            LogService.Info($"{jobName} is running at {DateTimeOffset.Now}");
 
             return await this.adjust3MJobService.Execute();
 
@@ -78,9 +77,9 @@
         [HttpPost("WriteLog")]
         public void WriteLog(string message)
         {
-            LogService.Error($"✅ {message} is test error at {DateTime.Now}");
+            LogService.Error($"✅ {message} is test error at {DateTimeOffset.Now}");
 
-            LogService.Info($"✅ {message} is test info at {DateTime.Now}");
+            LogService.Info($"✅ {message} is test info at {DateTimeOffset.Now}");
         }       
 
         [HttpPost("SapaSportDangerLevel")]

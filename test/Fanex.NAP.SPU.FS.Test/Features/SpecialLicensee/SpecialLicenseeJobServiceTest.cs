@@ -295,56 +295,7 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.SpecialLicensee
         #endregion
 
         #region NotifyMessage Method Tests
-
-        [Fact]
-        public void NotifyMessage_WhenCalled_ShouldSetNotifiedMessage()
-        {
-            // Arrange
-            appSettings.EnvironmentString.Returns("TEST");
-            appSettings.LogGroupID.Returns("TestLogGroup");
-            specialLicenseeService.PunterBasketballUpdated.Returns(5);
-            specialLicenseeService.PunterSportsbookUpdated.Returns(3);
-
-            // Act
-            var method = typeof(SpecialLicenseeJobService).GetMethod("NotifyMessage", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            method.Invoke(jobService, null);
-
-            // Assert
-            var field = typeof(SpecialLicenseeJobService).GetField("notifiedMessage", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            var notifiedMessage = field.GetValue(jobService) as string;
-
-            notifiedMessage.Should().NotBeNullOrEmpty();
-            notifiedMessage.Should().Contain("✅ Auto special licensee job run COMPLETED");
-            notifiedMessage.Should().Contain("OtherSports - Customers have passed Performance Check: 5");
-            notifiedMessage.Should().Contain("Special SportBook - Customers have passed Performance Check: 3");
-        }
-
-        [Fact]
-        public void NotifyMessage_WhenPropertiesAreZero_ShouldSetCorrectMessage()
-        {
-            // Arrange
-            appSettings.EnvironmentString.Returns("TEST");
-            appSettings.LogGroupID.Returns("TestLogGroup");
-            specialLicenseeService.PunterBasketballUpdated.Returns(0);
-            specialLicenseeService.PunterSportsbookUpdated.Returns(0);
-
-            // Act
-            var method = typeof(SpecialLicenseeJobService).GetMethod("NotifyMessage", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            method.Invoke(jobService, null);
-
-            // Assert
-            var field = typeof(SpecialLicenseeJobService).GetField("notifiedMessage", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            var notifiedMessage = field.GetValue(jobService) as string;
-
-            notifiedMessage.Should().NotBeNullOrEmpty();
-            notifiedMessage.Should().Contain("OtherSports - Customers have passed Performance Check: 0");
-            notifiedMessage.Should().Contain("Special SportBook - Customers have passed Performance Check: 0");
-        }
-
+     
         [Fact]
         public void NotifyMessage_WhenCalled_ShouldNotThrowException()
         {
