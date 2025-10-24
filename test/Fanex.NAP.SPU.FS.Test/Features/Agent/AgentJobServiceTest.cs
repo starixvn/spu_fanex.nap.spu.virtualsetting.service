@@ -3,15 +3,10 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.Agent
     using Fanex.NAP.SPU.VR.JobService;
     using Fanex.NAP.SPU.VR.JobService.Services;
     using Fanex.NAP.SPU.VR.Features.Agent;
-    using Fanex.NAP.SPU.VR.Features.Agent.Entities;
     using Fanex.NAP.SPU.VR.Features.Agent.Model;
     using FluentAssertions;
     using NSubstitute;
-    using NSubstitute.ExceptionExtensions;
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Xunit;
 
     /// <summary>

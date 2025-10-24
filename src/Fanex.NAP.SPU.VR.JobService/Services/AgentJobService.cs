@@ -176,7 +176,7 @@
 
                 body = string.Format(body, html);
 
-                this.notifiedMessage = $"✅ Auto update member big stake job run COMPLETED." +
+                this.notifiedMessage = $"✅ Auto Agent Adjustment job run COMPLETED." +
                    $"\n\r - Member updated to zero: {updatedToZeroList.Count()}" +
                    $"\n\r - Member updated to follow supper: {updatedToFollowSupperList.Count()}";
             }

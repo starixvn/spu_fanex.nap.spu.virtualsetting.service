@@ -1,11 +1,14 @@
 namespace Fanex.NAP.SPU.VR.Tests.Features.Shares
 {
+    using Fanex.Logging;
+    using Fanex.Logging.Sentry.RavenClient;
     using Fanex.NAP.SPU.VR.JobService.Controllers;
     using Fanex.NAP.SPU.VR.JobService.Services;
     using FluentAssertions;
     using Microsoft.AspNetCore.Mvc;
     using NSubstitute;
-    using System;
+    using SharpRaven;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -30,14 +33,22 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.Shares
             memberBigStakeJobService = Substitute.For<IMemberBigStakeJobService>();
             adjust3MJobService = Substitute.For<IAdjust3MJobService>();
             sapaSportDangerLevelJobService = Substitute.For<ISapaSportDangerLevelJobService>();
-            
+
+            LogManager.SetDefaultLogCategory("Unit Test VR").Use(new List<ILogEngine>
+            {
+                new SentryLogging(new SentryEngineOptions
+                {
+                    Dsn = new Dsn("https://ee93e0709c72452090c944250f626252@sentry.nexdev.net/125")
+                })
+            });
+
             controller = new JobController(
                 customerBetLimitJobService,
                 specialLicenseeJobService,
                 agentJobService,
                 memberBigStakeJobService,
                 adjust3MJobService,
-                sapaSportDangerLevelJobService);
+                sapaSportDangerLevelJobService);            
         }
 
         #region Constructor Tests
