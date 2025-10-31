@@ -13,7 +13,7 @@
 
         IEnumerable<SapaSportDangerLevelEntity> GetSapaSportDangerLevel(int environment);
 
-        UpdateDangerResultEntity UpdateDangerLevelToMainDB(IEnumerable<SapaSportDangerLevelEntity> winLossSapaSportInfo, int environtment);
+        UpdateDangerResultEntity UpdateDangerLevelToMainDB(IEnumerable<SapaSportDangerLevelEntity> winLossSapaSportInfo, int environment);
     }
 
     public class DangerLevelSapaSportDataAccess : IDangerLevelSapaSportDataAccess

@@ -41,7 +41,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{ logMessage } - DateTime: {DateTime.Now}");
+                LogService.Error($"{ logMessage } - DateTime: {DateTimeOffset.Now}");
 
                 this.notifiedMessage = $"🆘 Update Sapa Sport Danger Level job FAIL." +
                   $"\n\r - {ex.Message}";                
@@ -58,7 +58,7 @@
         {
             if (!service.IsDataSabaSportDangerLevelReady(appSettings.RetryTimesSapaSportDangerLevelForCheckingDataReady))
             {
-                LogService.Error($"VR - {appSettings.EnvironmentString} - Update Sapa Sport Danger Level Job - Data for checking NOT READY - DateTime: {DateTime.Now}");
+                LogService.Error($"VR - {appSettings.EnvironmentString} - Update Sapa Sport Danger Level Job - Data for checking NOT READY - DateTime: {DateTimeOffset.Now}");
 
                 this.notifiedMessage = $"🆘 Update Danger Level FAIL." +
                     $"\n\r - Checking data for SABASportsDangerLevel DO NOT READY";

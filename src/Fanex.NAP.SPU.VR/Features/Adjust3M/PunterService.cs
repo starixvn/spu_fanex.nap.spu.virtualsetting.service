@@ -10,6 +10,7 @@
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     public interface IPunterService
@@ -50,14 +51,9 @@
         {
             _punters = _dataAccess.GetWinningPunterSoccerList(_model.SiteIds, _model.SuperIds, _model.VirtualRateThreshold);            
 
-            if (_punters != null && _punters.Any())
-            {
-                LogService.Info($"VR - Ajust 3M List of Winning Punter Soccer is { string.Join(",", _punters.Select(p => p.CustID))}");
-            }
-            else
-            {
-                LogService.Info($"VR - Ajust 3M List of Winning Punter Soccer is 0");
-            }
+            LogService.Info(_punters != null && _punters.Any() 
+                ? $"VR - Ajust 3M List of Winning Punter Soccer is { string.Join(",", _punters.Select(p => p.CustID))}"
+                : "VR - Ajust 3M List of Winning Punter Soccer is 0");
 
             return this;
         }
@@ -65,15 +61,10 @@
         public IPunterService GetWinningPunterList()
         {
             _punters = _dataAccess.GetWinningPunterList(_model.SiteIds, _model.SuperIds, _model.VirtualRateThreshold);
-
-            if (_punters != null && _punters.Any())
-            {
-                LogService.Info($"VR - Ajust 3M List of Winning Punter is { string.Join(",", _punters.Select(p => p.CustID))}");
-            }
-            else
-            {
-                LogService.Info($"VR - Ajust 3M List of Winning Punter is 0");
-            }
+            
+            LogService.Info(_punters != null && _punters.Any()
+                ? $"VR - Ajust 3M List of Winning Punter is {string.Join(",", _punters.Select(p => p.CustID))}"
+                : "VR - Ajust 3M List of Winning Punter is 0");
 
             return this;
         }
@@ -199,11 +190,11 @@
             }            
         }
        
-        public IEnumerable<PunterEntity> UpdateVirtualSetting(IEnumerable<PunterEntity> punters, UpdateVirtualSettingEntity updateVirtualSetting, double newVirtualRate)
+        public IEnumerable<PunterEntity> UpdateVirtualSetting(IEnumerable<PunterEntity> punters, UpdateVirtualSettingEntity updVirtualSetting, double newVirtualRate)
         {
-            var userId = updateVirtualSetting.DummyUser;
-            var ip = updateVirtualSetting.IP;
-            var chunkSize = updateVirtualSetting.PunterChunkSize;
+            var userId = updVirtualSetting.DummyUser;
+            var ip = updVirtualSetting.IP;
+            var chunkSize = updVirtualSetting.PunterChunkSize;
             var chunkPunters = punters.Partition(chunkSize);
            
             foreach (var selectedPunters in chunkPunters)
@@ -245,6 +236,8 @@
             return punters;
         }
 
+        [SuppressMessage("Minor Code Smell", "S1244:Do not check floating point equality with exact values", 
+            Justification = "Exact equality check required for business rule validation (BA account detection at rate 3.0)")]
         private void DetectBAAccounts(double newVirtualRate, IEnumerable<PunterEntity> punters)
         {
             try
@@ -254,7 +247,7 @@
                 var listBAAccounts = _dataAccess.GetBACustIds(custIds);
 
                 foreach (var p in punters)
-                {
+                {                  
                     if (newVirtualRate == 3 && listBAAccounts.Contains(p.CustID))
                     {
                         p.NewVirtualRate = 1.0;
@@ -385,10 +378,8 @@
         private void UpdateCustomerMarginHistory(IEnumerable<PunterEntity> punters)
         {
             try
-            {
-                var numOfMonth = 12;
-
-                var result = _dataAccess.InsertCustomerMarginHistory(punters, _model.SportGroupID, numOfMonth, _model.ServiceName, _model.AdjustDate);
+            {               
+                var result = _dataAccess.InsertCustomerMarginHistory(punters, _model.SportGroupID, 12, _model.ServiceName, _model.AdjustDate);
 
                 var isSuccessful = string.IsNullOrEmpty(result.ErrorMessage);
 
@@ -418,14 +409,17 @@
 
             if (punters != null && punters.Any())
             {
-                var info = $"VR - Ajust 3M List of { sportType } {punterType} updated({punters.Count()}): { string.Join(",", punters.Select(p => p.CustID))}";
+                var info = $"VR - Ajust 3M List of { sportType } {punterType} updated({punters.Count()})" +
+                    $": { string.Join(",", punters.Select(p => p.CustID))}";
 
                 LogService.Info(info);
             }
 
             if (_model != null && _model.FailedUpdatePunterList.Any())
             {
-                var error = $"VR - Ajust 3M List of { sportType } {punterType} update failed({_model.FailedUpdatePunterList.Count}) : {string.Join(",", _model.FailedUpdatePunterList.Select(p => p.CustID))}";
+                var error = $"VR - Ajust 3M List of { sportType } {punterType} " +
+                    $"update failed({_model.FailedUpdatePunterList.Count}) " +
+                    $": {string.Join(",", _model.FailedUpdatePunterList.Select(p => p.CustID))}";
 
                 LogService.Error(error);
             }

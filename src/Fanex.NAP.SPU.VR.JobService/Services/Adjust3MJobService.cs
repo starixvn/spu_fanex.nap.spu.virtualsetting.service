@@ -5,13 +5,11 @@
     using Fanex.Logging.Extensions.Database;
     using Fanex.MailDelivery.Client;
     using Fanex.NAP.SPU.CTS.Shares;
-    using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.Adjust3M;
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Entities;
-    using Fanex.NAP.SPU.VR.Features.Adjust3M.Model;
     using Fanex.NAP.SPU.VR.Shares;
-    using Sentry;
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -26,7 +24,7 @@
         private readonly IAppSettings appSettings;
         private readonly ISoccerService soccerService;
         private readonly ISportsbookService sportsbookService;
-        private DateTime stopTime;
+        private DateTimeOffset stopTime;
 
         public Adjust3MJobService(IAppSettings appSettings, ISoccerService soccerService, ISportsbookService sportsbookService)
         {        
@@ -41,7 +39,7 @@
             {
                 if (IsExecutedDate())                
                 {
-                    var startTime = DateTime.Now;
+                    var startTime = DateTimeOffset.Now;
 
                     var jsonLicenseeBACusts = this.soccerService.GetLicenseeBACusts();
 
@@ -81,13 +79,14 @@
 
         private bool IsExecutedDate()
         {
-            var currentDate = DateTime.Today;
+            var currentDate = DateTimeOffset.Now.Date;
 
             var adjust3MExecutedDate = this.appSettings.Adjust3MExecutedDate.Split(';').Select(x => Convert.ToInt32(x)).ToList();
 
             return adjust3MExecutedDate.Contains(currentDate.Day);
         }
 
+        [SuppressMessage("Minor Code Smell", "S6566", Justification = "Exact required for business rule validation")]
         private int UpdateVRForSoccer(string jsonLicenseeBACusts)
         {
             var updateVirtualSettingEntity = new UpdateVirtualSettingEntity
@@ -108,13 +107,14 @@
                             , appSettings.Adjust3MNewVirtualMultiplierForWinning)
                     .GetCountAffected();
 
-            stopTime = DateTime.Now;
+            stopTime = DateTimeOffset.Now;
 
             LogService.Info($"VR - Ajust 3M ExecuteForSoccer is called stop time {stopTime}");
 
             return countAffected;
         }
 
+        [SuppressMessage("Minor Code Smell", "S6566", Justification = "Exact required for business rule validation")]
         public int UpdateForSportbooks(string jsonLicenseeBACusts)
         {
             var updateVirtualSettingEntity = new UpdateVirtualSettingEntity
@@ -134,7 +134,7 @@
                              , appSettings.Adjust3MNewVirtualMultiplierForWinning)
                      .GetCountAffected();
 
-            stopTime = DateTime.Now;
+            stopTime = DateTimeOffset.Now;
 
             LogService.Info($"VR - Ajust 3M ExecuteForSportbooks is called stop time {stopTime}");
 
@@ -144,35 +144,9 @@
         private void NotifyMessage(string message)
         {                        
             Utilities.NotifyMessage(message, "VR - Adjust 3M", appSettings.EnvironmentString, appSettings.LogGroupID);
-        }
+        }        
 
-        private void SendMailInternal(int mailingListId)
-        {
-            try
-            {
-                var newMail = new Fanex.MailDelivery.Core.Models.Mail
-                {
-                    Subject = "VR Auto Mail Service - Still alive",
-                    Title = "VR Auto Mail Service - Still alive",
-                    Body = $"Is NOT the execution date for Updating Virtual Settings.",
-                    MailingListId = mailingListId
-                };                
-
-                SendMail(newMail);
-            }
-            catch (Exception ex)
-            {
-                var logMessage = new LogMessage(ex.Message)
-                  .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                  .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
-
-                LogService.Error($"VR - Ajust 3M job SendMailInternal exception message:  {logMessage}");
-
-                throw;
-            }
-        }
-
-        private void SendMail(int mailingListId, DateTime startTime, DateTime endTime, int puntersUpdated)
+        private void SendMail(int mailingListId, DateTimeOffset startTime, DateTimeOffset endTime, int puntersUpdated)
         {
             try
             {

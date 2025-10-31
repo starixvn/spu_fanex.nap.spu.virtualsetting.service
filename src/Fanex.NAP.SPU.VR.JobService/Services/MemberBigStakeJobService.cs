@@ -12,6 +12,7 @@
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -26,7 +27,8 @@
         private const string MailInformBigCreditMemberTemplate = @"MailTemplate/MemberBigStake/MailInformBigCreditMemberTemplate.cshtml";
         private const string MailInformBigLossTemplate = @"MailTemplate/MemberBigStake/MailInformBigLossTemplate.cshtml";
         private const string MailInformBigCreditMemberAndBigLossTemplate = @"MailTemplate/MemberBigStake/MailInformBigCreditMemberAndBigLossTemplate.cshtml";
-        private const string FormatDecimalToString_Place = "#,##0.00";       
+        private const string FormatDecimalToString_Place = "#,##0.00";
+        private const string CssStyleTd = "border: 1px solid black";       
         private readonly IAppSettings appSettings;
         private readonly IMemberBigStakeService memberBigStakeServices;
         private string notifiedMessage = string.Empty;
@@ -53,7 +55,7 @@
 
                     UpdateMemberBigStakeStatus(memberBigStakePerformance);
 
-                    SendMail(this.appSettings.MailingListIdAgentAjust);
+                    SendMailListId(this.appSettings.MailingListIdAgentAjust);
 
                     LogService.Info($"VR - Member Big Stake job run COMPLETED");
 
@@ -176,12 +178,14 @@
             }
         }
 
-        private void SendMail(int mailingListId)
+        private void SendMailListId(int mailingListId)
         {
-            if (mailingListId <= 0)            
-                return;            
+            if (mailingListId <= 0)
+            {
+                return;
+            }                  
 
-            var subject = DateTime.Now.ToString("yyyyMMdd") + " List of big credit members just having their first ticket.";
+            var subject = DateTimeOffset.Now.ToString("yyyyMMdd") + " List of big credit members just having their first ticket.";
             var body = GenerateMailBody(); 
 
             try
@@ -256,6 +260,7 @@
             return body;
         }
 
+        [SuppressMessage("Minor Code Smell", "S1643", Justification = "Exact required for business rule validation")]
         private string GenerateTable(IEnumerable<AutomailBigCreditMemberEntity> creditMemberBigStake)
         {
             var table = string.Empty;
@@ -276,12 +281,12 @@
                 foreach (var item in creditMemberBigStake)
                 {
                     table += "<tr>";
-                    table += "<td style='" + CssStyleTd() + "'>" + index + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.Member + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.Site + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.GivenCredit_RM.ToString(FormatDecimalToString_Place) + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.MemberTurnover_RM.ToString(FormatDecimalToString_Place) + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.MemberWinloss_RM.ToString(FormatDecimalToString_Place) + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + index + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.Member + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.Site + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.GivenCredit_RM.ToString(FormatDecimalToString_Place) + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.MemberTurnover_RM.ToString(FormatDecimalToString_Place) + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.MemberWinloss_RM.ToString(FormatDecimalToString_Place) + "</td>";
                     table += "</tr>";
 
                     index++;
@@ -307,14 +312,7 @@
             css += "font-weight:bold;";
 
             return css;
-        }
-
-        private string CssStyleTd()
-        {
-            var css = "border: 1px solid black";
-
-            return css;
-        }
+        }      
 
         private void SendMail(Mail mail)
         {

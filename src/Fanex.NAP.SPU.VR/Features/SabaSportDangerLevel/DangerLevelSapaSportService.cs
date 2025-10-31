@@ -1,16 +1,15 @@
-﻿using Fanex.Logging;
-using Fanex.Logging.Extensions;
-using Fanex.Logging.Extensions.Database;
-using Fanex.NAP.SPU.CTS.Shares;
-using Fanex.NAP.SPU.VR.Shares;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-
-namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
+﻿namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
 {
+    using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
+    using Fanex.NAP.SPU.VR.Shares;
+    using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+
     public interface IDangerLevelSapaSportService
     {
         bool IsDataSabaSportDangerLevelReady(int retryTimesCheckDataReady);
@@ -85,7 +84,7 @@ namespace Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel
 
                         var logMessage = new LogMessage($"VR - Update Sapa Sport Danger Level Job")
                                             .AddMessage($"Inner Exception: {result.ErrorMsg}")
-                                            .AddMessage($"DateTime: {DateTime.Now}")
+                                            .AddMessage($"DateTime: {DateTimeOffset.Now}")
                                             .AddMessage($"Update DangerLevel To CustDB FAIL: {JsonConvert.SerializeObject(result.InPutParam)}").ToString();
                                                
                         LogService.Error(logMessage);

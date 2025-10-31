@@ -4,9 +4,7 @@
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NAP.SPU.CTS.Shares;
-    using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.SpecialLicensee;
-    using Sentry;
     using System; 
     using System.Threading.Tasks;
 
@@ -19,7 +17,6 @@
     {   
         private readonly IAppSettings appSettings;
         private readonly ISpecialLicenseeService specialLicenseeService;
-        private string notifiedMessage = string.Empty;
 
         public SpecialLicenseeJobService(IAppSettings appSettings, ISpecialLicenseeService specialLicenseeService)
         {           
@@ -70,7 +67,7 @@
 
         private void NotifyMessage()
         {
-            notifiedMessage = $"✅ Auto special licensee job run COMPLETED." +
+            var notifiedMessage = $"✅ Auto special licensee job run COMPLETED." +
                  $"\n\r - OtherSports - Customers have passed Performance Check: {this.specialLicenseeService.PunterBasketballUpdated}" +
                  $"\n\r - Special SportBook - Customers have passed Performance Check: {this.specialLicenseeService.PunterSportsbookUpdated}";
            
