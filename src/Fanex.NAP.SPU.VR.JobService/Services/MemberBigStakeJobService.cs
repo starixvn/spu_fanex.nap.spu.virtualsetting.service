@@ -217,9 +217,10 @@
         private string GenerateMailBody()
         {
             var creditMemberBigStake = this.memberBigStakeServices.GetBigCreditMemberForAutomail();
+
             var mailTemplatePath = AppDomain.CurrentDomain.BaseDirectory;
-            var table1 = string.Empty;
-            var table2 = string.Empty;
+            var tblBigCreditMember = string.Empty;
+            var tblBigCreditMemberWithBigLoss = string.Empty;
 
             if (!creditMemberBigStake.BigCreditMemberList.Any() && !creditMemberBigStake.BigCreditMemberWithBigLossList.Any())
             {
@@ -229,25 +230,25 @@
             {
                 mailTemplatePath += MailInformBigCreditMemberTemplate;
 
-                table1 = GenerateTable(creditMemberBigStake.BigCreditMemberList);
+                tblBigCreditMember = GenerateTable(creditMemberBigStake.BigCreditMemberList);
             }
             else if (!creditMemberBigStake.BigCreditMemberList.Any() && creditMemberBigStake.BigCreditMemberWithBigLossList.Any())
             {
                 mailTemplatePath += MailInformBigLossTemplate;
-                table1 = GenerateTable(creditMemberBigStake.BigCreditMemberWithBigLossList);
+                tblBigCreditMember = GenerateTable(creditMemberBigStake.BigCreditMemberWithBigLossList);
             }
             else
             {
                 mailTemplatePath += MailInformBigCreditMemberAndBigLossTemplate;
 
-                table1 = GenerateTable(creditMemberBigStake.BigCreditMemberList);
+                tblBigCreditMember = GenerateTable(creditMemberBigStake.BigCreditMemberList);
 
-                table2 = GenerateTable(creditMemberBigStake.BigCreditMemberWithBigLossList);
+                tblBigCreditMemberWithBigLoss = GenerateTable(creditMemberBigStake.BigCreditMemberWithBigLossList);
             }
 
             var body = Utilities.ReadTextFile(mailTemplatePath);
 
-            body = string.Format(body, table1, table2);
+            body = string.Format(body, tblBigCreditMember, tblBigCreditMemberWithBigLoss);
 
             var json = JsonConvert.SerializeObject(creditMemberBigStake);
 
@@ -275,6 +276,8 @@
                 table += "<td style='" + CssStyleTh() + "'>Given Credit (RM)</td>";
                 table += "<td style='" + CssStyleTh() + "'>Member Turnover (RM)</td>";
                 table += "<td style='" + CssStyleTh() + "'>Member Winloss (RM)</td>";
+                table += "<td style='" + CssStyleTh() + "'>Settled Bet Count</td>";
+                table += "<td style='" + CssStyleTh() + "'>Total Bet Count</td>";
                 table += "</tr>";
                 var index = 1;
 
@@ -287,6 +290,8 @@
                     table += "<td style='" + CssStyleTd + "'>" + item.GivenCredit_RM.ToString(FormatDecimalToString_Place) + "</td>";
                     table += "<td style='" + CssStyleTd + "'>" + item.MemberTurnover_RM.ToString(FormatDecimalToString_Place) + "</td>";
                     table += "<td style='" + CssStyleTd + "'>" + item.MemberWinloss_RM.ToString(FormatDecimalToString_Place) + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.SettleBetCount + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.TotalBetCount + "</td>";
                     table += "</tr>";
 
                     index++;
