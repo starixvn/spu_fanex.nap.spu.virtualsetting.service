@@ -1,9 +1,10 @@
 namespace Fanex.NAP.SPU.VR.Tests.Features.Agent
 {
-    using Fanex.NAP.SPU.VR.JobService;
-    using Fanex.NAP.SPU.VR.JobService.Services;
     using Fanex.NAP.SPU.VR.Features.Agent;
     using Fanex.NAP.SPU.VR.Features.Agent.Model;
+    using Fanex.NAP.SPU.VR.Features.Notification;
+    using Fanex.NAP.SPU.VR.JobService;
+    using Fanex.NAP.SPU.VR.JobService.Services;
     using FluentAssertions;
     using NSubstitute;
     using System.Collections.Generic;
@@ -17,12 +18,14 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.Agent
         private readonly IAppSettings appSettings;
         private readonly IAgentService agentService;
         private readonly AgentJobService jobService;
+        private readonly INotificationService notificationService;
 
         public AgentJobServiceTest()
         {
             appSettings = Substitute.For<IAppSettings>();
             agentService = Substitute.For<IAgentService>();
-            jobService = new AgentJobService(appSettings, agentService);
+            notificationService = Substitute.For<INotificationService>();
+            jobService = new AgentJobService(appSettings, agentService, notificationService);
         }              
 
         #region GenerateMailBody Tests

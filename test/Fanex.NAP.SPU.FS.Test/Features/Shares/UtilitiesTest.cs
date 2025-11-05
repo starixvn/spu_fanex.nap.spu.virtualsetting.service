@@ -589,56 +589,7 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.Shares
             }
         }
 
-        #endregion
-
-        #region NotifyMessage Method Tests
-
-        [Fact]
-        public void NotifyMessage_WithValidParameters_ShouldNotThrowException()
-        {
-            // Arrange
-            var message = "Test notification message";
-            var systemName = "TestSystem";
-            var environment = "UAT";
-            var groupId = "test-group";
-
-            // Act & Assert
-            var action = () => Utilities.NotifyMessage(message, systemName, environment, groupId);
-            action.Should().NotThrow();
-        }     
-
-        [Theory]
-        [InlineData("PRO")]
-        [InlineData("KLDR")]
-        [InlineData("UAT")]
-        [InlineData("LOCAL")]
-        public void NotifyMessage_WithDifferentEnvironments_ShouldNotThrowException(string environment)
-        {
-            // Arrange
-            var message = "Test notification message";
-            var systemName = "TestSystem";
-            var groupId = "test-group";
-
-            // Act & Assert
-            var action = () => Utilities.NotifyMessage(message, systemName, environment, groupId);
-            action.Should().NotThrow();
-        }
-
-        [Fact]
-        public void NotifyMessage_WithSpecialCharacters_ShouldNotThrowException()
-        {
-            // Arrange
-            var message = "Test message with special chars &<>\"'";
-            var systemName = "TestSystem";
-            var environment = "UAT";
-            var groupId = "test-group";
-
-            // Act & Assert
-            var action = () => Utilities.NotifyMessage(message, systemName, environment, groupId);
-            action.Should().NotThrow();
-        }
-
-        #endregion       
+        #endregion        
 
         #region Method Signature Tests
 
@@ -691,24 +642,7 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.Shares
             method.GetParameters().Should().HaveCount(2);
             method.GetParameters()[0].ParameterType.Should().Be(typeof(string));
             method.GetParameters()[1].ParameterType.Should().Be(typeof(double));
-        }
-
-        [Fact]
-        public void NotifyMessage_ShouldHaveCorrectSignature()
-        {
-            // Arrange
-            var method = typeof(Utilities).GetMethod("NotifyMessage");
-
-            // Assert
-            method.Should().NotBeNull();
-            method.IsStatic.Should().BeTrue();
-            method.ReturnType.Should().Be(typeof(void));
-            method.GetParameters().Should().HaveCount(4);
-            method.GetParameters()[0].ParameterType.Should().Be(typeof(string));
-            method.GetParameters()[1].ParameterType.Should().Be(typeof(string));
-            method.GetParameters()[2].ParameterType.Should().Be(typeof(string));
-            method.GetParameters()[3].ParameterType.Should().Be(typeof(string));
-        }
+        }        
 
         #endregion
 

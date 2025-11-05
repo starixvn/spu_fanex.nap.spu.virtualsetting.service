@@ -1,10 +1,8 @@
 ﻿namespace Fanex.NAP.SPU.CTS.Shares
-{
-    using Fanex.NAP.SPU.Notification.Services;
+{  
     using Fanex.NAP.SPU.VR.Shares;
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
 
@@ -88,15 +86,5 @@
             File.AppendAllText(filePath, string.Format("{0}{1}", content, System.Environment.NewLine));
         }
 
-        [SuppressMessage("Minor Code Smell", "S6566", Justification = "Exact required for business rule")]
-        public static void NotifyMessage(string message, string systemName, string environment, string groupId)
-        {
-            var notificationService = new NotificationService();
-            string proxy = new HashSet<string> { "PRO", "KLDR" }.Contains(environment) ? "iusqd.gamora.prod:8801" : null;
-            notificationService
-               .Config("0A40aOc7CtpzjbBSJu8KNWQRoXyjRvf9", groupId, "https://bot.nexdev.net/skynex/api/messages/forwardwithtoken", proxy)
-               .Message(new MessageModel(systemName, DateTime.Now, environment, message))
-               .SendWithoutDelay();
-        }
     }
 }

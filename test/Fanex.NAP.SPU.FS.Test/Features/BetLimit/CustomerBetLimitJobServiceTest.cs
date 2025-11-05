@@ -1,15 +1,11 @@
 namespace Fanex.NAP.SPU.VR.Tests.Features.BetLimit
 {
     using Fanex.NAP.SPU.VR.Features.BetLimit;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.JobService;
     using Fanex.NAP.SPU.VR.JobService.Services;
     using FluentAssertions;
     using NSubstitute;
-    using NSubstitute.ExceptionExtensions;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Xunit;
 
     /// <summary>
@@ -20,12 +16,15 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.BetLimit
         private readonly IAppSettings appSettings;
         private readonly IBetLimitService betLimitService;
         private readonly ICustomerBetLimitJobService jobService;
+        private readonly INotificationService notificationService;
 
         public CustomerBetLimitJobServiceTest()
         {
             appSettings = Substitute.For<IAppSettings>();
             betLimitService = Substitute.For<IBetLimitService>();
-            jobService = new CustomerBetLimitJobService(appSettings, betLimitService);
+            notificationService = Substitute.For<INotificationService>();
+
+            jobService = new CustomerBetLimitJobService(appSettings, betLimitService, notificationService);
         }
 
         #region Constructor Tests
@@ -36,9 +35,10 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.BetLimit
             // Arrange
             var mockAppSettings = Substitute.For<IAppSettings>();
             var mockBetLimitService = Substitute.For<IBetLimitService>();
-
+            var notificationService = Substitute.For<INotificationService>();
+         
             // Act
-            var service = new CustomerBetLimitJobService(mockAppSettings, mockBetLimitService);
+            var service = new CustomerBetLimitJobService(mockAppSettings, mockBetLimitService, notificationService);
 
             // Assert
             service.Should().NotBeNull();

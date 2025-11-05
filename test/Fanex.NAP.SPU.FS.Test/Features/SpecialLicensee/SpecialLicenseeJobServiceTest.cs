@@ -1,5 +1,8 @@
 namespace Fanex.NAP.SPU.VR.Tests.Features.SpecialLicensee
 {
+    using Fanex.Logging;
+    using Fanex.NAP.SPU.VR.Features.BetLimit;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.Features.SpecialLicensee;
     using Fanex.NAP.SPU.VR.JobService;
     using Fanex.NAP.SPU.VR.JobService.Services;
@@ -19,12 +22,22 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.SpecialLicensee
         private readonly IAppSettings appSettings;
         private readonly ISpecialLicenseeService specialLicenseeService;
         private readonly SpecialLicenseeJobService jobService;
+        private readonly INotificationService notificationService;
 
         public SpecialLicenseeJobServiceTest()
         {
             appSettings = Substitute.For<IAppSettings>();
             specialLicenseeService = Substitute.For<ISpecialLicenseeService>();
-            jobService = new SpecialLicenseeJobService(appSettings, specialLicenseeService);
+            notificationService = Substitute.For<INotificationService>();
+
+            jobService = new SpecialLicenseeJobService(appSettings, specialLicenseeService, notificationService);
+          
+            // Setup test logging          
+            var logEngine = Substitute.For<ILogEngine>();
+
+            LogManager
+                .SetDefaultLogCategory("")
+                .Use(logEngine);
         }
 
         #region Constructor Tests
@@ -35,9 +48,10 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.SpecialLicensee
             // Arrange
             var mockAppSettings = Substitute.For<IAppSettings>();
             var mockSpecialLicenseeService = Substitute.For<ISpecialLicenseeService>();
+            var notificationService = Substitute.For<INotificationService>();
 
             // Act
-            var service = new SpecialLicenseeJobService(mockAppSettings, mockSpecialLicenseeService);
+            var service = new SpecialLicenseeJobService(mockAppSettings, mockSpecialLicenseeService, notificationService);
 
             // Assert
             service.Should().NotBeNull();

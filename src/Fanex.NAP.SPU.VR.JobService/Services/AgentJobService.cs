@@ -27,13 +27,18 @@
         private const string VSMailInformTemplate = @"MailTemplate/Agent/MailInformTemplate.cshtml";       
         private const string CssStyleTd = "border: 1px solid black";
         private readonly IAppSettings appSettings;
-        private readonly IAgentService agentService;           
+        private readonly IAgentService agentService;
+        private readonly INotificationService notificationService;
         private string notifiedMessage = string.Empty;       
 
-        public AgentJobService(IAppSettings appSettings, IAgentService agentService)
+        public AgentJobService(IAppSettings appSettings
+            , IAgentService agentService
+            , INotificationService notificationService)
         {
             this.appSettings = appSettings;
-            this.agentService = agentService;           
+            this.agentService = agentService;  
+            this.notificationService = notificationService;
+            this.notificationService.Config(appSettings.LogGroupID, appSettings.EnvironmentString);
         }
 
         public Task<bool> Execute()
@@ -120,13 +125,10 @@
         private void NotifyMessage()
         {
             if (!string.IsNullOrWhiteSpace(notifiedMessage))
-            {               
-                var notificationService = new NotificationService(appSettings.EnvironmentString);
-
-                notificationService
-                   .Config(appSettings.LogGroupID)
+            {                              
+                notificationService                
                    .Message(new MessageModel("VR - Auto Agent Ajust", DateTimeOffset.Now, appSettings.EnvironmentString, notifiedMessage))
-                   .SendWithoutDelay(true);
+                   .SendMessageInfo();
             }
         }
 

@@ -1,8 +1,9 @@
 namespace Fanex.NAP.SPU.VR.Tests.Features.JobService
-{
+{   
     using Fanex.NAP.SPU.VR.Features.Agent;
     using Fanex.NAP.SPU.VR.Features.Agent.Entities;
     using Fanex.NAP.SPU.VR.Features.Agent.Model;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.JobService;
     using Fanex.NAP.SPU.VR.JobService.Services;
     using FluentAssertions;
@@ -22,12 +23,15 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.JobService
         private readonly IAppSettings mockAppSettings;
         private readonly IAgentService mockAgentService;
         private readonly AgentJobService jobService;
+        private readonly INotificationService notificationService;
 
         public AgentJobServiceTest()
         {
             mockAppSettings = Substitute.For<IAppSettings>();
             mockAgentService = Substitute.For<IAgentService>();
-            jobService = new AgentJobService(mockAppSettings, mockAgentService);
+            notificationService = Substitute.For<INotificationService>();
+
+            jobService = new AgentJobService(mockAppSettings, mockAgentService, notificationService);
         }
 
         private UnflagAbnormalAgentEntity CreateUnflagAbnormalAgentEntity(int agentId, decimal memberWinloss)
@@ -66,9 +70,10 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.JobService
             // Arrange
             var appSettings = Substitute.For<IAppSettings>();
             var agentService = Substitute.For<IAgentService>();
+            var notificationService = Substitute.For<INotificationService>();
 
             // Act
-            var service = new AgentJobService(appSettings, agentService);
+            var service = new AgentJobService(appSettings, agentService, notificationService);
 
             // Assert
             service.Should().NotBeNull();

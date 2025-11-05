@@ -25,13 +25,19 @@
         private readonly IAppSettings appSettings;
         private readonly ISoccerService soccerService;
         private readonly ISportsbookService sportsbookService;
+        private readonly INotificationService notificationService;
         private DateTimeOffset stopTime;
 
-        public Adjust3MJobService(IAppSettings appSettings, ISoccerService soccerService, ISportsbookService sportsbookService)
+        public Adjust3MJobService(IAppSettings appSettings
+            , ISoccerService soccerService
+            , ISportsbookService sportsbookService
+            , INotificationService notificationService)
         {        
             this.appSettings = appSettings;
             this.soccerService = soccerService;
             this.sportsbookService = sportsbookService;
+            this.notificationService = notificationService;
+            this.notificationService.Config(appSettings.LogGroupID, appSettings.EnvironmentString);
         }
 
         public Task<bool> Execute()
@@ -143,13 +149,10 @@
         }
 
         private void NotifyMessage(string message)
-        {
-            var notificationService = new NotificationService(appSettings.EnvironmentString);
-
-            notificationService
-               .Config(appSettings.LogGroupID)
+        {            
+            notificationService              
                .Message(new MessageModel("VR - Adjust 3M", DateTimeOffset.Now, appSettings.EnvironmentString, message))
-               .SendWithoutDelay(true);
+               .SendMessageInfo();
         }
 
         private void SendMail(int mailingListId, DateTimeOffset startTime, DateTimeOffset endTime, int puntersUpdated)

@@ -1,6 +1,9 @@
 namespace Fanex.NAP.SPU.VR.Tests.Features.JobService
 {
+    using Fanex.Logging;
+    using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.BetLimit;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.JobService;
     using Fanex.NAP.SPU.VR.JobService.Services;
     using FluentAssertions;
@@ -8,7 +11,6 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.JobService
     using NSubstitute.ExceptionExtensions;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
     using Xunit;
@@ -21,12 +23,21 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.JobService
         private readonly IAppSettings appSettings;
         private readonly IBetLimitService betLimitService;
         private readonly CustomerBetLimitJobService service;
+        private readonly INotificationService notificationService;
 
         public CustomerBetLimitJobServiceTest()
         {
             appSettings = Substitute.For<IAppSettings>();
             betLimitService = Substitute.For<IBetLimitService>();
-            service = new CustomerBetLimitJobService(appSettings, betLimitService);
+            notificationService = Substitute.For<INotificationService>();
+
+            service = new CustomerBetLimitJobService(appSettings, betLimitService, notificationService);
+            // Setup test logging          
+            var logEngine = Substitute.For<ILogEngine>();
+
+            LogManager
+                .SetDefaultLogCategory("")
+                .Use(logEngine);
         }
 
         #region Constructor Tests
@@ -37,9 +48,10 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.JobService
             // Arrange
             var mockAppSettings = Substitute.For<IAppSettings>();
             var mockBetLimitService = Substitute.For<IBetLimitService>();
+            var notificationService = Substitute.For<INotificationService>();
 
             // Act
-            var service = new CustomerBetLimitJobService(mockAppSettings, mockBetLimitService);
+            var service = new CustomerBetLimitJobService(mockAppSettings, mockBetLimitService, notificationService);
 
             // Assert
             service.Should().NotBeNull();

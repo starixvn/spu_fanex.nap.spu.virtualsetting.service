@@ -29,15 +29,21 @@
         private const string MailInformBigLossTemplate = @"MailTemplate/MemberBigStake/MailInformBigLossTemplate.cshtml";
         private const string MailInformBigCreditMemberAndBigLossTemplate = @"MailTemplate/MemberBigStake/MailInformBigCreditMemberAndBigLossTemplate.cshtml";
         private const string FormatDecimalToString_Place = "#,##0.00";
+        private const string FormatIntToString_Place = "#,##0";
         private const string CssStyleTd = "border: 1px solid black";       
         private readonly IAppSettings appSettings;
         private readonly IMemberBigStakeService memberBigStakeServices;
+        private readonly INotificationService notificationService;
         private string notifiedMessage = string.Empty;
 
-        public MemberBigStakeJobService(IAppSettings appSettings, IMemberBigStakeService memberBigStakeServices)
+        public MemberBigStakeJobService(IAppSettings appSettings
+            , IMemberBigStakeService memberBigStakeServices
+            , INotificationService notificationService)
         {          
             this.appSettings = appSettings;
             this.memberBigStakeServices = memberBigStakeServices;
+            this.notificationService = notificationService;
+            this.notificationService.Config(appSettings.LogGroupID, appSettings.EnvironmentString);
         }
 
         public Task<bool> Execute()
@@ -291,8 +297,8 @@
                     table += "<td style='" + CssStyleTd + "'>" + item.GivenCredit_RM.ToString(FormatDecimalToString_Place) + "</td>";
                     table += "<td style='" + CssStyleTd + "'>" + item.MemberTurnover_RM.ToString(FormatDecimalToString_Place) + "</td>";
                     table += "<td style='" + CssStyleTd + "'>" + item.MemberWinloss_RM.ToString(FormatDecimalToString_Place) + "</td>";
-                    table += "<td style='" + CssStyleTd + "'>" + item.SettleBetCount + "</td>";
-                    table += "<td style='" + CssStyleTd + "'>" + item.TotalBetCount + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.SettleBetCount.ToString(FormatIntToString_Place) + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.TotalBetCount.ToString(FormatIntToString_Place) + "</td>";
                     table += "</tr>";
 
                     index++;
@@ -332,13 +338,10 @@
         private void NotifyMessage()
         {
             if (!string.IsNullOrWhiteSpace(notifiedMessage))
-            {
-                var notificationService = new NotificationService(appSettings.EnvironmentString);
-               
-                notificationService
-                   .Config(appSettings.LogGroupID)
+            {               
+                notificationService                  
                    .Message(new MessageModel("VR - Member Big Stake", DateTimeOffset.Now, appSettings.EnvironmentString, notifiedMessage))
-                   .SendWithoutDelay(true);
+                   .SendMessageInfo();
             }
         }
     }

@@ -3,7 +3,6 @@
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
-    using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.Features.SpecialLicensee;
     using System; 
@@ -18,11 +17,16 @@
     {   
         private readonly IAppSettings appSettings;
         private readonly ISpecialLicenseeService specialLicenseeService;
+        private readonly INotificationService notificationService;
 
-        public SpecialLicenseeJobService(IAppSettings appSettings, ISpecialLicenseeService specialLicenseeService)
-        {           
+        public SpecialLicenseeJobService(IAppSettings appSettings
+            , ISpecialLicenseeService specialLicenseeService
+            , INotificationService notificationService)
+        {
             this.appSettings = appSettings;
             this.specialLicenseeService = specialLicenseeService;
+            this.notificationService = notificationService;
+            this.notificationService.Config(appSettings.LogGroupID, appSettings.EnvironmentString);
         }
 
         public Task<bool> Execute()
@@ -71,13 +75,10 @@
             var notifiedMessage = $"✅ Auto special licensee job run COMPLETED." +
                  $"\n\r - OtherSports - Customers have passed Performance Check: {this.specialLicenseeService.PunterBasketballUpdated}" +
                  $"\n\r - Special SportBook - Customers have passed Performance Check: {this.specialLicenseeService.PunterSportsbookUpdated}";
-          
-            var notificationService = new NotificationService(appSettings.EnvironmentString);
-
-            notificationService
-               .Config(appSettings.LogGroupID)
+                    
+            notificationService             
                .Message(new MessageModel("VR - Auto Update Special Licensee", DateTimeOffset.Now, appSettings.EnvironmentString, notifiedMessage))
-               .SendWithoutDelay(true);
+               .SendMessageInfo();
         }
     }
 }

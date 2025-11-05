@@ -1,8 +1,10 @@
 namespace Fanex.NAP.SPU.VR.Tests.Features.MemberBigStake
 {
+    using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Entities;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Model;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.JobService;
     using Fanex.NAP.SPU.VR.JobService.Services;
     using FluentAssertions;
@@ -23,12 +25,15 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.MemberBigStake
         private readonly IAppSettings appSettings;
         private readonly IMemberBigStakeService memberBigStakeService;
         private readonly MemberBigStakeJobService jobService;
+        private readonly INotificationService notificationService;
 
         public MemberBigStakeJobServiceTest()
         {
             appSettings = Substitute.For<IAppSettings>();
             memberBigStakeService = Substitute.For<IMemberBigStakeService>();
-            jobService = new MemberBigStakeJobService(appSettings, memberBigStakeService);
+            notificationService = Substitute.For<INotificationService>();
+
+            jobService = new MemberBigStakeJobService(appSettings, memberBigStakeService, notificationService);
         }
 
         #region Constructor Tests
@@ -39,9 +44,10 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.MemberBigStake
             // Arrange
             var mockAppSettings = Substitute.For<IAppSettings>();
             var mockMemberBigStakeService = Substitute.For<IMemberBigStakeService>();
+            var notificationService = Substitute.For<INotificationService>();
 
             // Act
-            var service = new MemberBigStakeJobService(mockAppSettings, mockMemberBigStakeService);
+            var service = new MemberBigStakeJobService(mockAppSettings, mockMemberBigStakeService, notificationService);
 
             // Assert
             service.Should().NotBeNull();

@@ -1,16 +1,15 @@
 namespace Fanex.NAP.SPU.VR.Tests.Features.Adjust3M
 {
+    using Fanex.NAP.SPU.Notification.Services;
+    using Fanex.NAP.SPU.VR.Features.Adjust3M;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.JobService;
     using Fanex.NAP.SPU.VR.JobService.Services;
-    using Fanex.NAP.SPU.VR.Features.Adjust3M;
-    using Fanex.NAP.SPU.VR.Features.Adjust3M.Entities;
-    using Fanex.NAP.SPU.VR.Shares;
     using FluentAssertions;
     using NSubstitute;
-    using System;
-    using System.Threading.Tasks;
-    using Xunit;
     using NSubstitute.ExceptionExtensions;
+    using System;
+    using Xunit;
 
     /// <summary>
     /// Unit tests for Adjust3MJobService class
@@ -21,13 +20,16 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.Adjust3M
         private readonly ISoccerService soccerService;
         private readonly ISportsbookService sportsbookService;
         private readonly Adjust3MJobService jobService;
+        private readonly INotificationService notificationService;
 
         public Adjust3MJobServiceTest()
         {
             appSettings = Substitute.For<IAppSettings>();
             soccerService = Substitute.For<ISoccerService>();
             sportsbookService = Substitute.For<ISportsbookService>();
-            jobService = new Adjust3MJobService(appSettings, soccerService, sportsbookService);
+            notificationService = Substitute.For<INotificationService>();
+
+            jobService = new Adjust3MJobService(appSettings, soccerService, sportsbookService, notificationService);
         }       
 
         #region IsExecutedDate Tests

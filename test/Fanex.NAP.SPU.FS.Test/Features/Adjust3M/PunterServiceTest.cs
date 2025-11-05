@@ -1,14 +1,13 @@
 namespace Fanex.NAP.SPU.VR.Tests.Features.Adjust3M
 {
+    using Fanex.Logging;
     using Fanex.NAP.SPU.VR.Features.Adjust3M;
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Entities;
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Model;
-    using Fanex.NAP.SPU.CTS.Shares;
     using FluentAssertions;
     using NSubstitute;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using Xunit;
 
@@ -26,6 +25,12 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.Adjust3M
             dataAccess = Substitute.For<IAdjust3MDataAccess>();
             model = CreateVirtualSettingModel();
             service = new PunterService(dataAccess, model, false);
+            // Setup test logging          
+            var logEngine = Substitute.For<ILogEngine>();
+
+            LogManager
+                .SetDefaultLogCategory("")
+                .Use(logEngine);
         }
 
         private VirtualSettingModel CreateVirtualSettingModel()

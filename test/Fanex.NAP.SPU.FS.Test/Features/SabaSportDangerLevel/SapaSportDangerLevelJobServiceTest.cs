@@ -1,5 +1,7 @@
 namespace Fanex.NAP.SPU.VR.Tests.Features.SabaSportDangerLevel
 {
+    using Fanex.NAP.SPU.Notification.Services;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel;
     using Fanex.NAP.SPU.VR.JobService;
     using Fanex.NAP.SPU.VR.JobService.Services;
@@ -21,12 +23,15 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.SabaSportDangerLevel
         private readonly IAppSettings appSettings;
         private readonly IDangerLevelSapaSportService dangerLevelSapaSportService;
         private readonly SapaSportDangerLevelJobService jobService;
+        private readonly INotificationService notificationService;
 
         public SapaSportDangerLevelJobServiceTest()
         {
             appSettings = Substitute.For<IAppSettings>();
             dangerLevelSapaSportService = Substitute.For<IDangerLevelSapaSportService>();
-            jobService = new SapaSportDangerLevelJobService(appSettings, dangerLevelSapaSportService);
+            notificationService = Substitute.For<INotificationService>();
+
+            jobService = new SapaSportDangerLevelJobService(appSettings, dangerLevelSapaSportService, notificationService);
         }
 
         #region Constructor Tests
@@ -37,9 +42,10 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.SabaSportDangerLevel
             // Arrange
             var mockAppSettings = Substitute.For<IAppSettings>();
             var mockDangerLevelSapaSportService = Substitute.For<IDangerLevelSapaSportService>();
+            var notificationService = Substitute.For<INotificationService>();
 
             // Act
-            var service = new SapaSportDangerLevelJobService(mockAppSettings, mockDangerLevelSapaSportService);
+            var service = new SapaSportDangerLevelJobService(mockAppSettings, mockDangerLevelSapaSportService, notificationService);
 
             // Assert
             service.Should().NotBeNull();
