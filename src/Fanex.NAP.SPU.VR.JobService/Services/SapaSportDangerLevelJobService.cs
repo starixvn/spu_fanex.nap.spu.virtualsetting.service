@@ -4,6 +4,7 @@
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NAP.SPU.CTS.Shares;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel;
     using System;
     using System.Threading.Tasks;
@@ -84,7 +85,12 @@
         {
             if (!string.IsNullOrEmpty(notifiedMessage))
             {               
-                Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Sapa Sport DangerLevel", appSettings.EnvironmentString, appSettings.LogGroupID);
+                var notificationService = new NotificationService(appSettings.EnvironmentString);
+
+                notificationService
+                   .Config(appSettings.LogGroupID)
+                   .Message(new MessageModel("VR - Auto Update Sapa Sport DangerLevel", DateTimeOffset.Now, appSettings.EnvironmentString, notifiedMessage))
+                   .SendWithoutDelay();
             }
         }
     }

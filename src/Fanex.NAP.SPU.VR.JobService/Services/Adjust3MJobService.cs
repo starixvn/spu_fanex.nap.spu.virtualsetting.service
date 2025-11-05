@@ -7,6 +7,7 @@
     using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.VR.Features.Adjust3M;
     using Fanex.NAP.SPU.VR.Features.Adjust3M.Entities;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.Shares;
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -142,9 +143,14 @@
         }
 
         private void NotifyMessage(string message)
-        {                        
-            Utilities.NotifyMessage(message, "VR - Adjust 3M", appSettings.EnvironmentString, appSettings.LogGroupID);
-        }        
+        {
+            var notificationService = new NotificationService(appSettings.EnvironmentString);
+
+            notificationService
+               .Config(appSettings.LogGroupID)
+               .Message(new MessageModel("VR - Adjust 3M", DateTimeOffset.Now, appSettings.EnvironmentString, message))
+               .SendWithoutDelay(true);
+        }
 
         private void SendMail(int mailingListId, DateTimeOffset startTime, DateTimeOffset endTime, int puntersUpdated)
         {

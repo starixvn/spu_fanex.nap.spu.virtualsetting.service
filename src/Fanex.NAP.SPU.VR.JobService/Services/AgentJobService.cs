@@ -8,7 +8,8 @@
     using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.VR.Features.Agent;
     using Fanex.NAP.SPU.VR.Features.Agent.Entities;
-    using Fanex.NAP.SPU.VR.Features.Agent.Model;  
+    using Fanex.NAP.SPU.VR.Features.Agent.Model;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -120,7 +121,12 @@
         {
             if (!string.IsNullOrWhiteSpace(notifiedMessage))
             {               
-                Utilities.NotifyMessage(notifiedMessage, "VR - Auto Agent Ajust", appSettings.EnvironmentString, appSettings.LogGroupID);
+                var notificationService = new NotificationService(appSettings.EnvironmentString);
+
+                notificationService
+                   .Config(appSettings.LogGroupID)
+                   .Message(new MessageModel("VR - Auto Agent Ajust", DateTimeOffset.Now, appSettings.EnvironmentString, notifiedMessage))
+                   .SendWithoutDelay(true);
             }
         }
 

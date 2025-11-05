@@ -4,6 +4,7 @@
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NAP.SPU.CTS.Shares;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.Features.SpecialLicensee;
     using System; 
     using System.Threading.Tasks;
@@ -70,9 +71,13 @@
             var notifiedMessage = $"✅ Auto special licensee job run COMPLETED." +
                  $"\n\r - OtherSports - Customers have passed Performance Check: {this.specialLicenseeService.PunterBasketballUpdated}" +
                  $"\n\r - Special SportBook - Customers have passed Performance Check: {this.specialLicenseeService.PunterSportsbookUpdated}";
-           
-            Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Special Licensee", appSettings.EnvironmentString, appSettings.LogGroupID);
-        }
+          
+            var notificationService = new NotificationService(appSettings.EnvironmentString);
 
+            notificationService
+               .Config(appSettings.LogGroupID)
+               .Message(new MessageModel("VR - Auto Update Special Licensee", DateTimeOffset.Now, appSettings.EnvironmentString, notifiedMessage))
+               .SendWithoutDelay(true);
+        }
     }
 }

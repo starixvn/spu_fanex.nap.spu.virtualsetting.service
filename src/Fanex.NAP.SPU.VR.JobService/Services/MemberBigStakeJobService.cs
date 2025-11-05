@@ -9,6 +9,7 @@
     using Fanex.NAP.SPU.VR.Features.MemberBigStake;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Entities;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Model;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
@@ -331,8 +332,13 @@
         private void NotifyMessage()
         {
             if (!string.IsNullOrWhiteSpace(notifiedMessage))
-            {                
-                Utilities.NotifyMessage(notifiedMessage, "VR - Member Big Stake", appSettings.EnvironmentString, appSettings.LogGroupID);
+            {
+                var notificationService = new NotificationService(appSettings.EnvironmentString);
+               
+                notificationService
+                   .Config(appSettings.LogGroupID)
+                   .Message(new MessageModel("VR - Member Big Stake", DateTimeOffset.Now, appSettings.EnvironmentString, notifiedMessage))
+                   .SendWithoutDelay(true);
             }
         }
     }
