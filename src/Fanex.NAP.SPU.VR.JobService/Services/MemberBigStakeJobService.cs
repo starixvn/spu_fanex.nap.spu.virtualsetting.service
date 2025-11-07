@@ -275,16 +275,16 @@
 
             if (creditMemberBigStake != null && creditMemberBigStake.Any())
             {
-                table += "<table style='" + CssStyleTable(700) + "'>";
+                table += "<table style='" + CssStyleTable(1000) + "'>";
                 table += "<tr>";
-                table += "<td style='" + CssStyleTh() + "'>No.</td>";
-                table += "<td style='" + CssStyleTh() + "'>Member</td>";
-                table += "<td style='" + CssStyleTh() + "'>Site</td>";
-                table += "<td style='" + CssStyleTh() + "'>Given Credit (RM)</td>";
-                table += "<td style='" + CssStyleTh() + "'>Member Turnover (RM)</td>";
-                table += "<td style='" + CssStyleTh() + "'>Member Winloss (RM)</td>";
-                table += "<td style='" + CssStyleTh() + "'>Settled Bet Count</td>";
-                table += "<td style='" + CssStyleTh() + "'>Total Bet Count</td>";
+                table += "<td style='" + CssStyleTh(string.Empty) + "'>No.</td>";
+                table += "<td style='" + CssStyleTh(string.Empty) + "'>Member</td>";
+                table += "<td style='" + CssStyleTh(string.Empty) + "'>Site</td>";
+                table += "<td style='" + CssStyleTh("150px") + "'>Given Credit (RM)</td>";
+                table += "<td style='" + CssStyleTh("150px") + "'>Member Turnover (RM)</td>";
+                table += "<td style='" + CssStyleTh("150px") + "'>Member Winloss (RM)</td>";
+                table += "<td style='" + CssStyleTh("150px") + "'>Settled Bet Count</td>";
+                table += "<td style='" + CssStyleTh("150px") + "'>Total Bet Count</td>";
                 table += "</tr>";
                 var index = 1;
 
@@ -318,10 +318,15 @@
             return css;
         }
 
-        private string CssStyleTh()
+        private string CssStyleTh(string widthpx)
         {
             var css = "border: 1px solid black;";
             css += "font-weight:bold;";
+
+            if (string.IsNullOrEmpty(widthpx))
+            {
+                css += "width: " + widthpx;
+            }
 
             return css;
         }      

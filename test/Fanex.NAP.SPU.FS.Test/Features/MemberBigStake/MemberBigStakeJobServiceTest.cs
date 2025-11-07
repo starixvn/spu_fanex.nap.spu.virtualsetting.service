@@ -408,10 +408,13 @@ namespace Fanex.NAP.SPU.VR.Tests.Features.MemberBigStake
         [Fact]
         public void CssStyleTh_WhenCalled_ShouldReturnCorrectCss()
         {
+            // Arrange
+            var width = "150px";
+
             // Act
             var method = typeof(MemberBigStakeJobService).GetMethod("CssStyleTh", 
                 BindingFlags.NonPublic | BindingFlags.Instance);
-            var result = method.Invoke(jobService, null) as string;
+            var result = method.Invoke(jobService, new object[] { width }) as string;
 
             // Assert
             result.Should().Contain("border: 1px solid black;");
