@@ -38,7 +38,7 @@
                 FailedUpdatePunterList = new List<PunterEntity>(),
             };
             
-            this.punterService = new PunterService(this.dataAccess, model, false);
+            this.punterService = new PunterService(this.dataAccess, model);
 
             return this;                 
         }

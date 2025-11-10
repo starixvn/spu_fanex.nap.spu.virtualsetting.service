@@ -3,10 +3,8 @@
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
-    using Fanex.NAP.SPU.CTS.Shares;
-    using Fanex.NAP.SPU.Notification.Services;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.Features.SpecialLicensee;
-    using Sentry;
     using System; 
     using System.Threading.Tasks;
 
@@ -19,12 +17,16 @@
     {   
         private readonly IAppSettings appSettings;
         private readonly ISpecialLicenseeService specialLicenseeService;
-        private string notifiedMessage = string.Empty;
+        private readonly INotificationService notificationService;
 
-        public SpecialLicenseeJobService(IAppSettings appSettings, ISpecialLicenseeService specialLicenseeService)
-        {           
+        public SpecialLicenseeJobService(IAppSettings appSettings
+            , ISpecialLicenseeService specialLicenseeService
+            , INotificationService notificationService)
+        {
             this.appSettings = appSettings;
             this.specialLicenseeService = specialLicenseeService;
+            this.notificationService = notificationService;
+            this.notificationService.Config(appSettings.LogGroupID, appSettings.EnvironmentString);
         }
 
         public Task<bool> Execute()
@@ -70,12 +72,13 @@
 
         private void NotifyMessage()
         {
-            notifiedMessage = $"✅ Auto special licensee job run COMPLETED." +
+            var notifiedMessage = $"✅ Auto special licensee job run COMPLETED." +
                  $"\n\r - OtherSports - Customers have passed Performance Check: {this.specialLicenseeService.PunterBasketballUpdated}" +
                  $"\n\r - Special SportBook - Customers have passed Performance Check: {this.specialLicenseeService.PunterSportsbookUpdated}";
-           
-            Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Special Licensee", appSettings.EnvironmentString, appSettings.LogGroupID);
+                    
+            notificationService             
+               .Message(new MessageModel("VR - Auto Update Special Licensee", DateTimeOffset.Now, appSettings.EnvironmentString, notifiedMessage))
+               .SendMessageInfo();
         }
-
     }
 }

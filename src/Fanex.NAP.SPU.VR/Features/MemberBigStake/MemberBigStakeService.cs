@@ -4,6 +4,7 @@
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Model;    
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
 
     public interface IMemberBigStakeService
     {
@@ -44,6 +45,7 @@
             this.memberBigStakeDataAccess.UpdateMemeberBigStakeFirstBetDate(custIdList, type, betDate, isTest);
         }
 
+        [SuppressMessage("Minor Code Smell", "S1643", Justification = "Exact required for business rule validation")]
         public void UpdateWhitelistMemberBigStake(IEnumerable<MemberBigStakePerformanceStatusModel> customerList, int type, bool isTest)
         {
             var custXml = string.Empty;

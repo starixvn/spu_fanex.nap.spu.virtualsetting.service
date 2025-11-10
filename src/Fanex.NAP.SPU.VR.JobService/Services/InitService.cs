@@ -4,6 +4,7 @@
     using Fanex.NAP.SPU.VR.Features.Agent;
     using Fanex.NAP.SPU.VR.Features.BetLimit;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel;
     using Fanex.NAP.SPU.VR.Features.SpecialLicensee;
     using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,9 @@
     public static class InitService
     {
         public static void RegisterService(this IServiceCollection services)
-        {            
+        {
+            RegisterCommonService(services);
+
             RegisterBetLimitService(services);
 
             RegisterAdjust3MService(services);
@@ -23,6 +26,11 @@
             RegisterSpecialLicenseeService(services);
 
             RegisterSapsSportDangerLevelService(services);
+        }
+
+        public static void RegisterCommonService(this IServiceCollection services)
+        {
+            services.AddSingleton<INotificationService, NotificationService>();
         }
 
         private static void RegisterBetLimitService(this IServiceCollection services)

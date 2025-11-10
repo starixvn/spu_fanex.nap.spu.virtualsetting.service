@@ -11,5 +11,9 @@
         public decimal MemberTurnover_RM { get; set; }
 
         public decimal MemberWinloss_RM { get; set; }
+
+        public int SettleBetCount {  get; set; }
+
+        public int TotalBetCount { get; set; }
     }
 }

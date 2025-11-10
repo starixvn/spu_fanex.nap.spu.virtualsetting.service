@@ -2,7 +2,6 @@ namespace Fanex.NAP.SPU.VR.JobService
 {
     using Fanex.Data;
     using Fanex.Data.SqlServer;
-    using Fanex.Logging;
     using Fanex.Logging.Sentry.RavenClient;
     using Fanex.NAP.SPU.VR.JobService.Services;
     using HealthChecks.UI.Client;
@@ -13,8 +12,6 @@ namespace Fanex.NAP.SPU.VR.JobService
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.OpenApi.Models;
-    using Sentry;
-    using System.Collections.Generic;
     using System.IO;
 
     public class Startup

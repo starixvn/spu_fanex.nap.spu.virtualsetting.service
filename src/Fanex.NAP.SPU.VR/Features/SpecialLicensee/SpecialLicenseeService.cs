@@ -3,8 +3,8 @@
     using Fanex.Logging;
     using Fanex.NAP.SPU.CTS.Shares;
     using Fanex.NAP.SPU.VR.Features.SpecialLicensee.Model;
-    using Newtonsoft.Json;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     public interface ISpecialLicenseeService
@@ -34,6 +34,7 @@
             this.specialLicenseeDataAccess = specialLicenseeDataAccess;
         }
 
+        [SuppressMessage("Minor Code Smell", "S1481", Justification = "Exact required for business rule validation")]
         public ISpecialLicenseeService AutoAdjustForBasketball(int punterChunkSize, bool isTest)
         {
             var passedPerfCheckCustomerList = Enumerable.Empty<PassedPerfCheckCustomerModel>();
@@ -74,6 +75,7 @@
             return this;
         }
 
+        [SuppressMessage("Minor Code Smell", "S1481", Justification = "Exact required for business rule validation")]
         public ISpecialLicenseeService AutoAdjustForSpecialSportsbook(int punterChunkSize, bool isTest)
         {
             var passedPerfCheckCustomerList = Enumerable.Empty<PassedPerfCheckCustomerModel>();
@@ -121,20 +123,20 @@
             return this;
         }
 
+        [SuppressMessage("Minor Code Smell", "S1643", Justification = "Exact required for business rule validation")]
         private void AdjustVRPassedCustomers(IEnumerable<PassedPerfCheckCustomerModel> customerList, int sportType, int punterChunkSize, bool isTest)
-        {
-            var customerListString = string.Join(",", customerList.Select(x => x.CustID));
+        {                      
+            var msg = sportType == 99
+                ? "VR - Special Licensee - Other Sports - Customers have passed Performance Check: "
+                : "VR - Special Licensee - Special SportBook - Customers have passed Performance Check: ";
 
-            if (sportType == 99)
-                LogService.Info("VR - Special Licensee - Other Sports - Customers have passed Performance Check: " + customerListString);
-            else
-                LogService.Info("VR - Special Licensee - Special SportBook - Customers have passed Performance Check: " + customerListString);
+            LogService.Info(msg + string.Join(",", customerList.Select(x => x.CustID)));
 
             var customerChunks = Utilities.ChunkList(customerList, punterChunkSize).ToList();
 
             var custXml = string.Empty;
 
-            for (int i = 0; i < customerChunks.Count(); i++)
+            for (int i = 0; i < customerChunks.Count; i++)
             {
                 foreach (var item in customerChunks[i])
                 {
@@ -159,16 +161,15 @@
 
         private void UpdateStatusUnpassedCustomers(IEnumerable<int> customerList, int sportType, int punterChunkSize, bool isTest)
         {
-            var customerListString = string.Join(",", customerList);
+            var msg = sportType == 99
+                ? "VR - Special Licensee - Other Sports - Customers have NOT passed Performance Check: "
+                : "VR - Special Licensee - Special SportBook - Customers have NOT passed Performance Check: ";
 
-            if (sportType == 99)
-                LogService.Info("VR - Special Licensee - Customers have NOT passed Performance Check: " + customerListString);
-            else
-                LogService.Info("VR - Special Licensee - Customers have NOT passed Performance Check: " + customerListString);
+            LogService.Info(msg + string.Join(",", customerList));
 
             var customerChunks = Utilities.ChunkList(customerList, punterChunkSize).ToList();
 
-            for (int i = 0; i < customerChunks.Count(); i++)
+            for (int i = 0; i < customerChunks.Count; i++)
             {
                 this.specialLicenseeDataAccess.UpdateVRAutoAdjustmentStatus(string.Join(",", customerChunks[i]), sportType, isTest);
 

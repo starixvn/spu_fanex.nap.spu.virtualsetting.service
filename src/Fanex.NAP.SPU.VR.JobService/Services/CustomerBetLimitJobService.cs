@@ -3,10 +3,8 @@
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
-    using Fanex.NAP.SPU.CTS.Shares;
-    using Fanex.NAP.SPU.Notification.Services;
     using Fanex.NAP.SPU.VR.Features.BetLimit;
-    using Sentry;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using System;
     using System.Linq;
     using System.Threading.Tasks;
@@ -20,12 +18,17 @@
     {       
         private readonly IAppSettings appSettings;
         private readonly IBetLimitService betLimitService;
+        private readonly INotificationService notificationService;
         private string notifiedMessage = string.Empty;
         
-        public CustomerBetLimitJobService(IAppSettings appSettings, IBetLimitService betLimitService)
+        public CustomerBetLimitJobService(IAppSettings appSettings
+            , IBetLimitService betLimitService
+            , INotificationService notificationService)
         {          
             this.appSettings = appSettings;
             this.betLimitService = betLimitService;
+            this.notificationService = notificationService;
+            this.notificationService.Config(appSettings.LogGroupID, appSettings.EnvironmentString);
         }
 
         public Task<bool> Execute()
@@ -69,9 +72,11 @@
         private void NotifyMessage()
         {
             if(!string.IsNullOrWhiteSpace(notifiedMessage))
-            {                
-                Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Bet Limit", appSettings.EnvironmentString, appSettings.LogGroupID);
-            }            
+            {                              
+                notificationService                  
+                   .Message(new MessageModel("VR - Auto Update Bet Limit", DateTimeOffset.Now, appSettings.EnvironmentString, notifiedMessage))
+                   .SendMessageInfo();
+            }
         }
 
         private void StartTime()

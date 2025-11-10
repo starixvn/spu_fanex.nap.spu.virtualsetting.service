@@ -9,9 +9,11 @@
     using Fanex.NAP.SPU.VR.Features.MemberBigStake;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Entities;
     using Fanex.NAP.SPU.VR.Features.MemberBigStake.Model;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -26,15 +28,22 @@
         private const string MailInformBigCreditMemberTemplate = @"MailTemplate/MemberBigStake/MailInformBigCreditMemberTemplate.cshtml";
         private const string MailInformBigLossTemplate = @"MailTemplate/MemberBigStake/MailInformBigLossTemplate.cshtml";
         private const string MailInformBigCreditMemberAndBigLossTemplate = @"MailTemplate/MemberBigStake/MailInformBigCreditMemberAndBigLossTemplate.cshtml";
-        private const string FormatDecimalToString_Place = "#,##0.00";       
+        private const string FormatDecimalToString_Place = "#,##0.00";
+        private const string FormatIntToString_Place = "#,##0";
+        private const string CssStyleTd = "border: 1px solid black";       
         private readonly IAppSettings appSettings;
         private readonly IMemberBigStakeService memberBigStakeServices;
+        private readonly INotificationService notificationService;
         private string notifiedMessage = string.Empty;
 
-        public MemberBigStakeJobService(IAppSettings appSettings, IMemberBigStakeService memberBigStakeServices)
+        public MemberBigStakeJobService(IAppSettings appSettings
+            , IMemberBigStakeService memberBigStakeServices
+            , INotificationService notificationService)
         {          
             this.appSettings = appSettings;
             this.memberBigStakeServices = memberBigStakeServices;
+            this.notificationService = notificationService;
+            this.notificationService.Config(appSettings.LogGroupID, appSettings.EnvironmentString);
         }
 
         public Task<bool> Execute()
@@ -53,7 +62,7 @@
 
                     UpdateMemberBigStakeStatus(memberBigStakePerformance);
 
-                    SendMail(this.appSettings.MailingListIdAgentAjust);
+                    SendMailListId(this.appSettings.MailingListIdAgentAjust);
 
                     LogService.Info($"VR - Member Big Stake job run COMPLETED");
 
@@ -176,12 +185,14 @@
             }
         }
 
-        private void SendMail(int mailingListId)
+        private void SendMailListId(int mailingListId)
         {
-            if (mailingListId <= 0)            
-                return;            
+            if (mailingListId <= 0)
+            {
+                return;
+            }                  
 
-            var subject = DateTime.Now.ToString("yyyyMMdd") + " List of big credit members just having their first ticket.";
+            var subject = DateTimeOffset.Now.ToString("yyyyMMdd") + " List of big credit members just having their first ticket.";
             var body = GenerateMailBody(); 
 
             try
@@ -213,9 +224,10 @@
         private string GenerateMailBody()
         {
             var creditMemberBigStake = this.memberBigStakeServices.GetBigCreditMemberForAutomail();
+
             var mailTemplatePath = AppDomain.CurrentDomain.BaseDirectory;
-            var table1 = string.Empty;
-            var table2 = string.Empty;
+            var tblBigCreditMember = string.Empty;
+            var tblBigCreditMemberWithBigLoss = string.Empty;
 
             if (!creditMemberBigStake.BigCreditMemberList.Any() && !creditMemberBigStake.BigCreditMemberWithBigLossList.Any())
             {
@@ -225,25 +237,25 @@
             {
                 mailTemplatePath += MailInformBigCreditMemberTemplate;
 
-                table1 = GenerateTable(creditMemberBigStake.BigCreditMemberList);
+                tblBigCreditMember = GenerateTable(creditMemberBigStake.BigCreditMemberList);
             }
             else if (!creditMemberBigStake.BigCreditMemberList.Any() && creditMemberBigStake.BigCreditMemberWithBigLossList.Any())
             {
                 mailTemplatePath += MailInformBigLossTemplate;
-                table1 = GenerateTable(creditMemberBigStake.BigCreditMemberWithBigLossList);
+                tblBigCreditMember = GenerateTable(creditMemberBigStake.BigCreditMemberWithBigLossList);
             }
             else
             {
                 mailTemplatePath += MailInformBigCreditMemberAndBigLossTemplate;
 
-                table1 = GenerateTable(creditMemberBigStake.BigCreditMemberList);
+                tblBigCreditMember = GenerateTable(creditMemberBigStake.BigCreditMemberList);
 
-                table2 = GenerateTable(creditMemberBigStake.BigCreditMemberWithBigLossList);
+                tblBigCreditMemberWithBigLoss = GenerateTable(creditMemberBigStake.BigCreditMemberWithBigLossList);
             }
 
             var body = Utilities.ReadTextFile(mailTemplatePath);
 
-            body = string.Format(body, table1, table2);
+            body = string.Format(body, tblBigCreditMember, tblBigCreditMemberWithBigLoss);
 
             var json = JsonConvert.SerializeObject(creditMemberBigStake);
 
@@ -256,32 +268,37 @@
             return body;
         }
 
+        [SuppressMessage("Minor Code Smell", "S1643", Justification = "Exact required for business rule validation")]
         private string GenerateTable(IEnumerable<AutomailBigCreditMemberEntity> creditMemberBigStake)
         {
             var table = string.Empty;
 
             if (creditMemberBigStake != null && creditMemberBigStake.Any())
             {
-                table += "<table style='" + CssStyleTable(700) + "'>";
+                table += "<table style='" + CssStyleTable(1000) + "'>";
                 table += "<tr>";
-                table += "<td style='" + CssStyleTh() + "'>No.</td>";
-                table += "<td style='" + CssStyleTh() + "'>Member</td>";
-                table += "<td style='" + CssStyleTh() + "'>Site</td>";
-                table += "<td style='" + CssStyleTh() + "'>Given Credit (RM)</td>";
-                table += "<td style='" + CssStyleTh() + "'>Member Turnover (RM)</td>";
-                table += "<td style='" + CssStyleTh() + "'>Member Winloss (RM)</td>";
+                table += "<td style='" + CssStyleTh(string.Empty) + "'>No.</td>";
+                table += "<td style='" + CssStyleTh(string.Empty) + "'>Member</td>";
+                table += "<td style='" + CssStyleTh(string.Empty) + "'>Site</td>";
+                table += "<td style='" + CssStyleTh("150px") + "'>Given Credit (RM)</td>";
+                table += "<td style='" + CssStyleTh("150px") + "'>Member Turnover (RM)</td>";
+                table += "<td style='" + CssStyleTh("150px") + "'>Member Winloss (RM)</td>";
+                table += "<td style='" + CssStyleTh("150px") + "'>Settled Bet Count</td>";
+                table += "<td style='" + CssStyleTh("150px") + "'>Total Bet Count</td>";
                 table += "</tr>";
                 var index = 1;
 
                 foreach (var item in creditMemberBigStake)
                 {
                     table += "<tr>";
-                    table += "<td style='" + CssStyleTd() + "'>" + index + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.Member + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.Site + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.GivenCredit_RM.ToString(FormatDecimalToString_Place) + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.MemberTurnover_RM.ToString(FormatDecimalToString_Place) + "</td>";
-                    table += "<td style='" + CssStyleTd() + "'>" + item.MemberWinloss_RM.ToString(FormatDecimalToString_Place) + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + index + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.Member + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.Site + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.GivenCredit_RM.ToString(FormatDecimalToString_Place) + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.MemberTurnover_RM.ToString(FormatDecimalToString_Place) + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.MemberWinloss_RM.ToString(FormatDecimalToString_Place) + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.SettleBetCount.ToString(FormatIntToString_Place) + "</td>";
+                    table += "<td style='" + CssStyleTd + "'>" + item.TotalBetCount.ToString(FormatIntToString_Place) + "</td>";
                     table += "</tr>";
 
                     index++;
@@ -301,20 +318,18 @@
             return css;
         }
 
-        private string CssStyleTh()
+        private string CssStyleTh(string widthpx)
         {
             var css = "border: 1px solid black;";
             css += "font-weight:bold;";
 
-            return css;
-        }
-
-        private string CssStyleTd()
-        {
-            var css = "border: 1px solid black";
+            if (string.IsNullOrEmpty(widthpx))
+            {
+                css += "width: " + widthpx;
+            }
 
             return css;
-        }
+        }      
 
         private void SendMail(Mail mail)
         {
@@ -328,8 +343,10 @@
         private void NotifyMessage()
         {
             if (!string.IsNullOrWhiteSpace(notifiedMessage))
-            {                
-                Utilities.NotifyMessage(notifiedMessage, "VR - Member Big Stake", appSettings.EnvironmentString, appSettings.LogGroupID);
+            {               
+                notificationService                  
+                   .Message(new MessageModel("VR - Member Big Stake", DateTimeOffset.Now, appSettings.EnvironmentString, notifiedMessage))
+                   .SendMessageInfo();
             }
         }
     }

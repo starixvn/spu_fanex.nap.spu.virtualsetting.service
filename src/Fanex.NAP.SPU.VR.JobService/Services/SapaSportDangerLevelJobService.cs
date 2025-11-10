@@ -3,7 +3,7 @@
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
-    using Fanex.NAP.SPU.CTS.Shares;
+    using Fanex.NAP.SPU.VR.Features.Notification;
     using Fanex.NAP.SPU.VR.Features.SabaSportDangerLevel;
     using System;
     using System.Threading.Tasks;
@@ -17,12 +17,17 @@
     {     
         private readonly IAppSettings appSettings;
         private readonly IDangerLevelSapaSportService service;
+        private readonly INotificationService notificationService;
         private string notifiedMessage;
 
-        public SapaSportDangerLevelJobService(IAppSettings appSettings, IDangerLevelSapaSportService service)
+        public SapaSportDangerLevelJobService(IAppSettings appSettings
+            , IDangerLevelSapaSportService service
+            , INotificationService notificationService)
         {          
             this.appSettings = appSettings;
             this.service = service;
+            this.notificationService = notificationService;
+            this.notificationService.Config(appSettings.LogGroupID, appSettings.EnvironmentString);
         }
 
         public Task<bool> Execute(int batchSize)
@@ -41,7 +46,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{ logMessage } - DateTime: {DateTime.Now}");
+                LogService.Error($"{ logMessage } - DateTime: {DateTimeOffset.Now}");
 
                 this.notifiedMessage = $"🆘 Update Sapa Sport Danger Level job FAIL." +
                   $"\n\r - {ex.Message}";                
@@ -58,7 +63,7 @@
         {
             if (!service.IsDataSabaSportDangerLevelReady(appSettings.RetryTimesSapaSportDangerLevelForCheckingDataReady))
             {
-                LogService.Error($"VR - {appSettings.EnvironmentString} - Update Sapa Sport Danger Level Job - Data for checking NOT READY - DateTime: {DateTime.Now}");
+                LogService.Error($"VR - {appSettings.EnvironmentString} - Update Sapa Sport Danger Level Job - Data for checking NOT READY - DateTime: {DateTimeOffset.Now}");
 
                 this.notifiedMessage = $"🆘 Update Danger Level FAIL." +
                     $"\n\r - Checking data for SABASportsDangerLevel DO NOT READY";
@@ -83,8 +88,10 @@
         private void NotifyMessage()
         {
             if (!string.IsNullOrEmpty(notifiedMessage))
-            {               
-                Utilities.NotifyMessage(notifiedMessage, "VR - Auto Update Sapa Sport DangerLevel", appSettings.EnvironmentString, appSettings.LogGroupID);
+            {                               
+                notificationService                 
+                   .Message(new MessageModel("VR - Auto Update Sapa Sport DangerLevel", DateTimeOffset.Now, appSettings.EnvironmentString, notifiedMessage))
+                   .SendMessageError();
             }
         }
     }
